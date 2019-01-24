@@ -35,15 +35,14 @@ def nnbd(file_name):
 	out_file.intensity = makesensible(distances[:,0])
 	out_file.close()			
 	
-# L I N E A R   R E G R E S S I O N
-# U S I N G   N E A R E S T   N E I G H B O U R S
+# S T A T I S T I C A L   S I G N A L S
 # Only considers neighbours inside a chosen radius
 # Deletes bad quality points which don't have enough neighbours
 # File name is the string name of the .las file, e.g. if the file is called "TestArea.las", enter "TestArea"
 # Input a las file and a radius
 # Output is four las files with 1000*eigenvalues and 1000*determinant represented by intensity
 # Window is a sphere with chosen radius
-def statz(file_name, min_num_neighbours = 4, num_neighbours = 8, radius = 1):
+def statz(file_name, min_num_neighbours = 4, num_neighbours = 50, radius = 1):
 	in_file = File(file_name+".las", mode = "r")
 	x_array = in_file.x
 	y_array = in_file.y
@@ -71,55 +70,77 @@ def statz(file_name, min_num_neighbours = 4, num_neighbours = 8, radius = 1):
 				planreg_storage[i] = 1
 			else:
 				planreg_storage[i] = exp2/exp1
-			eig_storage[i,:] = LA.eigvalsh(np.cov(points_for_each_calculation[i][:,distances[i]<radius]))
+			eig_storage[i,:] = LA.eigvalsh(np.cov(points_for_each_calculation[i,:,:][:,distances[i,:]<radius]))
 		else:
 			linreg_storage[i]=0
 			planreg_storage[i]=0
 			eig_storage[i,:] = np.empty((1,3))
-		CoU = np.mean(points_for_each_calculation[i][:,distances[i]<radius], axis=1)
-		CoI = np.average(points_for_each_calculation[i][:,distances[i]<radius], axis = 1, weights = in_file.intensity[indices])
+		CoU = np.mean(points_for_each_calculation[i,:,:][:,distances[i,:]<radius], axis=1)
+		CoI = np.average(points_for_each_calculation[i,:,:][:,distances[i,:]<radius], axis = 1, weights = in_file.intensity[indices[i,:][distances[i,:]<radius]])
 		coicou_storage[i]=np.sqrt(np.sum((CoU-CoI)**2))
-	print("Core calculations complete ... preparing LAS files")
 	KEEP = np.sum(distances<radius,axis=1)>=min_num_neighbours
-	out_file = File(file_name+"LinRegMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file.points = in_file.points[KEEP]
-	out_file.intensity = 1000*linreg_storage[KEEP]
-	out_file.close()
-	out_file0 = File(file_name+"Eig0BMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file0.points = in_file.points[KEEP]
-	out_file1 = File(file_name+"Eig1Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file1.points = in_file.points[KEEP]
-	out_file2 = File(file_name+"Eig2Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file2.points = in_file.points[KEEP]
-	out_file3 = File(file_name+"DetMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file3.points = in_file.points[KEEP]
-	out_file4 =File(file_name+"Eig10Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file4.points = in_file.points[KEEP]
-	out_file5 = File(file_name+"Eig21Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file5.points = in_file.points[KEEP]
 	e0 = eig_storage[:,0][KEEP]
 	e1 = eig_storage[:,1][KEEP]
 	e2 = eig_storage[:,2][KEEP]
 	d = e0*e1*e2
 	e10 = e1-e0
 	e21 = e2-e1
+	print("Core calculations complete ... preparing LAS files")
+	coi = coicou_storage[KEEP]
+	out_file = File(file_name+"LinRegMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file.points = in_file.points[KEEP]
+	out_file.intensity = 1000*linreg_storage[KEEP]
+	out_file.close()
+	out_file0 = File(file_name+"Eig0BMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file0.points = in_file.points[KEEP]
 	out_file0.intensity = makesensible(e0)
-	out_file1.intensity = makesensible(e1)
-	out_file2.intensity = makesensible(e2)
-	out_file3.intensity = makesensible(d)
-	out_file4.intensity = makesensible(e10)
-	out_file5.intensity = makesensible(e21)
 	out_file0.close()
+	out_file1 = File(file_name+"Eig1Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file1.points = in_file.points[KEEP]
+	out_file1.intensity = makesensible(e1)
 	out_file1.close()
+	out_file2 = File(file_name+"Eig2Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file2.points = in_file.points[KEEP]
+	out_file2.intensity = makesensible(e2)
 	out_file2.close()
+	out_file3 = File(file_name+"DetMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file3.points = in_file.points[KEEP]
+	out_file3.intensity = makesensible(d)
 	out_file3.close()
+	out_file4 =File(file_name+"Eig10Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file4.points = in_file.points[KEEP]
+	out_file4.intensity = makesensible(e10)
 	out_file4.close()
+	out_file5 = File(file_name+"Eig21Max"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file5.intensity = makesensible(e21)
+	out_file5.points = in_file.points[KEEP]
 	out_file5.close()
-	out_file6 = File(file_name+"PlanRegMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file6 = File(file_name+"PlanRegMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file6.points = in_file.points[KEEP]
 	out_file6.intensity = 1000*planreg_storage[KEEP]
 	out_file6.close()
-
+	out_file7 = File(file_name+"CoIMax"+str(num_neighbours).zfill(3)+"Min"+str(min_num_neighbours).zfill(3)+"Rad"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file7.points = in_file.points[KEEP]
+	out_file7.intensity = makesensible(coi)
+	out_file7.close()	
+	
+# N E A R   F L I G H T   L I N E	
+def NFL(file_name, clip = 100):
+	in_file = File(file_name+".las", mode = "r")
+	x_array = in_file.x
+	y_array = in_file.y
+	class10 = inFile.classification==10
+	x_array = inFile.x
+	y_array = inFile.y
+	coords = np.vstack((x_array,y_array))
+	x_flight = x_array[class10]
+	y_flight = y_array[class10]
+	coords_flight = np.vstack((x_flight,y_flight))
+	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(coords_flight))
+	distances, indices = nhbrs.kneighbors(np.transpose(coords))
+	out_file = File(file_name+"NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	outfile.points = inFile.points[np.logical_not(distances[:,0]<clip)]
+	outfile.close()
 	
 # H O U G H   T R A N S F O R M
 def Hough(file_name):
@@ -160,33 +181,19 @@ def ptct(file_name, radius):
 	in_file = File(file_name+".las", mode = "r")
 	x_array = in_file.x
 	y_array = in_file.y
-	max_x = max(x_array)
-	max_y = max(y_array)
-	min_x = min(x_array)
-	min_y = min(y_array)
-	h = np.sqrt(2)*radius
-	N_x = int(max(np.ceil((max_x-min_x)/h),1))
-	N_y = int(max(np.ceil((max_y-min_y)/h),1))
-	lattice = two_mesh(range(N_x),range(N_y))
-	xs = []
-	ys = []
-	zs = []
-	intensities = []
-	for dex in lattice:
-		x_0 = min_x+h*(dex[0]+0.5)
-		y_0 = min_y+h*(dex[1]+0.5)
-		indices_for_calc = (in_file.x-x_0)**2 + (in_file.y-y_0)**2 < radius**2
-		if True in indices_for_calc:
-			z_0 = sum(indices_for_calc)/(radius**2)
-			xs.append(x_0)
-			ys.append(y_0)
-			zs.append(z_0)
-		else:
-			continue
+	coords = np.vstack((x_array,y_array))
+	nhbrs = NearestNeighbors().fit(np.transpose(coords))
+	print("Training Done")
+	matrices = nhbrs.radius_neighbors(radius = radius, return_distance = False)
+	print("Distances and nearest neighbours found")
+	N = len(in_file)
+	zs = np.empty((N))
 	out_file = File(file_name+"PtCtRadius"+str(int(radius)).zfill(2)+"_"+str(int(100*(radius-int(radius)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	out_file.x = np.array(xs)
-	out_file.y = np.array(ys)
-	out_file.intensity = np.array(zs)
+	for index in range(len(in_file)):
+		zs[index]=matrices[index].size
+	out_file.x = np.array(x_array)
+	out_file.y = np.array(y_array)
+	out_file.intensity = np.array(makesensible(zs))
 	out_file.z = np.array([np.mean(in_file.z)]*N)
 	out_file.return_num = np.array([1]*N)
 	out_file.num_returns = np.array([2]*N)
