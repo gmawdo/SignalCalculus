@@ -3,6 +3,8 @@
 import numpy as np
 from laspy.file import File
 from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import kneighbors_graph
+from scipy.sparse.csgraph import connected_components
 import numpy.linalg as LA
 import time
 
@@ -23,7 +25,8 @@ def makesensible(vector):
 # File name is the string name of the .las file, e.g. if the file is called "TestArea.las", enter "TestArea"
 # Input just a LAS file
 # Output is a LAS file with signal value represented by intensity
-def nnbd(file_name):
+def nnd(file_name):
+	start = time.time()
 	in_file = File(file_name+".las", mode = "r")
 	x_array = in_file.X
 	y_array = in_file.Y
@@ -35,6 +38,18 @@ def nnbd(file_name):
 	out_file.points = in_file.points
 	out_file.intensity = makesensible(distances[:,0])
 	out_file.close()
+	end = time.time()
+	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
+
+
+def less(file_name):
+	start = time.time()
+	in_file = File(file_name+".las", mode = "r")
+	out_file = File(file_name+"Less.las", mode = "w", header = in_file.header)
+	out_file.points = in_file.points[in_file.return_num<in_file.num_returns]
+	out_file.close()
+	end = time.time()
+	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
 def stats(file_name, m = 4, k= 50, radius = 0.75, clip = 0.99):
 # in comments below N is num pts in file
@@ -97,7 +112,7 @@ def stats(file_name, m = 4, k= 50, radius = 0.75, clip = 0.99):
 	out_file2.close()
 	out_file3 = File(file_name+"PtCtMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file3.points = points
-	out_file3.intensity = 1000*((k/pt_ct)[good_pts])
+	out_file3.intensity = 1000*((pt_ct/k)[good_pts])
 	out_file3.close()	
 	end = time.time()
 	out_file3 = File(file_name+"RuggednessMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
@@ -184,4 +199,43 @@ def ptdens(file_name, radius = 1):
 	end = time.time()
 	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
-	
+# N E A R   F L I G H T   L I N E
+def nfl(file_name, clip = 100):
+	start = time.time()
+	in_file = File(file_name+".las", mode = "r")
+	x_array = in_file.x
+	y_array = in_file.y
+	class10 = inFile.classification==10
+	x_array = inFile.x
+	y_array = inFile.y
+	coords = np.vstack((x_array,y_array))
+	x_flight = x_array[class10]
+	y_flight = y_array[class10]
+	coords_flight = np.vstack((x_flight,y_flight))
+	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(coords_flight))
+	distances, indices = nhbrs.kneighbors(np.transpose(coords))
+	out_file = File(file_name+"NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2)+".las", mode = "w", header = in_file.header)
+	outfile.points = inFile.points[np.logical_not(distances[:,0]<clip)]
+	outfile.close()
+	end = time.time()
+	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
+
+# W E I G H T S   F R O M   K - N E I G H B O U R S   G R A P H
+def nng(file_name, k=1):
+	start = time.time()
+	in_file = File(file_name+".las", mode = "r")
+	x_array = in_file.x
+	y_array = in_file.y
+	z_array = in_file.z
+	coords = np.vstack((x_array,y_array,z_array)) # (3,N)
+	graph = kneighbors_graph(np.transpose(coords), n_neighbors = k)
+	num_components, labels = connected_components(graph, directed=False, return_labels=True)
+	out_file = File(file_name+"Connectivity"+str(k).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file.points = in_file.points
+	out_file.intensity = makesensible(np.bincount(labels)[labels])
+	out_file.close()
+	end = time.time()
+	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
+
+
+
