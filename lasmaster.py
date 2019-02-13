@@ -1,12 +1,15 @@
 # S T A T I S T I C A L   S I G N A L 
 
 import numpy as np
+import numpy.linalg as LA
+import time
 from laspy.file import File
 from sklearn.neighbors import NearestNeighbors
 from sklearn.neighbors import kneighbors_graph
+from sklearn.neighbors import KDTree
+from scipy.stats import mode
 from scipy.sparse.csgraph import connected_components
-import numpy.linalg as LA
-import time
+
 
 # M A K E   A   V E C T O R   S E N S I B L E   F O R   D I S P L A Z   P L O T T I N G
 # This function takes a vector (which should consist of non-negative values) and outputs a vector whose 90th percentile value is 1000
@@ -51,7 +54,7 @@ def less(file_name):
 	end = time.time()
 	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
-def stats(file_name, m = 4, k= 50, radius = 0.75, clip = 0.99):
+def stats(file_name, m = 4, k= 50, radius = 0.75, clip = 0.99, thresh = 0.001):
 # in comments below N is num pts in file
 # parenthetic comments indicate shape of array
 	start = time.time()
@@ -89,6 +92,7 @@ def stats(file_name, m = 4, k= 50, radius = 0.75, clip = 0.99):
 	lin_regs[np.logical_or(np.isnan(lin_regs),np.isinf(lin_regs))]=1
 	xy_lin_regs[np.logical_or(np.isnan(xy_lin_regs),np.isinf(xy_lin_regs))]=1
 	plan_regs[np.logical_or(np.isnan(plan_regs),np.isinf(plan_regs))]=1
+	rank = np.sum(evals>thresh, axis = 1)
 	end = time.time()
 	print("Time taken so far: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 	print("Calculations done... making LAS files")
@@ -96,48 +100,58 @@ def stats(file_name, m = 4, k= 50, radius = 0.75, clip = 0.99):
 	R_rat = int(100*(radius-int(radius)))
 	C_int = int(clip)
 	C_rat = int(100*(clip-int(clip)))
+	T_int = int(thresh)
+	T_rat = int(1000*(thresh-int(thresh)))
 	points = in_file.points[good_pts]
-	out_file0 = File(file_name+"LinRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file0 = File(file_name+"LinRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file0.points = points
 	out_file0.intensity = 1000*lin_regs
 	out_file0.close()
 	end = time.time()
-	out_file1 = File(file_name+"XYLinRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file1 = File(file_name+"XYLinRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file1.points = points
 	out_file1.intensity = 1000*xy_lin_regs
 	out_file1.close()
-	out_file2 = File(file_name+"PlanRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file2 = File(file_name+"PlanRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file2.points = points
 	out_file2.intensity = 1000*plan_regs
 	out_file2.close()
-	out_file3 = File(file_name+"PtCtMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file3 = File(file_name+"PtCtMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file3.points = points
 	out_file3.intensity = 1000*((pt_ct/k)[good_pts])
 	out_file3.close()	
 	end = time.time()
-	out_file3 = File(file_name+"RuggednessMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file3 = File(file_name+"RuggednessMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file3.points = points
 	out_file3.intensity = makesensible(np.sqrt(zz_covs[good_pts]))
 	out_file3.close()
 	end = time.time()
-	out_file4 = File(file_name+"DiscXYLinRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+"Clip"+str(C_int)+"_"+str(C_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file4 = File(file_name+"DiscXYLinRegMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+"Clip"+str(C_int)+"_"+str(C_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file4.points = in_file.points[good_pts][xy_lin_regs>clip]
 	out_file4.close()
-	out_file5 = File(file_name+"FewPtsMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file5 = File(file_name+"FewPtsMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file5.points = in_file.points[np.logical_and(pt_ct<k,good_pts)]
 	out_file5.close()
-	out_file7 = File(file_name+"Eigenvalue0Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file7 = File(file_name+"Eigenvalue0Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file7.points = in_file.points[good_pts]
-	out_file7.intensity = makesensible(evals[:,0][good_pts])
+	out_file7.intensity = 1000*evals[:,0][good_pts]
 	out_file7.close()
-	out_file8 = File(file_name+"Eigenvalue1Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file8 = File(file_name+"Eigenvalue1Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file8.points = in_file.points[good_pts]
-	out_file8.intensity = makesensible(evals[:,1][good_pts])
+	out_file8.intensity = 1000*evals[:,1][good_pts]
 	out_file8.close()
-	out_file9 = File(file_name+"Eigenvalue2Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file9 = File(file_name+"Eigenvalue2Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file9.points = in_file.points[good_pts]
-	out_file9.intensity = makesensible(evals[:,2][good_pts])
-	out_file9.close()
+	out_file9.intensity = 1000*evals[:,2][good_pts]
+	out_file10 = File(file_name+"RankMin"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+"Thresh"+str(T_int).zfill(2)+"_"+str(T_rat).zfill(3)+".las", mode = "w", header = in_file.header)
+	out_file10.points = in_file.points[good_pts]
+	out_file10.raw_classification = rank[good_pts]
+	out_file10.close()
+	out_file11 = File(file_name+"MaxRank"+"Min"+str(m).zfill(3)+"Max"+str(k).zfill(3)+"Radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+"Thresh"+str(T_int).zfill(2)+"_"+str(T_rat).zfill(3)+".las", mode = "w", header = in_file.header)
+	out_file11.points = in_file.points[good_pts]
+	maxes = np.amax(rank[indices],axis=1)
+	out_file11.raw_classification = maxes[good_pts]
+	out_file11.close()
 	end = time.time()
 	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
@@ -180,8 +194,9 @@ def xyptdens(file_name, radius = 1):
 	end = time.time()
 	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
+# T A K E S   P O I N T  D E N S I T Y
+# K E E PS   O N LY   P O I N T S  W I T H  P T  D E N S I T Y   G R E A TE R   T H A N  m
 def ptdens(file_name, radius = 1):
-	from sklearn.neighbors import KDTree
 	start = time.time()
 	in_file = File(file_name+".las", mode = "r")
 	x_array = in_file.x
@@ -192,7 +207,7 @@ def ptdens(file_name, radius = 1):
 	pt_ct = tree.query_radius(np.transpose(coords), r=radius, count_only=True)
 	R_int = int(radius)
 	R_rat = int(100*(radius-int(radius)))
-	out_file = File(file_name+"PtDensityRadius"+str(R_int).zfill(2)+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file = File(file_name+"PtDensityRadius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file.points = in_file.points
 	out_file.intensity = makesensible(pt_ct/radius**3)
 	out_file.close()
@@ -202,26 +217,29 @@ def ptdens(file_name, radius = 1):
 # N E A R   F L I G H T   L I N E
 def nfl(file_name, clip = 100):
 	start = time.time()
-	in_file = File(file_name+".las", mode = "r")
+	in_file = File(file_name, mode = "r")
 	x_array = in_file.x
 	y_array = in_file.y
-	class10 = inFile.classification==10
-	x_array = inFile.x
-	y_array = inFile.y
+	class10 = in_file.classification==10
+	x_array = in_file.x
+	y_array = in_file.y
 	coords = np.vstack((x_array,y_array))
-	x_flight = x_array[class10]
-	y_flight = y_array[class10]
-	coords_flight = np.vstack((x_flight,y_flight))
-	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(coords_flight))
-	distances, indices = nhbrs.kneighbors(np.transpose(coords))
-	out_file = File(file_name+"NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2)+".las", mode = "w", header = in_file.header)
-	outfile.points = inFile.points[np.logical_not(distances[:,0]<clip)]
-	outfile.close()
+	if True in class10:
+		x_flight = x_array[class10]
+		y_flight = y_array[class10]
+		coords_flight = np.vstack((x_flight,y_flight))
+		nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(coords_flight))
+		distances, indices = nhbrs.kneighbors(np.transpose(coords))
+		out_file = File("NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2)+file_name, mode = "w", header = in_file.header)
+		out_file.points = in_file.points[np.logical_and(distances[:,0]<clip, np.logical_not(class10))]
+		out_file.close()
+	else:
+		print("No class 10 points!")
 	end = time.time()
-	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
+	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
 # W E I G H T S   F R O M   K - N E I G H B O U R S   G R A P H
-def nng(file_name, k=1):
+def nng(file_name, k=1, components = 10):
 	start = time.time()
 	in_file = File(file_name+".las", mode = "r")
 	x_array = in_file.x
@@ -232,10 +250,43 @@ def nng(file_name, k=1):
 	num_components, labels = connected_components(graph, directed=False, return_labels=True)
 	out_file = File(file_name+"Connectivity"+str(k).zfill(2)+".las", mode = "w", header = in_file.header)
 	out_file.points = in_file.points
-	out_file.intensity = makesensible(np.bincount(labels)[labels])
+	out_file.intensity = makesensible(sizes)
 	out_file.close()
+	out_file1 = File(file_name+"Components"+str(components).zfill(2)+".las", mode = "w", header = in_file.header)
+	out_file1.points = in_file.points
+	out_file1.intensity = makesensible(np.bincount(labels)[labels])
+	out_file1.close()
 	end = time.time()
 	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
-
-
+def extractconductor(file_name, k=50, m = 4, radius = 0.75, clip = 0.99):
+	start = time.time()
+	in_file = File(file_name, mode = "r")
+	x_array = in_file.x
+	y_array = in_file.y
+	z_array = in_file.z
+	coords = np.vstack((x_array,y_array,z_array))
+	nhbrs = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords))
+	distances, indices = nhbrs.kneighbors(np.transpose(coords)) # (N,k)
+	neighbours = coords[:,indices] # (3,N,k)
+	keeping = distances<radius # (N,k)
+	Ns = np.sum(keeping, axis = 1) # (N)
+	means = np.sum(neighbours*keeping/Ns[None,:,None], axis = 2) # (3,N)
+	raw_deviations = (neighbours - means[:,:,None])*keeping # (3,N,k)
+	xy_covs = np.sum(raw_deviations[0,:,:]*raw_deviations[1,:,:]*keeping/Ns[:,None], axis = 1) # (N)
+	xx_covs = np.sum(raw_deviations[0,:,:]*raw_deviations[0,:,:]*keeping/Ns[:,None], axis = 1) # (N)
+	yy_covs = np.sum(raw_deviations[1,:,:]*raw_deviations[1,:,:]*keeping/Ns[:,None], axis = 1) # (N)
+	good_pts = Ns>=m
+	xy_lin_regs = abs(xy_covs[good_pts]/np.sqrt(xx_covs[good_pts]*yy_covs[good_pts]))
+	xy_lin_regs[np.logical_or(np.isnan(xy_lin_regs),np.isinf(xy_lin_regs))]=1
+	x_array = x_array[good_pts]
+	y_array = y_array[good_pts]
+	z_array = z_array[good_pts]
+	coords = np.vstack((x_array,y_array, z_array)) # (2,N)
+	tree = KDTree(np.transpose(coords), leaf_size=2)
+	pt_ct = tree.query_radius(np.transpose(coords), r=radius, count_only=True)
+	out_file = File("ExractConductor"+file_name, mode = "w", header = in_file.header)
+	out_file.points = in_file.points[xy_lin_reg>clip]
+	out_file.intensity = pt_ct[xy_lin_regs>clip]
+	out_file.close()
+	print("Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
