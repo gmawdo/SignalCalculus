@@ -153,7 +153,7 @@ def attr(file_name, k= 50, radius = 0.75, thresh = 0.001,v_speed = 0):
 	neighbours = (coords)[:,indices] # (3,N,k)
 	keeping = distances<radius # (N,k)
 	Ns = np.sum(keeping, axis = 1) # (N)
-	#means = np.sum(neighbours*keeping/Ns[None,:,None], axis = 2) # (3,N)
+	# means = np.sum(neighbours*keeping/Ns[None,:,None], axis = 2) # (3,N)
 	means = coords[:,:,None]
 	raw_deviations = keeping*(neighbours - means)/np.sqrt(Ns[None,:,None]) # (3,N,k)
 	cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(N,3,3)
@@ -169,8 +169,10 @@ def attr(file_name, k= 50, radius = 0.75, thresh = 0.001,v_speed = 0):
 	exp2 = xx_covs*yz_covs*yz_covs+yy_covs*zx_covs*zx_covs+zz_covs*xy_covs*xy_covs
 	xy_lin_regs = abs(xy_covs/np.sqrt(xx_covs*yy_covs))
 	plan_regs = exp2/exp1
+	lin_regs = abs(xy_covs*yz_covs*zx_covs/(xx_covs*yy_covs*zz_covs))
 	xy_lin_regs[np.logical_or(np.isnan(xy_lin_regs),np.isinf(xy_lin_regs))]=1
 	plan_regs[np.logical_or(np.isnan(plan_regs),np.isinf(plan_regs))]=1
+	lin_regs[np.logical_or(np.isnan(lin_regs),np.isinf(lin_regs))]=1
 	ranks = np.sum(evals>thresh, axis = 1)
 	R_int = int(radius)
 	R_rat = int(100*(radius-int(radius)))
@@ -192,6 +194,9 @@ def attr(file_name, k= 50, radius = 0.75, thresh = 0.001,v_speed = 0):
 	out_file.define_new_dimension(name = "eig1", data_type = 9, description = "Eigenvalue 1")
 	out_file.define_new_dimension(name = "eig2", data_type = 9, description = "Eigenvalue 2")
 	out_file.define_new_dimension(name = "rank", data_type = 5, description = "SVD rank")
+	out_file.define_new_dimension(name = "lin_reg", data_type = 9, description = "Linear regression")
+	out_file.define_new_dimension(name = "curv", data_type = 9, description = "Curvature")
+	out_file.define_new_dimension(name = "iso", data_type = 9, description = "Isotropy")
 	for dimension in in_file.point_format:
 		dat = in_file.reader.get_dimension(dimension.name)
 		out_file.writer.set_dimension(dimension.name, dat)
@@ -202,10 +207,15 @@ def attr(file_name, k= 50, radius = 0.75, thresh = 0.001,v_speed = 0):
 	out_file.c_yy = yy_covs
 	out_file.c_zz = zz_covs
 	out_file.xy_lin_reg = xy_lin_regs
+	out_file.lin_reg = lin_regs
 	out_file.plan_reg = plan_regs
-	out_file.eig0 = evals[:,0]
-	out_file.eig1 = evals[:,1]
-	out_file.eig2 = evals[:,2]
+	out_file.eig0 = evals[:,1]
+	out_file.eig1 = evals[:,2]
+	out_file.eig2 = evals[:,3]
+	out_file.curv = evals[:,1]/(evals[:,1]+evals[:,2]+evals[:,3])
+	out_file.curv[np.logical_or(np.isnan(out_file.curv),np.isinf(out_file.curv))]=0
+	out_file.iso = (evals[:,1]+evals[:,2]+evals[:,3])/np.sqrt(3*((evals[:,1]**2+evals[:,2]**2+evals[:,3]**2)))
+	out_file.iso[np.logical_or(np.isnan(out_file.iso),np.isinf(out_file.iso))]=0
 	out_file.classification = ranks
 	out_file.close()
 	end = time.time()
