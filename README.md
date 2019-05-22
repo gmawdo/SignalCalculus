@@ -1,2 +1,2 @@
 # SignalCalculus
-Investigatory repo looking for generic interpretation mechansim across adhoc and derived signals
+Investigatory repo looking for generic interpretation mechanism across ad hoc and derived signals.
