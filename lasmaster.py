@@ -248,9 +248,9 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		attributes["ent"][time_range] = E[inv]
 		attributes["plang"][time_range] = plangs[inv]
 		attributes["lang"][time_range] = langs[inv]
-		attributes["lambda_x"][time_range] = evects[inv,0,-1]
-		attributes["lambda_y"][time_range] = evects[inv,1,-1]
-		attributes["lambda_z"][time_range] = evects[inv,2,-1]
+		attributes["lambda_x"][time_range] = evects[inv,0,-1]/np.sqrt(evects[inv,0,-1]**2+evects[inv,1,-1]**2+evects[inv,2,-1]**2)
+		attributes["lambda_y"][time_range] = evects[inv,1,-1]/np.sqrt(evects[inv,0,-1]**2+evects[inv,1,-1]**2+evects[inv,2,-1]**2)
+		attributes["lambda_z"][time_range] = evects[inv,2,-1]/np.sqrt(evects[inv,0,-1]**2+evects[inv,1,-1]**2+evects[inv,2,-1]**2)
 
 	# check for nans or infs
 	for dimension in continuous_attributes:
