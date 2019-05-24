@@ -150,6 +150,9 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 					"plang"		:	"Planar regression",
 					"lang"		:	"Linear angle",
 					"impdec"	:	"Point density",
+					"lambda_x"	:	"x,EigVect0",
+					"lambda_y"	:	"x,EigVect1",
+					"lambda_z"	:	"x,EigVect2",
 					}
 	discrete_attributes = 		{
 					"rank"		:	"SVD rank",
@@ -197,6 +200,7 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		means = coords[:,:,None]
 		raw_deviations = keeping*(neighbours - means)/np.sqrt(Ns[None,:,None]) # (d,N,k)
 		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(N,d,d)
+		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
 		xy_covs = cov_matrices[:,0,1]
 		yz_covs = cov_matrices[:,1,2]
 		zx_covs = cov_matrices[:,2,0]
@@ -204,7 +208,6 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		yy_covs = cov_matrices[:,1,1]
 		zz_covs = cov_matrices[:,2,2]
 		evals, evects = np.linalg.eigh(cov_matrices)
-		evals2, evects2 = np.linalg.eigh(cov_matrices[:,0:2,0:2])
 		exp1 = xx_covs*yy_covs*zz_covs+2*xy_covs*yz_covs*zx_covs
 		exp2 = xx_covs*yz_covs*yz_covs+yy_covs*zx_covs*zx_covs+zz_covs*xy_covs*xy_covs
 		xy_lin_regs = abs(xy_covs/np.sqrt(xx_covs*yy_covs))
@@ -245,6 +248,9 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		attributes["ent"][time_range] = E[inv]
 		attributes["plang"][time_range] = plangs[inv]
 		attributes["lang"][time_range] = langs[inv]
+		attributes["lambda_x"][time_range] = evects[inv,0,-1]
+		attributes["lambda_y"][time_range] = evects[inv,1,-1]
+		attributes["lambda_z"][time_range] = evects[inv,2,-1]
 
 	# check for nans or infs
 	for dimension in continuous_attributes:
