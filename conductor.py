@@ -23,8 +23,10 @@ def cart2sph(x,y,z):
     ans = np.absolute(elev*1000+az)
     return ans
 
-# Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10.las
 inFile = File("Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10NFLClip100_00.las", mode = "r")
+#inFile = File("attrTile9N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+
+
 print "file read"
 # inFile.x
 # create matrix of all the eigenvectors
