@@ -91,17 +91,17 @@ ax.set_zlabel('num points')
 #ax.set_ylim3d(0.0, 1.0)
 #ax.set_zlim3d(0, 750)
 
-ax.set_xlim3d(0, 200)
-ax.set_ylim3d(0.0, 0.03)
-ax.set_zlim3d(0, 500)
+ax.set_xlim3d(0, 200) #eigs
+ax.set_ylim3d(0.0, 0.03) #entropy
+ax.set_zlim3d(0, 500) #num points
 
 verts = []
 zs = u3[:,0]
 facecolors =[]
 for z in u3[:,0]:
 	ux = u1[(u1[:,1]==z)] #this predicate extracts entries only for this entropy value
-	xs = np.concatenate([[0],ux[:,0],[0]])
-	ys = np.concatenate([[0],ux[:,2],[0]])
+	xs = np.concatenate([[0],ux[:,0],[0]]) #eig
+	ys = np.concatenate([[0],ux[:,2],[0]]) #num points
 	#print xs,ys
 	verts.append(list(zip(xs,ys)))
 	facecolors.append((z, z * z, 0.0, 0.6))
