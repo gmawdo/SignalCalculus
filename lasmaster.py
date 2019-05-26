@@ -192,21 +192,25 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		else:
 			ind = np.arange(len(in_file.x[time_range]))
 			inv = ind
+
 		coords = coords[:,ind]
 		distances, indices = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords)).kneighbors(np.transpose(coords)) # (N,k)
 		neighbours = (coords)[:,indices] # (d,N,k)
 		keeping = distances<radius # (N,k)
 		Ns = np.sum(keeping, axis = 1) # (N)
 		means = coords[:,:,None]
+
 		raw_deviations = keeping*(neighbours - means)/np.sqrt(Ns[None,:,None]) # (d,N,k)
 		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(N,d,d)
 		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
+		
 		xy_covs = cov_matrices[:,0,1]
 		yz_covs = cov_matrices[:,1,2]
 		zx_covs = cov_matrices[:,2,0]
 		xx_covs = cov_matrices[:,0,0]
 		yy_covs = cov_matrices[:,1,1]
 		zz_covs = cov_matrices[:,2,2]
+
 		evals, evects = np.linalg.eigh(cov_matrices)
 		exp1 = xx_covs*yy_covs*zz_covs+2*xy_covs*yz_covs*zx_covs
 		exp2 = xx_covs*yz_covs*yz_covs+yy_covs*zx_covs*zx_covs+zz_covs*xy_covs*xy_covs
@@ -217,22 +221,29 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		plan_regs[np.logical_or(np.isnan(plan_regs),np.isinf(plan_regs))]=1
 		lin_regs[np.logical_or(np.isnan(lin_regs),np.isinf(lin_regs))]=1
 		ranks = np.sum(evals>thresh, axis = 1)
+
 		p0 = evals[:,-3]/(evals[:,-1]+evals[:,-2]+evals[:,-3])
 		p1= evals[:,-2]/(evals[:,-1]+evals[:,-2]+evals[:,-3])
 		p2 = evals[:,-1]/(evals[:,-1]+evals[:,-2]+evals[:,-3])
 		p1 = -p1*np.log(p1)
 		p2 = -p2*np.log(p2)
+
 		p0[np.isnan(p0)]=0
 		p1[np.isnan(p1)]=0
 		p2[np.isnan(p2)]=0
+
 		E = (p0+p1+p2)/np.log(3)
 		if not(decimate):
 			dens = 3*k/(4*np.pi*(distances[:,-1]**3))
 		else:
 			dens = cnt/(u**3)
+
 		isos = (evals[:,-1]+evals[:,-2]+evals[:,-3])/np.sqrt(3*((evals[:,-1]**2+evals[:,-2]**2+evals[:,-3]**2)))
 		plangs = np.clip(2*(np.arccos(abs(evects[:,2,-3])/(np.sqrt(evects[:,2,-3]**2+evects[:,1,-3]**2+evects[:,0,-3]**2)))/np.pi),0,1)
 		langs = np.clip(2*(np.arccos(abs(evects[:,2,-1])/(np.sqrt(evects[:,2,-1]**2+evects[:,1,-1]**2+evects[:,0,-1]**2)))/np.pi),0,1)
+
+		#there is an issue with linear angle calc - it often generates NaN entries - we need to know why and fix!
+		langs[np.isnan(langs)]=0
 
 		# update attribute values
 		attributes["xy_lin_reg"][time_range] = xy_lin_regs[inv]
