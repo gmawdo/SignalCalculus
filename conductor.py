@@ -23,34 +23,34 @@ def cart2sph(x,y,z):
     ans = np.absolute(elev*1000+az)
     return ans
 
-inFile = File("Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10NFLClip100_00.las", mode = "r")
-#inFile = File("attrTile9N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+#inFile = File("Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10NFLClip100_00.las", mode = "r")
+inFile = File("attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 
 
-print "file read"
+print("file read")
 # inFile.x
 # create matrix of all the eigenvectors
 result1 = np.stack((cart2sph(inFile.lambda_x,inFile.lambda_y,inFile.lambda_z),np.round(inFile.ent,3)), axis=-1)
-print "formed main result set size:",len(result1)
+print("formed main result set size:",len(result1))
 
 # find how many unique eigenvectors in combo with entropy
 u1,i1,c1 = np.unique(result1, axis=0,return_inverse=True,return_counts=True)
 c1 = c1.reshape(u1.shape[0],1)
 u1 = np.concatenate((u1,c1),axis=1)
 #condition = (u1[:,2]>20) & (u1[:,2]<750)
-condition = (u1[:,1]<0.2)*(u1[:,2]>50)
+condition = (u1[:,1]<0.15)*(u1[:,2]>75)
 u1 = u1[condition]
 u1.sort
 # NOW eigen, entropy, cnt
-print "form unqiue result set of distinct eignevector and entropy combos with counts",u1.shape
-print u1.shape #total number of tuples
+print("form unqiue result set of distinct eignevector and entropy combos with counts",u1.shape)
+print(u1.shape) #total number of tuples
 
 # for info purposes get unqiue number of EVs and unique number of entropies
-u2,i2,c2 = np.unique(u1[:,[0]], axis=0,return_inverse=True,return_counts=True)
-u3,i3,c3 = np.unique(u1[:,[1]], axis=0,return_inverse=True,return_counts=True)
-print "number of distinct EVs:",u2.shape
+u2,i2,c2 = np.unique(u1[:,[0]], axis=0,return_inverse=True,return_counts=True) #ev
+u3,i3,c3 = np.unique(u1[:,[1]], axis=0,return_inverse=True,return_counts=True) #ent
+print("number of distinct EVs:",u2.shape)
 u2.sort
-print "number of distinct entropies:",u3.shape
+print("number of distinct entropies:",u3.shape)
 
 #eigenID,entropy, cnt
 x, y, z = u1[:,0], u1[:,1], u1[:,2]
@@ -66,9 +66,10 @@ classification[np.logical_not(writecondition)]=0
 
 classi = 10
 for s in u3[:,0]:
-	writecondition = (np.round(inFile.ent,3)==s)
-	classification[writecondition]=classi
-	classi = classi + 1
+    writecondition = (np.round(inFile.ent,3)==s)
+    classification[writecondition]=classi
+    classi = classi + 1
+    print("complete class %i"%classi)
 
 outFile.classification = classification
 outFile.close()
