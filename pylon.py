@@ -9,6 +9,24 @@ from laspy.file import File
 
 inFile = File("attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 
+print(max(inFile.z))
+# point here is part of pylon I tjhink : 385247.370 207848.540 80.070
+#definitely part of a pylon here: 385242.410 207840.860 79.200
+ISO = inFile.iso
+LANG = inFile.lang
+pointCuboid = (inFile.x>385240)  & (inFile.x<385300) & (inFile.y>207840) & (inFile.y<207900) & (inFile.z<80) & (inFile.iso > 0.6) & (inFile.lang < 0.1)
+isoPoints = ISO[pointCuboid] #points in area of pylon
+iso1,isoc1 = np.unique(isoPoints, axis=0,return_counts=True)
+langPoints = LANG[pointCuboid] #points in area of pylon
+lang1,langc1 = np.unique(langPoints, axis=0,return_counts=True)
+#I think we need to plot the above values, so....
+#plt.plot(iso1,isoc1) # plotting by columns
+#lots of points with iso less than 0.6 but these are not the ones, in fact the opposite!
+#plt.show()
+#plt.plot(lang1,langc1) # plotting by columns
+#gives fairly even distribution
+#plt.show()
+
 # inFile.x
 # create matrix of all the eigenvectors
 #print(max(np.round(inFile.lang,0)),min(np.round(inFile.lang)))
@@ -24,7 +42,6 @@ u1 = np.concatenate((u1,c1),axis=1)
 #condition = (u1[:,1]<0.2)*(u1[:,2]>50)
 #u1 = u1[condition]
 u1.sort
-# NOW eigen, entropy, cnt
 print("form unqiue result set of distinct isotropies and langs combos with counts",u1.shape)
 print(u1.shape) #total number of tuples
 
@@ -39,22 +56,21 @@ print("number of distinct linear angles:",u3.shape)
 x, y, z = u1[:,0], u1[:,1], u1[:,2]
 
 #classify a set of points into a new file
-#outFile = File("Gary-pylon.las", mode = "w", header = inFile.header)
-#classification = inFile.classification
-#outFile.points = inFile.points
-#
-#
-#writecondition = (inFile.ent==0.000000001)
-#classification[np.logical_not(writecondition)]=0
-#
-#classi = 10
-#for s in u3[:,0]:
-#	writecondition = (np.round(inFile.ent,3)==s)
-#	classification[writecondition]=classi
-#	classi = classi + 1
-#
-#outFile.classification = classification
-#outFile.close()
+outFile = File("Gary-pylon.las", mode = "w", header = inFile.header)
+classification = inFile.classification
+outFile.points = inFile.points
+
+writecondition = (inFile.ent==0.000000001)
+classification[np.logical_not(writecondition)]=0
+
+pointCuboid2 =  (inFile.z<80) & (inFile.iso > 0.6) & (inFile.lang < 0.1)
+classification[pointCuboid2]=11
+
+writecondition_conductor = (np.round(inFile.iso,3)>0.5) & (np.round(inFile.iso,3)<0.6) & (np.round(inFile.lang,2)>0.9) & (np.round(inFile.z,0) < 85)
+classification[writecondition_conductor]=10
+
+outFile.classification = classification
+outFile.close()
 
 inFile.close()
 #PLOT
@@ -71,7 +87,7 @@ ax.set_zlabel('num points')
 
 ax.set_xlim3d(0.0, 1.0) #iso
 ax.set_ylim3d(0.0, 1.0) #lang
-ax.set_zlim3d(0, 15000) #numpoints
+ax.set_zlim3d(0, 2000) #numpoints
 
 #ax.set_xlim3d(0, 200)
 #ax.set_ylim3d(0.0, 0.03)
