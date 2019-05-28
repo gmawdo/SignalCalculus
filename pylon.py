@@ -72,23 +72,26 @@ for lasfile in (filename for filename in os.listdir("TestTiles") if filename[:4]
 	classification *= 0 #initialise and classes to zero 
 	
 	#uprights
-	pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.6) & (inFile.iso < 0.7) & (inFile.lang < 0.1)
+	#(inFile.z<85) &
+	pointCuboid2 =   (inFile.iso >= 0.6) & (inFile.iso < 0.7) & (inFile.lang < 0.1)
 	classification[pointCuboid2]=11
-	pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.7) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
+	#(inFile.z<85) & 
+	pointCuboid2 =  (inFile.iso >= 0.7) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
 	classification[pointCuboid2]=12
 	#pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.8) & (inFile.iso < 0.9) & (inFile.lang < 0.1)
 	#classification[pointCuboid2]=13
 	#pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.5) & (inFile.iso < 0.6) & (inFile.lang < 0.1)
 	#classification[pointCuboid2]=14
 	
-	noise = (np.round(inFile.lang,3)<=0.003) & (inFile.z > 80)
+	noise = (np.round(inFile.lang,3)<=0.003) # & (inFile.z > 80)
 	classification[noise]=13
 	
-	yellowpeak = (inFile.z<71) & (inFile.iso >= 0.8) & (inFile.iso <= 0.87) & (inFile.lang >= 0.94) & (inFile.lang <= 0.96) 
-	classification[yellowpeak]=14
+	#(inFile.z<71) & 
+	ground = (inFile.iso >= 0.8) & (inFile.iso <= 0.87) & (inFile.lang >= 0.94) & (inFile.lang <= 0.96) 
+	classification[ground]=14
 	
 	#conductor
-	writecondition_conductor = (np.round(inFile.iso,3)>0.5) & (np.round(inFile.iso,3)<0.6) & (np.round(inFile.lang,2)>0.9) & (np.round(inFile.z,0) < 85)
+	writecondition_conductor = (np.round(inFile.iso,3)>0.5) & (np.round(inFile.iso,3)<0.6) & (np.round(inFile.lang,2)>0.9) # & (np.round(inFile.z,0) < 85)
 	classification[writecondition_conductor]=10
 	
 	outFile.classification = classification
