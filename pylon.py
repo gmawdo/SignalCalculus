@@ -12,6 +12,7 @@ inFile = File("attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00d
 print(max(inFile.z))
 # point here is part of pylon I tjhink : 385247.370 207848.540 80.070
 #definitely part of a pylon here: 385242.410 207840.860 79.200
+#part of an obscured pylon - 385288.360 207914.330 82.310
 ISO = inFile.iso
 LANG = inFile.lang
 pointCuboid = (inFile.x>385240)  & (inFile.x<385300) & (inFile.y>207840) & (inFile.y<207900) & (inFile.z<80) & (inFile.iso > 0.6) & (inFile.lang < 0.1)
@@ -60,12 +61,27 @@ outFile = File("Gary-pylon.las", mode = "w", header = inFile.header)
 classification = inFile.classification
 outFile.points = inFile.points
 
-writecondition = (inFile.ent==0.000000001)
-classification[np.logical_not(writecondition)]=0
+#writecondition = (inFile.ent==0.000000001)
+#classification[np.logical_not(writecondition)]=0
+classification *= 0 #initialise and classes to zero 
 
-pointCuboid2 =  (inFile.z<80) & (inFile.iso > 0.6) & (inFile.lang < 0.1)
+#uprights
+pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.6) & (inFile.iso < 0.7) & (inFile.lang < 0.1)
 classification[pointCuboid2]=11
+pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.7) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
+classification[pointCuboid2]=12
+#pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.8) & (inFile.iso < 0.9) & (inFile.lang < 0.1)
+#classification[pointCuboid2]=13
+#pointCuboid2 =  (inFile.z<85) & (inFile.iso >= 0.5) & (inFile.iso < 0.6) & (inFile.lang < 0.1)
+#classification[pointCuboid2]=14
 
+noise = (np.round(inFile.lang,3)<=0.003) & (inFile.z > 80)
+classification[noise]=13
+
+yellowpeak = (inFile.z<71) & (inFile.iso >= 0.8) & (inFile.iso <= 0.87) & (inFile.lang >= 0.94) & (inFile.lang <= 0.96) 
+classification[yellowpeak]=14
+
+#conductor
 writecondition_conductor = (np.round(inFile.iso,3)>0.5) & (np.round(inFile.iso,3)<0.6) & (np.round(inFile.lang,2)>0.9) & (np.round(inFile.z,0) < 85)
 classification[writecondition_conductor]=10
 
@@ -87,7 +103,7 @@ ax.set_zlabel('num points')
 
 ax.set_xlim3d(0.0, 1.0) #iso
 ax.set_ylim3d(0.0, 1.0) #lang
-ax.set_zlim3d(0, 2000) #numpoints
+ax.set_zlim3d(0, 10000) #numpoints
 
 #ax.set_xlim3d(0, 200)
 #ax.set_ylim3d(0.0, 0.03)
@@ -96,6 +112,7 @@ verts = []
 zs = u3[:,0]
 facecolors =[]
 for z in u3[:,0]: #for each linear angle
+    #print(z)
     ux = u1[(u1[:,1]==z)] #this predicate extracts entries only for this lang value
     xs = np.concatenate([[0],ux[:,0],[0]]) #iso
     ys = np.concatenate([[0],ux[:,2],[0]]) #num points
