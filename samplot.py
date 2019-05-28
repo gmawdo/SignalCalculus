@@ -9,15 +9,16 @@ from laspy.file import File
 
 # Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10.las
 inFile = File("attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+# "attrTreeN001k050radius00_50thresh0_001v_speed02_00dec00_10.las"
 
 # create matrix of all the eigenvectors
-point_focus = inFile.lang<0.3
-lang = inFile.lang[point_focus]
-iso = inFile.iso[point_focus]
-u1,i1,c1 = np.unique(np.stack((0.05*np.floor(iso/0.05),0.05*np.floor(lang/0.05))), axis=1,return_inverse=True,return_counts=True)
+point_focus = inFile.lang==inFile.lang
+att1 = inFile.ent[point_focus]
+att2 = inFile.iso[point_focus]
+u1,i1,c1 = np.unique(np.stack((0.05*np.floor(att1/0.05),0.05*np.floor(att2/0.05))), axis=1,return_inverse=True,return_counts=True)
 c1=c1/sum(c1)
 
-condition = (u1[0,i1]>0.85)*(u1[1,i1]<0.3)
+condition = (u1[0,i1]>0.6)*(u1[1,i1]>0.6)
 
 fig = plt.figure()
 print(min(c1),max(c1))
@@ -25,7 +26,7 @@ print(min(c1),max(c1))
 ax = fig.add_subplot(111, projection='3d')
 ax.view_init(elev=16, azim=43)
 
-ax.set_xlabel('Lin. ang.')
+ax.set_xlabel('Ent.')
 ax.set_ylabel('Iso.')
 ax.set_zlabel('Num. points')
 
@@ -43,7 +44,7 @@ for z in zs:
 	ys = np.concatenate([[0],c1[u1[0,:]==z],[0]])
 	#print xs,ys
 	verts.append(list(zip(xs,ys)))
-	facecolors.append((z, z * z, 0.0, 0.6))
+	facecolors.append((max(0,z), z * z, 0.0, 0.6))
 
 poly = PolyCollection(verts, facecolors=facecolors)
 poly.set_alpha(0.7)
