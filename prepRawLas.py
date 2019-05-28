@@ -1,2 +1,5 @@
+import os
 import lasmaster as la
-la.attr(la.nfl("Tile9.las"))
+for filename in os.listdir():
+	if filename[:4]=="T200":
+		la.attr(la.nfl(filename))
