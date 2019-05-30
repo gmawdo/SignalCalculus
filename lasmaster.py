@@ -95,6 +95,42 @@ def fun_dist(decimate):
 	return output
 
 
+def spot(x,y,z):
+	A = np.stack((x,y,z), axis=-1)
+	condition = ((A[:,0] >= 0) & (A[:,1] < 0) & (A[:,2] < 0)) | ((A[:,0]< 0) & (A[:,1] < 0) & (A[:,2] < 0)) | ((A[:,0] >= 0) & (A[:,1] >= 0) & (A[:,2] < 0)) | ((A[:,0] < 0) & (A[:,1] >= 0) & (A[:,2] < 0))
+	A[condition] = A[condition]*-1
+	return A
+
+def cart2sph(x,y,z):
+	A = spot(x,y,z)
+	XsqPlusYsq = A[:,0]**2 + A[:,1]**2
+	r = np.sqrt(XsqPlusYsq + A[:,2]**2)               # r
+	elev = np.round(np.arctan2(A[:,2],np.sqrt(XsqPlusYsq)),1)     # theta [-pi/2,+pi/2]
+	az = np.round(np.arctan2(A[:,1],A[:,0]),1) # phi
+	ans = np.absolute(elev)*1000+az+min(az) # adding min(az) makes everything positive without destroying too much info
+	print("SAM:", sum(np.logical_or(np.isnan(ans),np.isinf(ans))))
+	ans[np.logical_or(np.isnan(ans),np.isinf(ans))]=0
+
+	return ans
+
+def spot(x,y,z):
+    A = np.stack((x,y,z), axis=-1)
+    condition = ((A[:,0] >= 0) & (A[:,1] < 0) & (A[:,2] < 0)) | ((A[:,0]< 0) & (A[:,1] < 0) & (A[:,2] < 0)) | ((A[:,0] >= 0) & (A[:,1] >= 0) & (A[:,2] < 0)) | ((A[:,0] < 0) & (A[:,1] >= 0) & (A[:,2] < 0))
+    A[condition] = A[condition]*-1
+    return A
+
+def cart2sph(x,y,z):
+    A = spot(x,y,z)
+    
+    XsqPlusYsq = A[:,0]**2 + A[:,1]**2
+    r = np.sqrt(XsqPlusYsq + A[:,2]**2)               # r
+    elev = np.round(np.arctan2(A[:,2],np.sqrt(XsqPlusYsq)),1)     # theta
+    az = np.round(np.arctan2(A[:,1],A[:,0]),1) # phi
+    ans = np.absolute(elev*1000+az)
+    return ans
+
+
+
 # A T T R I B U T E S
 def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True, v_speed = 2, decimate = True, u = 0.1):
 	# in comments below N is num pts in file, not the number of ways the tile has been split up
@@ -153,6 +189,7 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 					"lambda_x"	:	"x,EigVect0",
 					"lambda_y"	:	"x,EigVect1",
 					"lambda_z"	:	"x,EigVect2",
+					"cart2sph"	:	"EigenvectorID",
 					}
 	discrete_attributes = 		{
 					"rank"		:	"SVD rank",
@@ -262,6 +299,7 @@ def attr(file_name, N=6, k = 50, radius = 0.5, thresh = 0.001, spacetime = True,
 		attributes["lambda_x"][time_range] = evects[inv,0,-1]/np.sqrt(evects[inv,0,-1]**2+evects[inv,1,-1]**2+evects[inv,2,-1]**2)
 		attributes["lambda_y"][time_range] = evects[inv,1,-1]/np.sqrt(evects[inv,0,-1]**2+evects[inv,1,-1]**2+evects[inv,2,-1]**2)
 		attributes["lambda_z"][time_range] = evects[inv,2,-1]/np.sqrt(evects[inv,0,-1]**2+evects[inv,1,-1]**2+evects[inv,2,-1]**2)
+		attributes["cart2sph"][time_range] = cart2sph(attributes["lambda_x"][time_range],attributes["lambda_y"][time_range],attributes["lambda_z"][time_range])
 
 	# check for nans or infs
 	for dimension in continuous_attributes:

@@ -23,6 +23,23 @@ def cart2sph(x,y,z):
     ans = np.absolute(elev*1000+az)
     return ans
 
+
+#def spot(x,y,z):
+#    A = np.stack((x,y,z), axis=-1)
+#    condition = ((A[:,0] >= 0) & (A[:,1] < 0) & (A[:,2] < 0)) | ((A[:,0]< 0) & (A[:,1] < 0) & (A[:,2] < 0)) | ((A[:,0] >= 0) & (A[:,1] >= 0) & (A[:,2] < 0)) | ((A[:,0] < 0) & (A[:,1] >= 0) & (A[:,2] < 0))
+#    A[condition] = A[condition]*-1
+#    return A
+
+#def cart2sph(x,y,z):
+#    A = spot(x,y,z)
+#    
+#    XsqPlusYsq = A[:,0]**2 + A[:,1]**2
+#    r = np.sqrt(XsqPlusYsq + A[:,2]**2)               # r
+#    elev = np.round(np.arctan2(A[:,2],np.sqrt(XsqPlusYsq)),1)     # theta #[-pi/2,+pi/2]
+#    az = np.round(np.arctan2(A[:,1],A[:,0]),1) # phi
+#    ans = np.absolute(elev)*1000+az+min(az) #adding min(az) makes everything positive without destroying too much info
+#    return ans
+
 #inFile = File("Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10NFLClip100_00.las", mode = "r")
 inFile = File("OLD-TEST-FILES/attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 
@@ -37,6 +54,12 @@ print("formed main result set size:",len(result1))
 u1,i1,c1 = np.unique(result1, axis=0,return_inverse=True,return_counts=True)
 c1 = c1.reshape(u1.shape[0],1)
 u1 = np.concatenate((u1,c1),axis=1)
+
+iso_condition = (0.5<inFile.iso)&(inFile.iso<0.6)
+lang_condition = inFile.lang>0.4
+UID = u1[i1,0]
+#(u1[i1,0]<=120)&(u1[i1,2]>20)&(u1[i1,1]<0.02) #create a condition for colouring popular eigenvectors
+
 
 #condition = (u1[:,2]>50) & (u1[:,2]<750)
 #condition = (u1[:,1]<0.15)*(u1[:,2]>75)
@@ -60,20 +83,24 @@ x, y, z = u1[:,0], u1[:,1], u1[:,2]
 
 #classify a set of points into a new file
 outFile = File("Gary.las", mode = "w", header = inFile.header)
-classification = inFile.classification
+classification = 0*inFile.classification
 outFile.points = inFile.points
+
 
 
 writecondition = (inFile.ent==0.000000001)
 classification[np.logical_not(writecondition)]=0
 
+
+
 classi = 10
 for s in u3[:,0]:
-    writecondition = (np.round(inFile.ent,3)==s)
-    if classi != 10:
-        classification[writecondition]=classi
-    classi = classi + 1
+    writecondition = (np.round(inFile.ent,3)==s)&iso_condition&lang_condition
+    classification[writecondition]=classi
+
     #print("complete class %i"%classi)
+
+
 
 outFile.classification = classification
 outFile.close()
@@ -89,7 +116,7 @@ ax.set_ylabel('Entropy')
 ax.set_zlabel('num points')
 
 ax.set_xlim3d(0, 1800)
-ax.set_ylim3d(0.0, 1.0)
+ax.set_ylim3d(0.0, 0.02)
 ax.set_zlim3d(0, 100) #750
 
 verts = []
