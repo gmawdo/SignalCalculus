@@ -58,6 +58,7 @@ u1 = np.concatenate((u1,c1),axis=1)
 iso_condition = (0.5<inFile.iso)&(inFile.iso<0.6)
 lang_condition = inFile.lang>0.4
 UID = u1[i1,0]
+COUNTS = c1[i1]
 #(u1[i1,0]<=120)&(u1[i1,2]>20)&(u1[i1,1]<0.02) #create a condition for colouring popular eigenvectors
 
 
@@ -84,7 +85,7 @@ x, y, z = u1[:,0], u1[:,1], u1[:,2]
 #classify a set of points into a new file
 outFile = File("Gary.las", mode = "w", header = inFile.header)
 classification = 0*inFile.classification
-outFile.points = inFile.points
+
 
 
 
@@ -93,15 +94,40 @@ classification[np.logical_not(writecondition)]=0
 
 
 
-classi = 10
-for s in u3[:,0]:
-    writecondition = (np.round(inFile.ent,3)==s)&iso_condition&lang_condition
-    classification[writecondition]=classi
+#classi = 10
+#for s in u3[:,0]:
+#    writecondition = (np.round(inFile.ent,3)==s)&iso_condition&lang_condition
+#    classification[writecondition]=classi
 
     #print("complete class %i"%classi)
-
-
-
+outFile = File("Gary2060.las", mode = "w", header = inFile.header)
+classification = 0*inFile.classification
+classification[(0<inFile.iso)*(inFile.ent<0.02)*(60>=COUNTS[:,0])*(COUNTS[:,0] >= 18)]=2
+outFile.points = inFile.points
+outFile.classification = classification
+outFile.close()
+outFile = File("Gary60.las", mode = "w", header = inFile.header)
+classification = 0*inFile.classification
+classification[(0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(60<COUNTS[:,0])]=2
+outFile.points = inFile.points
+outFile.classification = classification
+outFile.close()
+outFile = File("Gary.las", mode = "w", header = inFile.header)
+classification = 0*inFile.classification
+classification[(0<inFile.iso)*(inFile.ent<0.02)]=2
+outFile.points = inFile.points
+outFile.classification = classification
+outFile.close()
+outFile = File("GaryNOISE.las", mode = "w", header = inFile.header)
+classification = 0*inFile.classification
+classification[(0<inFile.iso)*(inFile.ent<0.02)*(COUNTS[:,0]<18)]=2
+outFile.points = inFile.points
+outFile.classification = classification
+outFile.close()
+outFile = File("Gary20OR60.las", mode = "w", header = inFile.header)
+classification = 0*inFile.classification
+classification[(0<inFile.iso)*(inFile.ent<0.02)*(COUNTS[:,0]>=18)]=2
+outFile.points = inFile.points
 outFile.classification = classification
 outFile.close()
 
