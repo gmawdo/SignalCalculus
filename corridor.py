@@ -1,6 +1,9 @@
 import numpy as np
 from laspy.file import File
 from sklearn.neighbors import NearestNeighbors
+import time
+
+start = time.time() 
 
 def spot(x,y,z):
     A = np.stack((x,y,z), axis=-1)
@@ -37,18 +40,22 @@ iso_condition = (0.5<inFile.iso)&(inFile.iso<0.6)
 lang_condition = inFile.lang>0.4
 UID = u1[i1,0]
 COUNTS = c1[i1]
+X = inFile.x
+Y = inFile.y
+Z = inFile.z
 
-def corridor(conductor_condition):
-	outFile = File("Corridor.las", mode = "w", header = inFile.header)
-	outFile.points = inFile.points
+
+
+outFile = File("Corridor.las", mode = "w", header = inFile.header)
+outFile.points = inFile.points
+classification = inFile.classification
+classification = 0*classification
+def corridor(conductor_condition, R=1, S=2):
+
 	v1 = inFile.lambda_x
 	v2 = inFile.lambda_y
 	v3 = inFile.lambda_z # these are the three components of eigenvector 2
-	classification = inFile.classification
-	classification = 0*classification
-	X = inFile.x
-	Y = inFile.y
-	Z = inFile.z
+
 	c = np.vstack((X,Y,Z)) #(3,N)
 	
 
@@ -61,23 +68,42 @@ def corridor(conductor_condition):
 	
 	w = u-scale*v
 	w_norms = np.sqrt(w[0,:]**2+w[1,:]**2+w[2,:]**2)
-	condition = (w_norms<1)&(np.absolute(scale)<2)
-
-	classification[condition] = 2
-	outFile.intensity = 100*np.sqrt(u[0,:]**2+u[1,:]**2+u[2,:]**2)
-	outFile.classification = classification
-	outFile.close()
-
-	#Eigenvector QC
-	outFile1 = File("EigQC.las", mode = "w", header = inFile.header)
-	outFile1.points = inFile.points[distances[:,0]<1]
-	outFile1.x = 50*v1[distances[:,0]<1]+np.mean(inFile.x)
-	outFile1.y = 50*v2[distances[:,0]<1]+np.mean(inFile.y)
-	outFile1.z = 50*v3[distances[:,0]<1]+np.mean(inFile.z)
-	outFile1.classification = classification[distances[:,0]<1]
-	outFile1.close()
+	condition = (w_norms<R)&(np.absolute(scale)<S)
 	
+	return condition
+
+	
+conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(30<COUNTS[:,0]))
+classification[conductor] = 1
 
 
-corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(30<COUNTS[:,0]))
+c2d = np.vstack((X,Y))
+
+nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, classification == 1]))		
+distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d))
+classification[distances2d[:,0]>1]=0
+
+
+c3d = np.vstack((X,Y,Z))
+nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c3d[:, (classification == 1)]))		
+distances3d, indices3d = nhbrs2d.kneighbors(np.transpose(c3d))
+
+pylon_condition = (0.5>=inFile.lang)&(0.2>=inFile.curv)&(inFile.rank ==3)&(inFile.plan_reg<0.8)&(inFile.plang>=0.5)&(inFile.ent<0.7)&(distances3d[:,0]<1)
+classification[pylon_condition]=2
+
+classification[(distances3d[:,0]<1)&(classification!=1)&(classification!=2)]=3
+classification[distances2d[:,0]>1]=0
+
+outFile.classification = classification
+
+outFile.intensity = intensity
+
+end = time.time()
+print("done. Time taken = "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
+
+outFile.close()
+
+
+
+
 
