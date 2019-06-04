@@ -6,6 +6,7 @@ from matplotlib import colors as mcolors
 import random
 import datetime
 from laspy.file import File
+from sklearn.neighbors import NearestNeighbors
 
 def spot(x,y,z):
     A = np.stack((x,y,z), axis=-1)
@@ -55,8 +56,6 @@ u1,i1,c1 = np.unique(result1, axis=0,return_inverse=True,return_counts=True)
 c1 = c1.reshape(u1.shape[0],1)
 u1 = np.concatenate((u1,c1),axis=1)
 
-iso_condition = (0.5<inFile.iso)&(inFile.iso<0.6)
-lang_condition = inFile.lang>0.4
 UID = u1[i1,0]
 COUNTS = c1[i1]
 #(u1[i1,0]<=120)&(u1[i1,2]>20)&(u1[i1,1]<0.02) #create a condition for colouring popular eigenvectors
@@ -81,6 +80,7 @@ print("number of distinct entropies:",u3.shape)
 
 #eigenID,entropy, cnt
 x, y, z = u1[:,0], u1[:,1], u1[:,2]
+
 
 #classify a set of points into a new file
 outFile = File("Gary.las", mode = "w", header = inFile.header)
@@ -130,8 +130,14 @@ classification[(0<inFile.iso)*(inFile.ent<0.02)*(COUNTS[:,0]>=18)]=2
 outFile.points = inFile.points
 outFile.classification = classification
 outFile.close()
+outFile = File("GaryEntropy.las", mode = "w", header = inFile.header)
+classification = 0*inFile.classification
+classification[(0<inFile.iso)*(inFile.ent<0.02)*(0.002<inFile.ent)]=2
+outFile.points = inFile.points
+outFile.classification = classification
+outFile.close()
 
-inFile.close()
+
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')

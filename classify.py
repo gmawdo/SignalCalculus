@@ -1,6 +1,6 @@
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.collections import PolyCollection 
+from matplotlib.collections import PolyCollection
 import matplotlib.pyplot as plt
 from matplotlib import colors as mcolors
 import random
@@ -8,9 +8,9 @@ import datetime
 from laspy.file import File
 import os
 
-for lasfile in (filename for filename in os.listdir("TestTiles") if filename[:4]=="attr"):
+for lasfile in (filename for filename in os.listdir("OLD-TEST-FILES/TestFiles") if filename[:4]=="attr"):
 
-	inFile = File("TestTiles/"+lasfile, mode = "r")
+	inFile = File("OLD-TEST-FILES/TestFiles/"+lasfile, mode = "r")
 
 	print(lasfile)
 	print(max(inFile.z))
