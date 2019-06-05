@@ -23,7 +23,7 @@ def cart2sph(x,y,z):
 
 #inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE13_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 #inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE18_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
-inFile = File("ENEL/061/attrDF2000305_Completa.laz.las-GpsTime139962.95543662499999999974-139982.57958466666666666640N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+inFile = File("ENEL/000/attrDF2000305_Completa.laz.las-GpsTime139236.86195908333333333332139256.48610712499999999998N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 print("file read")
 # inFile.x
 # create matrix of all the eigenvectors

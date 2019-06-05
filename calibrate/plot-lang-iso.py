@@ -9,7 +9,8 @@ from laspy.file import File
 import os
 
 #inFile = File("TestTiles/attrT200_010_01_2017_04_20-05_03_22_2_090_TILE02_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
-inFile = File("ENEL/061/attrDF2000305_Completa.laz.las-GpsTime139962.95543662499999999974-139982.57958466666666666640N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+inFile = File("ENEL/000/attrDF2000305_Completa.laz.las-GpsTime139962.95543662499999999974139982.57958466666666666640N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+
 print(max(inFile.z))
 # point here is part of pylon I tjhink : 385247.370 207848.540 80.070
 #definitely part of a pylon here: 385242.410 207840.860 79.200
