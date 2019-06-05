@@ -21,8 +21,8 @@ def cart2sph(x,y,z):
     ans = np.absolute(elev*1000+az)
     return ans
 
-
-inFile = File("OLD-TEST-FILES/attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE13_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+#inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE18_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 
 
 print("file read")
@@ -39,6 +39,9 @@ u1 = np.concatenate((u1,c1),axis=1)
 iso_condition = (0.5<inFile.iso)&(inFile.iso<0.6)
 lang_condition = inFile.lang>0.4
 UID = u1[i1,0]
+print("shapes")
+print(u1.shape)
+print(i1.shape)
 COUNTS = c1[i1]
 X = inFile.x
 Y = inFile.y
@@ -46,7 +49,7 @@ Z = inFile.z
 
 
 
-outFile = File("Corridor.las", mode = "w", header = inFile.header)
+outFile = File("Corridor1.las", mode = "w", header = inFile.header)
 outFile.points = inFile.points
 classification = inFile.classification
 classification = 0*classification
@@ -58,8 +61,9 @@ def corridor(conductor_condition, R=1, S=2):
 
 	c = np.vstack((X,Y,Z)) #(3,N)
 	
-
-	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c[:, conductor_condition]))		
+	cRestrict =  c[:, conductor_condition]
+	print(cRestrict.shape)
+	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(cRestrict))	
 	distances, indices = nhbrs.kneighbors(np.transpose(c))
 	nns = indices[:,0]
 	v = np.vstack((v1,v2,v3))[:, conductor_condition][:,nns] #(3,N)
@@ -73,7 +77,8 @@ def corridor(conductor_condition, R=1, S=2):
 	return condition
 
 	
-conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(30<COUNTS[:,0]))
+#conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(120>COUNTS[:,0])*(70<COUNTS[:,0])*(np.round(inFile.z,0) > 70)*(np.round(inFile.z,0) < 90))
+conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(120>COUNTS[:,0])*(50<COUNTS[:,0])*(np.round(inFile.lang,2)>0.8))
 classification[conductor] = 1
 
 
@@ -88,15 +93,17 @@ c3d = np.vstack((X,Y,Z))
 nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c3d[:, (classification == 1)]))		
 distances3d, indices3d = nhbrs2d.kneighbors(np.transpose(c3d))
 
-pylon_condition = (0.5>=inFile.lang)&(0.2>=inFile.curv)&(inFile.rank ==3)&(inFile.plan_reg<0.8)&(inFile.plang>=0.5)&(inFile.ent<0.7)&(distances3d[:,0]<1)
-classification[pylon_condition]=2
+#pylon_condition = (0.5>=inFile.lang)&(0.2>=inFile.curv)&(inFile.rank ==3)&(inFile.plan_reg<0.8)&(inFile.plang>=0.5)&(inFile.ent<0.7)&(distances3d[:,0]<1)
+#classification[pylon_condition]=2
+pointCuboid2 =   (inFile.iso >= 0.6) & (inFile.iso < 0.7) & (inFile.lang < 0.1)
+classification[pointCuboid2]=11
+pointCuboid2 =  (inFile.iso >= 0.7) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
+classification[pointCuboid2]=12
 
-classification[(distances3d[:,0]<1)&(classification!=1)&(classification!=2)]=3
+classification[(distances3d[:,0]<1)&(classification!=1)&(classification!=11)&(classification!=12)]=3
 classification[distances2d[:,0]>1]=0
 
 outFile.classification = classification
-
-outFile.intensity = intensity
 
 end = time.time()
 print("done. Time taken = "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
