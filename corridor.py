@@ -21,10 +21,9 @@ def cart2sph(x,y,z):
     ans = np.absolute(elev*1000+az)
     return ans
 
-inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE13_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
+#inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE13_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 #inFile = File("TestTiles/attrattrT200_010_01_2017_04_20-05_03_22_2_090_TILE18_outputNFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
-
-
+inFile = File("ENEL/061/attrDF2000305_Completa.laz.las-GpsTime139962.95543662499999999974-139982.57958466666666666640N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 print("file read")
 # inFile.x
 # create matrix of all the eigenvectors
@@ -78,7 +77,8 @@ def corridor(conductor_condition, R=1, S=2):
 
 	
 #conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(120>COUNTS[:,0])*(70<COUNTS[:,0])*(np.round(inFile.z,0) > 70)*(np.round(inFile.z,0) < 90))
-conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02)*(120>COUNTS[:,0])*(50<COUNTS[:,0])*(np.round(inFile.lang,2)>0.8))
+conductor = corridor((0.002<inFile.ent)*(0<inFile.iso)*(inFile.ent<0.02))
+#*(120>COUNTS[:,0])*(50<COUNTS[:,0])*(np.round(inFile.lang,2)>0.8))
 classification[conductor] = 1
 
 
