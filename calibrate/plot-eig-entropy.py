@@ -41,7 +41,7 @@ u1 = np.concatenate((u1,c1),axis=1)
 
 #condition = (u1[:,2]>50) & (u1[:,2]<750)
 #condition = (u1[:,1]<0.15)*(u1[:,2]>75)
-condition = (u1[:,1]<0.02)
+condition = (u1[:,1]>0)*(u1[:,1]<0.02)
 u1 = u1[condition]
 u1.sort
 # NOW eigen, entropy, cnt
@@ -66,39 +66,29 @@ outFile.points = inFile.points
 
 classification*=0
 
-classi = 10
+classi = 11
 for s in u3[:,0]: #for each entropy
     writecondition = (np.round(inFile.ent,3)==s)
-    if classi != 10: #first plane is noise!!
-        ux = u1[(u1[:,1]==s)] #& (u1[:,2]>10)
-        classification[writecondition]=classi
+    ux = u1[(u1[:,1]==s)] #& (u1[:,2]>10)
+    classification[writecondition]=classi
     classi = classi + 1
-    print("complete class %i"%classi)
+    #print("complete class %i"%classi)
 
-pointCuboid2 =   (inFile.iso >= 0.6) & (inFile.iso < 0.7) & (inFile.lang < 0.1)
-classification[pointCuboid2]=8
-pointCuboid2 =  (inFile.iso >= 0.7) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
-classification[pointCuboid2]=9
-
-#change entropy of isolated points
-X = inFile.x
-Y = inFile.y
-Z = inFile.z
-c = np.vstack((X,Y,Z)) #(3,N)
+c = np.vstack((inFile.x,inFile.y,inFile.z)) #(3,N)
 cRestrict =  c[:, (classification>=11)]
-nhbrs = NearestNeighbors(n_neighbors = 2, algorithm = "kd_tree").fit(np.transpose(cRestrict))   
-distances, indices = nhbrs.kneighbors(np.transpose(cRestrict))
-print(distances[:,0])
-print(distances[:,1])
-#reset classification to zero where distances[:,1] > 0.5m
-#find points classified >= 11
 conductor_class = classification[classification>=11]
 conductor_ent = inFile.ent[classification>=11]
-#of those points pick out points of same class and where next point of same class > 0.5
-conductor_class[(conductor_ent == conductor_ent[indices[:,1]])*(distances[:,1] > 20)]=0
-#update main classification
-print(conductor_class)
-classification[classification>=11] = conductor_class #THIS IS SERVING TO LOSE POINTS ON THE CONDUCTOR
+
+nhbrs = NearestNeighbors(n_neighbors = 2, algorithm = "kd_tree").fit(np.transpose(cRestrict))   
+distances, indices = nhbrs.kneighbors(np.transpose(cRestrict))
+entropy_equal = (conductor_ent == conductor_ent[indices[:,1]])
+conductor_class[entropy_equal*(distances[:,1] > 0.5)]=0
+classification[classification>=11] = conductor_class
+
+pointCuboid2 =   (inFile.iso >= 0.6) & (inFile.iso < 0.75) & (inFile.lang < 0.1)
+classification[pointCuboid2]=8
+pointCuboid2 =  (inFile.iso >= 0.75) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
+classification[pointCuboid2]=0
 
 outFile.classification = classification
 outFile.close()
@@ -125,8 +115,8 @@ for z in u3[:,0]:
     xs = np.concatenate([[0],ux[:,0],[0]]) #eig
     ys = np.concatenate([[0],ux[:,2],[0]]) #num points
     #print xs,ys
-    if z!=0: #this is the first entropy layer - equates to noise
-        print(ux[:,0],ux[:,2])
+    #if z!=0: #this is the first entropy layer - equates to noise
+        #print(ux[:,0],ux[:,2])
     verts.append(list(zip(xs,ys)))
     facecolors.append((z, z * z, 0.0, 0.6))
 
