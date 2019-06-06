@@ -24,6 +24,19 @@ def cart2sph(x,y,z):
     ans = np.absolute(elev*1000+az)
     return ans
 
+def knockoutOutlyers(classification,writecondition,delta):
+    c = np.vstack((inFile.x,inFile.y,inFile.z)) #(3,N)
+
+    conductor_class = classification[writecondition]
+    cRestrict =  c[:, writecondition]    
+    if cRestrict.size > 0:
+        nhbrs = NearestNeighbors(n_neighbors = 2, algorithm = "kd_tree").fit(np.transpose(cRestrict))   
+        distances, indices = nhbrs.kneighbors(np.transpose(cRestrict))
+        conductor_class[(distances[:,1] > delta)]=0
+        classification[writecondition] = conductor_class
+        return classification
+
+
 #inFile = File("Tile9050nbrsRadius00_75thresh0_001vSpeed02_00dec00_10NFLClip100_00.las", mode = "r")
 #inFile = File("OLD-TEST-FILES/attrTile9NFLClip100_00N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 inFile = File("ENEL/000/attrDF2000305_Completa.laz.las-GpsTime139236.86195908333333333332139256.48610712499999999998N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
@@ -74,21 +87,15 @@ for s in u3[:,0]: #for each entropy
     classi = classi + 1
     #print("complete class %i"%classi)
 
-c = np.vstack((inFile.x,inFile.y,inFile.z)) #(3,N)
-cRestrict =  c[:, (classification>=11)]
-conductor_class = classification[classification>=11]
-conductor_ent = inFile.ent[classification>=11]
-
-nhbrs = NearestNeighbors(n_neighbors = 2, algorithm = "kd_tree").fit(np.transpose(cRestrict))   
-distances, indices = nhbrs.kneighbors(np.transpose(cRestrict))
-entropy_equal = (conductor_ent == conductor_ent[indices[:,1]])
-conductor_class[entropy_equal*(distances[:,1] > 0.5)]=0
-classification[classification>=11] = conductor_class
-
 pointCuboid2 =   (inFile.iso >= 0.6) & (inFile.iso < 0.75) & (inFile.lang < 0.1)
 classification[pointCuboid2]=8
 pointCuboid2 =  (inFile.iso >= 0.75) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
 classification[pointCuboid2]=0
+
+for s in u3[:,0]: #for each entropy
+    classification = knockoutOutlyers(classification,(np.round(inFile.ent,3)==s)*(classification>=11),3)
+
+classification = knockoutOutlyers(classification,(classification==8),0.25)
 
 outFile.classification = classification
 outFile.close()
