@@ -19,8 +19,8 @@ def cart2sph(x,y,z):
     
     XsqPlusYsq = A[:,0]**2 + A[:,1]**2
     r = np.sqrt(XsqPlusYsq + A[:,2]**2)               # r
-    elev = np.round(np.arctan2(A[:,2],np.sqrt(XsqPlusYsq)),2)     # theta
-    az = np.round(np.arctan2(A[:,1],A[:,0]),2) # phi
+    elev = np.round(np.arctan2(A[:,2],np.sqrt(XsqPlusYsq)),1)     # theta
+    az = np.round(np.arctan2(A[:,1],A[:,0]),1) # phi
     ans = np.absolute(elev*1000+az)
     return ans
 
@@ -75,6 +75,11 @@ for s in u3[:,0]: #for each entropy
     classi = classi + 1
     print("complete class %i"%classi)
 
+pointCuboid2 =   (inFile.iso >= 0.6) & (inFile.iso < 0.7) & (inFile.lang < 0.1)
+classification[pointCuboid2]=8
+pointCuboid2 =  (inFile.iso >= 0.7) & (inFile.iso < 0.8) & (inFile.lang < 0.1)
+classification[pointCuboid2]=9
+
 #change entropy of isolated points
 X = inFile.x
 Y = inFile.y
@@ -90,11 +95,10 @@ print(distances[:,1])
 conductor_class = classification[classification>=11]
 conductor_ent = inFile.ent[classification>=11]
 #of those points pick out points of same class and where next point of same class > 0.5
-conductor_class[(conductor_ent == conductor_ent[indices[:,1]])*(distances[:,1] > 0.5)]=0
+conductor_class[(conductor_ent == conductor_ent[indices[:,1]])*(distances[:,1] > 20)]=0
 #update main classification
 print(conductor_class)
-#classification[classification>=11] = conductor_class
-
+classification[classification>=11] = conductor_class #THIS IS SERVING TO LOSE POINTS ON THE CONDUCTOR
 
 outFile.classification = classification
 outFile.close()
