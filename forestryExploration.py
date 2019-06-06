@@ -1,9 +1,13 @@
 from laspy.file import File
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
+import time
+
+start = time.time() 
 
 inFile = File("OLD-TEST-FILES/Forestry_sample_Ireland_ITM95_co-ords.las", mode = "rw")
-
+growth_rate = 1
+threshold = 3
 
 rn = inFile.return_num
 nr = inFile.num_returns
@@ -17,7 +21,7 @@ z = inFile.z[not_last_return]
 classification = np.arange(len(inFile))[not_last_return]
 
 outFile = File("forestryExperiment.las", mode = "w", header = inFile.header)
-outFile.points = inFile.points
+outFile.points = inFile.points[not_last_return]
 
 classification[:] = 0
 
@@ -26,12 +30,9 @@ classified = classification != 0
 unclassified = classification == 0
 all_classified = classified.all()
 
-threshold = 3
+
 
 while not(all_classified):
-	classified = classification != 0
-	all_classified = classified.all()
-	unclassified = classification == 0
 
 	coords = np.stack((x,y,z))
 	z_unclassified = z[unclassified]
@@ -49,49 +50,59 @@ while not(all_classified):
 	class_unclassified = classification[unclassified]
 	class_unclassified[A_z] = 2-int(clashes)
 	classification[unclassified] = class_unclassified
+
 	classified = classification != 0
-	all_classified = classified.all()
 	unclassified = classification == 0
+	all_classified = classified.all()
 
 
-
+print("Peaks found!")
 
 peak = classification == 2
 classification[:] = 0
-Classification = np.arange(len(inFile))
-classification[peak] = (np.arange(sum(peak))+1).astype(classification.dtype)
-Classification[not_last_return] = classification
-Peak = Classification != Classification
-Peak[not_last_return] = peak
 
-X = inFile.x
-Y = inFile.y
-Z = inFile.z
-c2d = np.vstack((X,Y))
+number_of_trees = sum(peak)
+classification_peak = classification[peak]
+classification_peak = 1+np.arange(number_of_trees)
+classification[peak] = classification_peak
 
-nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, Peak]))		
-distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d))
-Classification = Classification[Peak][indices2d[:,0]]
-nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, not_last_return]))		
-distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d))
-Classification[distances2d[:,0]>0.25]=0
+classified = classification != 0
+unclassified = classification == 0
 
-max_class = max(Classification)
-red = np.random.random(max_class+1)
-blue = np.random.random(max_class+1)
-green = np.random.random(max_class+1)
-red[0] = 0
-blue[0] = 0
-green[0] = 0
+c2d = np.vstack((x,y))
 
-outFile.Red = red[Classification]
-outFile.Blue = blue[Classification]
-outFile.Green = green[Classification]
+nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, classified]))		
+distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d[:, unclassified]))
+classification_unclassified = classification[unclassified]
 
+classification_unclassified = ((classification[classified])[indices2d[:,0]])
+classification[unclassified] = classification_unclassified
 
+outFile.classification = classification%32
 outFile.close()
 
+nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, peak]))		
+distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d))
+classification_unclassified = classification[unclassified]
 
+unq, ind, inv, cnt = np.unique(indices2d[:,0], return_index=True, return_inverse=True, return_counts=True)
+
+ID = unq
+height = x[ind]
+radius = x[ind]
+for item in unq:
+	height[unq == item] = max(z[indices2d[:,0] == item])-min(z[indices2d[:,0] == item])
+	radius[unq == item] = max(distances2d[indices2d == item])
+peakX = x[peak][unq]
+peakY = y[peak][unq]
+peakZ = z[peak][unq]
+
+tree = np.stack((ID, height, radius, peakX, peakY, peakZ), axis = 1)
+
+np.savetxt("trees.csv", tree, delimiter=",", header = "ID, Height, Radius, PeakX, PeakY, PeakZ")
+
+end = time.time()
+print("Done. Time taken = "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds!")
 
 
 '''
@@ -177,5 +188,6 @@ while not(all_classified):
 
 print("Number of peaks:", len(np.unique(classification[classification>1])))
 outFile.close()
+
 '''
 

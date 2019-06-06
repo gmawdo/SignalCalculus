@@ -13,7 +13,7 @@ def std_fun_eig():
 			"eig1"	:	(lambda x, y, z: y),
 			"eig2"	:	(lambda x, y, z: z),
 			"iso"	:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
-			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z))/(x+y+z)).T),
+			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 0)/(x+y+z))),
 			}
 	return output
 
@@ -31,9 +31,9 @@ def std_fun_vec():
 # the point of doing this is that anyone can now define their own attributes, so long as they are functions of k-distances
 # when we decimate, these are functions of point counts and decimation parameter u
 def std_fun_kdist():
+	sphere_constant = 4*np.pi/3
 	output = 	{
 			"ptdens":	lambda k, d: k/(sphere_constant*(d**3)),
 			}
 	return output
 	
-
