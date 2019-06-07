@@ -25,6 +25,11 @@ def knockoutOutlyers(classification,writecondition,delta):
 
 inFile = File("ENEL/000/attrDF2000305_Completa.laz.las-GpsTime139236.86195908333333333332139256.48610712499999999998N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 
+ptCondition=(inFile.x==588057.680)*(inFile.y==5075595.640)*(inFile.z==307.170)
+print(inFile.cart2sph[ptCondition],inFile.ent[ptCondition],inFile.iso[ptCondition])
+ptCondition2=(inFile.x==588048.660)*(inFile.y==5075618.090)*(inFile.z==278.140)
+print(inFile.cart2sph[ptCondition2],inFile.ent[ptCondition2],inFile.iso[ptCondition2])
+
 # create matrix of all the eigenvectors
 result1 = np.stack((inFile.cart2sph,np.round(inFile.ent,3)), axis=-1)
 print("formed main result set size:",len(result1))
@@ -35,16 +40,12 @@ c1 = c1.reshape(u1.shape[0],1)
 u1 = np.concatenate((u1,c1),axis=1)
 
 #PREDICATES!!!!!!!
+#entropy_range = (u1[:,1]>=0)*(u1[:,1]<0.02)*(u1[:,0]>100)*(u1[:,0]<200)
 entropy_range = (u1[:,1]>0)*(u1[:,1]<0.02)
 pylon_predicate = (inFile.iso >= 0.6) & (inFile.iso < 0.75) & (inFile.lang < 0.1)
 
 u1 = u1[entropy_range]
 u1.sort
-
-# for info purposes get unqiue number of EVs and unique number of entropies
-#u2,i2,c2 = np.unique(u1[:,[0]], axis=0,return_inverse=True,return_counts=True) #ev
-#print("number of distinct EVs:",u2.shape)
-#u2.sort
 
 u3,i3,c3 = np.unique(u1[:,[1]], axis=0,return_inverse=True,return_counts=True) #ent
 print("number of distinct entropies:",u3.shape)
@@ -53,13 +54,13 @@ print("number of distinct entropies:",u3.shape)
 outFile = File("Gary.las", mode = "w", header = inFile.header)
 classification = inFile.classification
 outFile.points = inFile.points
+outFile.intensity = inFile.iso
 
 classification*=0
 
 classi = 11
 for s in u3[:,0]: #for each entropy
-    writecondition = (np.round(inFile.ent,3)==s)
-    ux = u1[(u1[:,1]==s)]
+    writecondition = (np.round(inFile.ent,3)==s) #*(inFile.lang>0.45)*(inFile.iso>0.55)*(inFile.iso<0.65)
     classification[writecondition]=classi
     #classi = classi + 1 #uncomment this line if we want a different class for each entropy layer
 
