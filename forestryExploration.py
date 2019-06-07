@@ -6,31 +6,25 @@ import time
 start = time.time() 
 
 inFile = File("OLD-TEST-FILES/Forestry_sample_Ireland_ITM95_co-ords.las", mode = "rw")
-growth_rate = 1
 threshold = 3
 
 rn = inFile.return_num
 nr = inFile.num_returns
+not_last_return = rn != nr
 
-not_last_return = (rn != nr)
+X = inFile.x
+Y = inFile.y
+Z = inFile.z
+x = X[not_last_return]
+y = Y[not_last_return]
+z = Z[not_last_return]
 
-x = inFile.x[not_last_return]
-y = inFile.y[not_last_return]
-z = inFile.z[not_last_return]
+Classification = np.zeros(len(inFile), dtype = int)
+classification = Classification[not_last_return]
 
-classification = np.arange(len(inFile))[not_last_return]
-
-outFile = File("forestryExperiment.las", mode = "w", header = inFile.header)
-outFile.points = inFile.points[not_last_return]
-
-classification[:] = 0
-
-peak = classification != classification
 classified = classification != 0
 unclassified = classification == 0
 all_classified = classified.all()
-
-
 
 while not(all_classified):
 
@@ -40,12 +34,11 @@ while not(all_classified):
 	z_A = z_unclassified[A_z]
 
 	distance = np.sqrt(np.sum((coords[0:2,:]-coords[0:2,unclassified][0:2,A_z][0:2,None])**2,axis=0))
-	mine = distance<threshold
+	mine = distance < threshold
 	
-	z_test = (z>z_A)
+	z_test = z > z_A
 	clash_condition = z_test & mine
 	clashes = clash_condition.any()
-	mine_class = classification[mine]
 	classification[mine & np.logical_not(z_test)] = 1
 	class_unclassified = classification[unclassified]
 	class_unclassified[A_z] = 2-int(clashes)
@@ -55,9 +48,6 @@ while not(all_classified):
 	unclassified = classification == 0
 	all_classified = classified.all()
 
-
-print("Peaks found!")
-
 peak = classification == 2
 classification[:] = 0
 
@@ -66,40 +56,47 @@ classification_peak = classification[peak]
 classification_peak = 1+np.arange(number_of_trees)
 classification[peak] = classification_peak
 
-classified = classification != 0
-unclassified = classification == 0
-
 c2d = np.vstack((x,y))
-
-nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, classified]))		
-distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d[:, unclassified]))
-classification_unclassified = classification[unclassified]
-
-classification_unclassified = ((classification[classified])[indices2d[:,0]])
-classification[unclassified] = classification_unclassified
-
-outFile.classification = classification%32
-outFile.close()
 
 nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, peak]))		
 distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d))
-classification_unclassified = classification[unclassified]
+classification = ((classification[classified])[indices2d[:,0]])
 
-unq, ind, inv, cnt = np.unique(indices2d[:,0], return_index=True, return_inverse=True, return_counts=True)
+C2D = np.vstack((X,Y))
+Nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d))
+Distances2d, Indices2d = Nhbrs2d.kneighbors(np.transpose(C2D))
 
-ID = unq
-height = x[ind]
-radius = x[ind]
-for item in unq:
-	height[unq == item] = max(z[indices2d[:,0] == item])-min(z[indices2d[:,0] == item])
-	radius[unq == item] = max(distances2d[indices2d == item])
-peakX = x[peak][unq]
-peakY = y[peak][unq]
-peakZ = z[peak][unq]
+Classification = classification[Indices2d[:,0]]
+Classification[Distances2d[:,0]>0.5] = 0
 
-tree = np.stack((ID, height, radius, peakX, peakY, peakZ), axis = 1)
+ID = classification[peak]
+height = x[peak]
+radius = x[peak]
+CrownX = x[peak]
+CrownY = y[peak]
+CrownZ = z[peak]
+for item in ID:
+	height[ID == item] = max(Z[Classification == item])-min(Z[Classification == item])
+	radius[ID == item] = max(distances2d[Indices2d[Classification == item, 0],0])
 
-np.savetxt("trees.csv", tree, delimiter=",", header = "ID, Height, Radius, PeakX, PeakY, PeakZ")
+condition = (height > 2.5)
+print(sum(condition))
+print(len(ID))
+print(height[condition])
+trees = np.stack((ID, height, radius, CrownX, CrownY, CrownZ), axis = 1)
+
+ID[np.logical_not(condition)] = 0
+classification[peak] = ID
+classification = ((classification[peak])[indices2d[:,0]])
+Classification = classification[Indices2d[:,0]]
+Classification[Distances2d[:,0]>0.5] = 0
+
+np.savetxt("trees.csv", trees[:, condition], delimiter=",", header = "ID, Height, Radius, CrownX, CrownY, CrownZ")
+outFile = File("forestryExperiment.las", mode = "w", header = inFile.header)
+outFile.points = inFile.points
+
+outFile.classification = Classification%32
+outFile.close()
 
 end = time.time()
 print("Done. Time taken = "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds!")

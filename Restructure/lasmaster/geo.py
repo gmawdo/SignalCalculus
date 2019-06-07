@@ -52,6 +52,9 @@ def geo(coord_dictionary, config):
 		ks = np.sum(keeping, axis = 1) # (num_pts)
 		raw_deviations = keeping*((coords)[:,indices] - coords[:,:,None])/np.sqrt(ks[None,:,None]) # (d,num_pts,k)
 		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
+		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
+		# this is crucial in order to get accurate eigenvalues and eigenvectors
+		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
 		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
 		val1[time_range] = evals[inv,-3]
 		val2[time_range] = evals[inv,-2]
