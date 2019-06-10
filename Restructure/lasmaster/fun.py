@@ -13,7 +13,7 @@ def std_fun_eig():
 			"eig1"	:	(lambda x, y, z: y),
 			"eig2"	:	(lambda x, y, z: z),
 			"iso"	:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
-			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/(x+y+z))),
+			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/((x+y+z)[:,None]))),
 			}
 	return output
 
