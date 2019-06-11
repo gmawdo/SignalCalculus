@@ -53,8 +53,8 @@ for lasfile in (filename for filename in os.listdir("OLD-TEST-FILES/TestFiles") 
 	print(u1.shape) #total number of tuples
 	
 	# for info purposes get unqiue number of isotropies and unique number of linear angles
-	u2,i2,c2 = np.unique(u1[:,[0]], axis=0,return_inverse=True,return_counts=True)
-	u3,i3,c3 = np.unique(u1[:,[1]], axis=0,return_inverse=True,return_counts=True)
+	u2,i2,c2 = np.unique(u1[:,[0]], axis=0, return_inverse=True, return_counts=True)
+	u3,i3,c3 = np.unique(u1[:,[1]], axis=0, return_inverse=True, return_counts=True)
 	print("number of distinct isotropies:",u2.shape)
 	u2.sort
 	print("number of distinct linear angles:",u3.shape)

@@ -5,6 +5,7 @@ from lasmaster import fun
 
 # Governs the interaction with laspy
 
+# the following function simply generates a name for output file
 def name_modifier(config):
 		
 	N = config["timeIntervals"]
@@ -27,7 +28,7 @@ def name_modifier(config):
 	U = decimate*("dec"+str(U_int).zfill(2)+"_"+str(U_rat).zfill(2))
 	return "attr"+num+K+R+C+U
 
-
+# the attr function applies the attribute defintions to the output of geo.geo
 def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 	in_file = File(file_name, mode = "r")
 	header=in_file.header
@@ -66,8 +67,6 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		value = fun_kdist[dimension](k, kdist)
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
-
-	out_file.close()
 		
 
 

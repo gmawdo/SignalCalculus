@@ -13,7 +13,7 @@ uniform float pointRadius = 0.1;   //# uiname=Point Radius; min=0.001; max=200
 uniform float trimRadius = 1000000;//# uiname=Trim Radius; min=1; max=1000000
 uniform float exposure = 1.0;      //# uiname=Exposure; min=0.01; max=10000
 uniform float contrast = 1.0;      //# uiname=Contrast; min=0.01; max=10000
-uniform int colorMode = 0;         //# uiname=Colour Mode; enum=Intensity|Colour|Return Index|Point Source|Las Classification|File Number|Entropy
+uniform int colorMode = 0;         //# uiname=Colour Mode; enum=Intensity1000|Colour|Return Index|Point Source|Las Classification|File Number|ClassificationMod32|ExposureContrast
 uniform int selectionMode = 0;     //# uiname=Selection; enum=All|Classified|First Return|Last Return|First Of Several|Class0|Class1|Class2|Class3|Class4|Class5|Class6|Class7|Class8|Class9|Class10|Class11|Class12|Intensity[000,100)|Intensity[100,200)|Intensity[200,300)|Intensity[300,400)|Intensity[400,500)|Intensity[500,600)|Intensity[600,700)|Intensity[700,800)|Intensity[800,900)|Intensity[900,1000]
 uniform float minPointSize = 0;
 uniform float maxPointSize = 400.0;
@@ -72,7 +72,8 @@ void main()
     else if (colorMode == 1)
         pointColor = contrast*(exposure*color - vec3(0.5)) + vec3(0.5);
     else if (colorMode == 2)
-        pointColor = vec3(0.2*returnNumber*exposure, 0.2*numberOfReturns*exposure, 0);
+        //pointColor = vec3(0.2*returnNumber*exposure, 0.2*numberOfReturns*exposure, 0);
+        pointColor = vec3(1/returnNumber, returnNumber/numberOfReturns, 1/numberOfReturns);
     else if (colorMode == 3)
     {
         markerShape = (pointSourceId+1) % 5;
@@ -84,12 +85,18 @@ void main()
     {
         // Colour according to some common classifications defined in the LAS spec
         if (classification == 0)      pointColor = vec3(0.0, 0.0, 0.0); // ground
-        else if (classification == 1) pointColor = vec3(0.0, 0.0, 1.0); // low vegetation
-        else if (classification == 2) pointColor = vec3(0.0, 1.0, 0.0); // medium vegetation
-        else if (classification == 3) pointColor = vec3(1.0, 0.0,  0.0); // high vegetation
-        else if (classification == 4) pointColor = vec3(0.0,  0.5,  0.5); // building
-        else if (classification == 5) pointColor = vec3(1.0,  0.0,  1.0); // water
-        else if (classification == 10) pointColor = vec3(1.0,  0.2,  0.1); // water
+        else if (classification == 1) pointColor = vec3(1.0, 0.0, 0.0); // low vegetation
+        else if (classification == 2) pointColor = vec3(1.0, 1.0, 1.0); // medium vegetation
+        else if (classification == 3) pointColor = vec3(0.0, 0.0,  1.0); // high vegetation
+        else if (classification == 4) pointColor = vec3(0.0,  1.0,  1.0); // building
+        else if (classification == 5) pointColor = vec3(1.0,  1.0,  0.0); // water
+        else if (classification == 6) pointColor = vec3(1.0,  1.0,  0.0); // water
+        else if (classification == 7) pointColor = vec3(1.0, 1.0, 1.0); // water
+        else if (classification == 8) pointColor = vec3(0.7374555082923145, 0.12010005931410296, 0.14244443239358245); // water
+        else if (classification == 9) pointColor = vec3(0.23293983904871393, 0.27847746792884787, 0.48858269302243823); // water
+        else if (classification == 10) pointColor = vec3(1.0,  0.3,  1.0); // water
+        else if (classification == 11) pointColor = vec3(1.0,  0.2,  0.1); // water
+
     }
     else if (colorMode == 5)
     {
@@ -101,17 +108,45 @@ void main()
     }
     else if (colorMode == 6)
     {
-        // Set point colour and marker shape cyclically based on file number
-        markerShape = fileNumber % 5;
-        pointColor = vec3(ent*(2*ent-1),4*ent*(1-ent),(1-ent)*(1-2*ent));
+        
+       if (classification == 0)      pointColor = vec3(0.48217875, 0.63360915, 0.45598472);
+       else if (classification == 1) pointColor = vec3(0.16457365, 0.5129956 , 0.32243076);
+       else if (classification == 2) pointColor = vec3(0.6159766 , 0.37221269, 0.01181071);
+       else if (classification == 3) pointColor = vec3(0.13277352, 0.57771233, 0.28951415);
+       else if (classification == 4) pointColor = vec3(0.57204769, 0.12039454, 0.30755777);
+       else if (classification == 5) pointColor = vec3(0.97138527, 0.78416334, 0.73819023);
+       else if (classification == 6) pointColor = vec3(0.61231075, 0.37323821, 0.01445104);
+       else if (classification == 7) pointColor = vec3(0.40122632, 0.05833622, 0.54043746);
+       else if (classification == 8) pointColor = vec3(0.60561361, 0.28184849, 0.1125379 );
+       else if (classification == 9) pointColor = vec3(0.35020113, 0.5930547 , 0.05674417);
+       else if (classification == 10) pointColor = vec3(0.38767383, 0.32013603, 0.29219014);
+       else if (classification == 11) pointColor = vec3(0.28333311, 0.5361419 , 0.18052499);
+       else if (classification == 12) pointColor = vec3(0.77186879, 0.00574686, 0.22238435);
+       else if (classification == 13) pointColor = vec3(0.57667506, 0.37803952, 0.04528542);
+       else if (classification == 14) pointColor = vec3(0.19884777, 0.42744721, 0.37370501);
+       else if (classification == 15) pointColor = vec3(0.54336847, 0.27619018, 0.18044135);
+       else if (classification == 16) pointColor = vec3(0.33250394, 0.28991156, 0.3775845 );
+       else if (classification == 17) pointColor = vec3(0.16535387, 0.50473137, 0.32991476);
+       else if (classification == 18) pointColor = vec3(0.08304814, 0.62675873, 0.29019313);
+       else if (classification == 19) pointColor = vec3(0.22749365, 0.44907951, 0.32342683);
+       else if (classification == 20) pointColor = vec3(0.40686504, 0.21151184, 0.38162312);
+       else if (classification == 21) pointColor = vec3(0.47345061, 0.44485047, 0.08169892);
+       else if (classification == 22) pointColor = vec3(0.02234704, 0.48180056, 0.4958524 );
+       else if (classification == 23) pointColor = vec3(0.35904716, 0.05988082, 0.58107202);
+       else if (classification == 24) pointColor = vec3(0.08231544, 0.80979327, 0.10789129);
+       else if (classification == 25) pointColor = vec3(0.41944792, 0.51297447, 0.06757761);
+       else if (classification == 26) pointColor = vec3(0.00106697, 0.53925189, 0.45968113);
+       else if (classification == 27) pointColor = vec3(0.42854676, 0.05904709, 0.51240615);
+       else if (classification == 28) pointColor = vec3(0.39338508, 0.14798268, 0.45863224);
+       else if (classification == 29) pointColor = vec3(0.16392452, 0.22919177, 0.60688372);
+       else if (classification == 30) pointColor = vec3(0.16407127, 0.62640183, 0.2095269 );
+       else if (classification == 31) pointColor = vec3(0.68923429, 0.02471148, 0.34055842);
+
     }
-    /*
-    else if (colorMode == 8)
+    else if (colorMode == 7)
     {
-        // Color based on height above ground
-        pointColor = 0.8*jet_colormap(tonemap(0.16*heightAboveGround, exposure, 3.8*contrast));
+        pointColor = tonemap(intensity/400.0, exposure, contrast) * vec3(1);
     }
-    */
     if (selectionMode != 0)
     {
         if (selectionMode == 1)
@@ -137,7 +172,7 @@ void main()
         else if (selectionMode == 5)
         // Intensity USER Edit Keep
         {
-            if (classification != 6)
+            if (classification != 0)
                 markerShape = -1;
         }
         else if (selectionMode == 6)
@@ -257,7 +292,7 @@ void main()
         else if (selectionMode == 25)
         // Intensity USER Edit Keep
         {
-            if (intensity < 700||intensity >= 700)
+            if (intensity < 700||intensity >= 800)
                 markerShape = -1;
         }
         else if (selectionMode == 26)

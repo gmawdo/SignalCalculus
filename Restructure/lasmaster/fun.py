@@ -13,17 +13,18 @@ def std_fun_eig():
 			"eig1"	:	(lambda x, y, z: y),
 			"eig2"	:	(lambda x, y, z: z),
 			"iso"	:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
-			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 0)/(x+y+z))),
+			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/((x+y+z)[:,None]))),
 			}
 	return output
 
 # F U N C T I O N S   O F   E I G E N V E C T O R S
 # the point of doing this is that anyone can now define their own attributes, so long as they are functions of eigenvectors
 def std_fun_vec():
+	normalised = (lambda v0, v1, v2: np.sqrt(v0[:,0]**2+v0[:,1]**2+v0[:,2]**2))
 	output =	{					
-			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,2])/(np.sqrt(v0[:,0]**2+v0[:,1]**2+v0[:,2]**2)))/np.pi),0,1)),
-			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,2])/(np.sqrt(v1[:,0]**2+v1[:,1]**2+v1[:,2]**2)))/np.pi),0,1)),
-			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,2])/(np.sqrt(v2[:,0]**2+v2[:,1]**2+v2[:,2]**2)))/np.pi),0,1)),
+			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,2])/normalised(v0, v1, v2))/np.pi),0,1)),
+			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,2])/normalised(v0, v1, v2))/np.pi),0,1)),
+			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,2])/normalised(v0, v1, v2))/np.pi),0,1)),
 			}
 	return output
 
@@ -33,7 +34,7 @@ def std_fun_vec():
 def std_fun_kdist():
 	sphere_constant = 4*np.pi/3
 	output = 	{
-			"ptdens":	lambda k, d: k/(sphere_constant*(d**3)),
+			"ptdens":	(lambda k, d: k/(sphere_constant*(d**3))),
 			}
 	return output
 	
