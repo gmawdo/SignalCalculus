@@ -25,13 +25,18 @@ def knockoutOutlyers(classification,writecondition,delta):
 
 inFile = File("ENEL/000/attrDF2000305_Completa.laz.las-GpsTime139236.86195908333333333332139256.48610712499999999998N006k050radius00_50thresh0_001v_speed02_00dec00_10.las", mode = "r")
 
-ptCondition=(inFile.x==588057.680)*(inFile.y==5075595.640)*(inFile.z==307.170)
-print(inFile.cart2sph[ptCondition],inFile.ent[ptCondition],inFile.iso[ptCondition])
-ptCondition2=(inFile.x==588048.660)*(inFile.y==5075618.090)*(inFile.z==278.140)
-print(inFile.cart2sph[ptCondition2],inFile.ent[ptCondition2],inFile.iso[ptCondition2])
+ptCondition=(inFile.X==58805768)*(inFile.Y==507559564)*(inFile.Z==30717)
+print(inFile.impdec[ptCondition],inFile.cart2sph[ptCondition],inFile.ent[ptCondition],inFile.iso[ptCondition],inFile.eig1[ptCondition],inFile.eig2[ptCondition],inFile.eig0[ptCondition],inFile.rank[ptCondition])
+ptCondition2=(inFile.X==58804866)*(inFile.Y==507561809)*(inFile.Z==27814)
+print(inFile.impdec[ptCondition2],inFile.cart2sph[ptCondition2],inFile.ent[ptCondition2],inFile.iso[ptCondition2],inFile.eig1[ptCondition2],inFile.eig2[ptCondition2],inFile.eig0[ptCondition2],inFile.rank[ptCondition2])
+print(inFile.x[ptCondition2])
+
+ptCondition3=(inFile.X==58795450)*(inFile.Y==507542192)*(inFile.Z==30993)
+print(inFile.impdec[ptCondition3],inFile.cart2sph[ptCondition3],inFile.ent[ptCondition3],inFile.iso[ptCondition3],inFile.eig1[ptCondition3],inFile.eig2[ptCondition3],inFile.eig0[ptCondition3],inFile.rank[ptCondition3])
+print(inFile.x[ptCondition3])
 
 # create matrix of all the eigenvectors
-result1 = np.stack((inFile.cart2sph,np.round(inFile.ent,3)), axis=-1)
+result1 = np.stack((inFile.cart2sph,inFile.ent), axis=-1)
 print("formed main result set size:",len(result1))
 
 # find how many unique eigenvectors in combo with entropy
@@ -54,23 +59,36 @@ print("number of distinct entropies:",u3.shape)
 outFile = File("Gary.las", mode = "w", header = inFile.header)
 classification = inFile.classification
 outFile.points = inFile.points
-outFile.intensity = inFile.iso
+outFile.intensity = inFile.ent*1.0e16
 
 classification*=0
 
-classi = 11
-for s in u3[:,0]: #for each entropy
-    writecondition = (np.round(inFile.ent,3)==s) #*(inFile.lang>0.45)*(inFile.iso>0.55)*(inFile.iso<0.65)
-    classification[writecondition]=classi
-    #classi = classi + 1 #uncomment this line if we want a different class for each entropy layer
+#classi = 11
+#for s in u3[:,0]: #for each entropy
+#    writecondition = (np.round(inFile.ent,3)==s) #*(inFile.lang>0.45)*(inFile.iso>0.55)*(inFile.iso<0.65)
+#    classification[writecondition]=classi
+#    #classi = classi + 1 #uncomment this line if we want a different class for each entropy layer
+
+#classification=1+(10*(np.round(inFile.eig0,2)==0))+(10*(np.round(inFile.eig1,2)==0))+(10*(np.round(inFile.eig2,2)==0))
+
+basecondition = (inFile.ent>0.002)*(inFile.ent<0.02)#*(inFile.iso>0.55)*(inFile.iso<0.65)
+
+conductor = (1+(10*(np.round(inFile.eig0,2)==0))+(10*(np.round(inFile.eig1,2)==0))+(10*(np.round(inFile.eig2,2)==0))==11)
+#classification[conductor] = 11
+conductor = (inFile.impdec==1000)*(inFile.ent>0.000000002)*(1+(10*(np.round(inFile.eig0,2)==0))+(10*(np.round(inFile.eig1,2)==0))+(10*(np.round(inFile.eig2,2)==0))==21)
+classification[conductor] = 21
+conductor = (inFile.impdec==1000)*(inFile.ent==0)*(inFile.iso==0)*(1+(10*(np.round(inFile.eig0,2)==0))+(10*(np.round(inFile.eig1,2)==0))+(10*(np.round(inFile.eig2,2)==0))==31)
+classification[conductor] = 31
+
+
 
 #classify verticals
 classification[pylon_predicate]=8
 
 #for s in u3[:,0]: #for each entropy
 #    classification = knockoutOutlyers(classification,(np.round(inFile.ent,3)==s)*(classification>=11),3)
-classification = knockoutOutlyers(classification,(classification==11),3)
-classification = knockoutOutlyers(classification,(classification==8),0.25)
+#classification = knockoutOutlyers(classification,(classification==11),3)
+#classification = knockoutOutlyers(classification,(classification==8),0.25)
 
 outFile.classification = classification
 outFile.close()
