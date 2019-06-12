@@ -13,8 +13,12 @@ def std_fun_eig():
 			"eig1"	:	(lambda x, y, z: y),
 			"eig2"	:	(lambda x, y, z: z),
 			"iso"	:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
-			"ent"	:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/((x+y+z)[:,None]))),
-			}
+			"eigent"		:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/((x+y+z)[:,None]))),
+			"scattering"	:	(lambda x, y, z: x/z),
+			"linearity"		:	(lambda x, y, z: (z-y)/z),
+			"planarity"		:	(lambda x, y, z: (y-x)/z),
+			"entent"		:	(lambda x, y, z: entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1))),
+			}	
 	return output
 
 # F U N C T I O N S   O F   E I G E N V E C T O R S
