@@ -1,6 +1,5 @@
 import numpy as np
 from lasmaster.infotheory import entropy
-from lasmaster.infotheory import jsd
 
 # F U N C T I O N S   OF   E I G E N V A L U E S
 # the point of doing this is that anyone can now define their own attributes, so long as they are functions of eigenvalues
