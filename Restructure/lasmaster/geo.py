@@ -2,9 +2,14 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from lasmaster.infotheory import entropy
 
-def optimise_k(coords, distances, indices, min_num, k):
+def optimise_k(coords, distances, indices, min_num, k, optimise):
 	stack = ()
-	for j in range(min_num, k):
+	if optimise:
+		aux = k
+	else:
+		aux = min_num
+	for j in range(aux, k+1):
+		j = j
 		indicesj = indices[:,:j]
 		distancesj = distances[:,:j]
 		raw_deviations = ((coords)[:,indicesj] - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
@@ -18,11 +23,9 @@ def optimise_k(coords, distances, indices, min_num, k):
 		scattering = evals[:,-3]/evals[:,-1]
 		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
 		stack = stack+(dim_ent,)
-		print(j,"/",k)
+		print(dim_ent, stack)
 	dimensional_entropy = np.stack(stack, axis = 1)
-	k_opt = np.argmin(dimensional_entropy, axis = 1)
-	print(min(k_opt), max(k_opt))
-	print(evals.shape, evects.shape)
+	k_opt = aux+np.argmin(dimensional_entropy, axis = 1)
 	return k_opt, evals, evects
 
 
@@ -43,6 +46,7 @@ def geo(coord_dictionary, config):
 	radius = config["radius"]
 	v_speed = config["virtualSpeed"]
 	u = config["decimation"]
+	optimise = config["k-optimise"]
 
 	spacetime = bool(v_speed)
 	decimate = bool(u)
@@ -81,10 +85,10 @@ def geo(coord_dictionary, config):
 		keeping = distances < radius # (num_pts,k)
 		ks = np.sum(keeping, axis = 1) # (num_pts)
 
-		k_opt, evals, evects = optimise_k(coords, distances, indices, 10, k)
+		k_opt, evals, evects = optimise_k(coords, distances, indices, 1, k, optimise)
 
 		for j in np.unique(k_opt):
-			raw_deviations = keeping*((coords)[:,indices[k_opt == j,j]] - coords[:, k_opt == j,None])/np.sqrt(ks[None,k_opt == j,None]) # (d,num_pts,k)
+			raw_deviations = keeping[k_opt == j,:j]*(coords[:,indices[k_opt == j,:j]] - coords[:, k_opt == j,None])/np.sqrt(ks[None,k_opt == j,None]) # (d,num_pts,k)
 			cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
 			# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
 			# this is crucial in order to get accurate eigenvalues and eigenvectors
@@ -98,4 +102,4 @@ def geo(coord_dictionary, config):
 		vec2[time_range,:] = evects[inv,:-1,-2]/(np.linalg.norm(evects[inv,:-1,-2], axis = 1)[:,None])
 		vec3[time_range,:] = evects[inv,:-1,-1]/(np.linalg.norm(evects[inv,:-1,-1], axis = 1)[:,None])
 		kdist[time_range] = distances[inv,-1]
-	return val1, val2, val3, vec1, vec2, vec3, k, kdist
+	return val1, val2, val3, vec1, vec2, vec3, k_opt, kdist #note that I have not set k or kdist properly

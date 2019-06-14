@@ -15,15 +15,18 @@ def name_modifier(config):
 	u = config["decimation"]
 	spacetime = bool(v_speed)
 	decimate = bool(u)
-	R_int = int(radius)
-	R_rat = int(100*(radius-int(radius)))
+	if np.isinf(radius):
+		R = "Infty"
+	else:
+		R_int = int(radius)
+		R_rat = int(100*(radius-int(radius)))
+		R = "radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
 	C_int = int(v_speed)
 	C_rat = int(100*(v_speed-int(v_speed)))
 	U_int = int(u)
 	U_rat = int(100*(u-int(u)))
 	num = "N"+str(N).zfill(3)
 	K = "k"+str(k).zfill(3)
-	R = "radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
 	C = spacetime*("v_speed"+str(C_int).zfill(2)+"_"+str(C_rat).zfill(2))
 	U = decimate*("dec"+str(U_int).zfill(2)+"_"+str(U_rat).zfill(2))
 	return "attr"+num+K+R+C+U
@@ -67,7 +70,9 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		value = fun_kdist[dimension](k, kdist)
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
-		
+
+		Stack = np.stack((in_file.linearity, in_file.planarity, in_file.scattering), axis = 1)
+		in_file.classification = np.argmax(Stack, axis=1)	
 
 
 
