@@ -6,4 +6,4 @@ import lasmaster as lm
 
 for file in os.listdir():
 	if file[:4] == "T200":
-		lm.enel_attr(file)
+		lm.optimal_radius(lm.lpinteraction.nfl(file))

@@ -9,20 +9,20 @@ import numpy as np
 
 wpd_config = 	{
 			"timeIntervals"	:	6,
-			"k"		:	50,
-			"radius"	:	0.5,
+			"k"				:	50,
+			"radius"		:	0.5,
 			"virtualSpeed"	:	2,
 			"decimation"	:	0.1,
-			"k-optimise"	: False,
+			"k-optimise"	:	False,
 		}
 
 enel_config = 	{
 			"timeIntervals"	:	1,
-			"k"		:	50,
-			"radius"	:	0.5,
-			"virtualSpeed"	:	2,
+			"k"				:	50,
+			"radius"		:	0.5,
+			"virtualSpeed"	:	0,
 			"decimation"	:	0,
-			"k-optimise"	: False,
+			"k-optimise"	:	True,
 		}
 
 histo_config =	{}
@@ -37,10 +37,13 @@ def wpd_attr(file_name):
 def enel_attr(file_name):
 	start = time.time()
 	cf = enel_config
-	for k in range(1, 51):
-		cf["k"] = k
-		cf["optimise"] = False
-		lpinteraction.attr(file_name, cf, fun.std_fun_eig(), fun.std_fun_vec(), fun.std_fun_kdist()) 
+	lpinteraction.attr(file_name, cf, fun.std_fun_eig(), fun.std_fun_vec(), fun.std_fun_kdist())
 	end = time.time()
 	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
+def optimal_radius(file_name):
+	start = time.time()
+	cf = enel_config
+	lpinteraction.radius_intensity(file_name, cf)
+	end = time.time()
+	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")

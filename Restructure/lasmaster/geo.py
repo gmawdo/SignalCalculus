@@ -9,7 +9,6 @@ def optimise_k(coords, distances, indices, min_num, k, optimise):
 	else:
 		aux = min_num
 	for j in range(aux, k+1):
-		j = j
 		indicesj = indices[:,:j]
 		distancesj = distances[:,:j]
 		raw_deviations = ((coords)[:,indicesj] - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
@@ -28,14 +27,68 @@ def optimise_k(coords, distances, indices, min_num, k, optimise):
 	k_opt = aux+np.argmin(dimensional_entropy, axis = 1)
 	return k_opt, evals, evects
 
+def optimise_radius(coord_dictionary, config):
+	x = coord_dictionary["x"]
+	y = coord_dictionary["y"]
+	z = coord_dictionary["z"]
+	t = coord_dictionary["gps_time"]
+	
+	min_num = 10
 
+	N = config["timeIntervals"]
+	k = config["k"]
+	radius = config["radius"]
+	v_speed = config["virtualSpeed"]
+	u = config["decimation"]
+	optimise = config["k-optimise"]
+
+	spacetime = bool(v_speed)
+	decimate = bool(u)
+	coords = np.vstack((x,y,z)+spacetime*(v_speed*t,))
+	# work out how many dimensions we are working in
+	d = 3+spacetime
+
+	stack = ()
+	coords1, ind, inv, cnt = np.unique(np.floor(coords[0:d,:]/1), return_index = True, return_inverse = True, return_counts = True, axis=1)
+	if optimise:
+		aux = min_num
+	else:
+		aux = k
+
+	nhbrs = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords))
+	distances1, indices1 = nhbrs.kneighbors(np.transpose(coords1)) # (num_pts,k)
+	for j in range(aux, k+1):
+		indicesj = indices1[:,:j]
+		distancesj = distances1[:,:j]
+		raw_deviations = ((coords)[:,indicesj] - coords1[:,:,None])/np.sqrt(j) # (d,num_pts,k)
+		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
+		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
+		# this is crucial in order to get accurate eigenvalues and eigenvectors
+		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
+		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
+		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1]
+		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1]
+		scattering = evals[:,-3]/evals[:,-1]
+		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
+		stack = stack+(dim_ent,)
+		print(str(j), "/", str(k))
+	dimensional_entropy = np.stack(stack, axis = 1)
+	k_opt = aux+np.argmin(dimensional_entropy, axis = 1)
+
+	density = cnt[inv]
+	radius_opt = distances1[np.arange(distances1.shape[0]),np.argmin(dimensional_entropy, axis = 1)][inv]
+
+	distances, indices = nhbrs.kneighbors(np.transpose(coords))
+	radius_opt = np.median(radius_opt[indices], axis = 1)
+	radius_opt = np.median(radius_opt[indices], axis = 1)
+	return radius_opt
 
 
 # G E O M E T R Y   M O D U L E
 # takes a dictionary which contains x, y, z and time components 
 # and returns the eigeninformation, and kdistance
 # that is, this function extracts local geometric information
-def geo(coord_dictionary, config):
+def eig(coord_dictionary, config):
 	x = coord_dictionary["x"]
 	y = coord_dictionary["y"]
 	z = coord_dictionary["z"]
@@ -51,11 +104,14 @@ def geo(coord_dictionary, config):
 	spacetime = bool(v_speed)
 	decimate = bool(u)
 
+	# work out how many dimensions we are working in
 	d = 3+spacetime
 	
 	# find time bins
 
 	times = [np.quantile(t, q=i/N) for i in range(N+1)]
+
+	# generate labels for new attributes
 	val1 = np.empty(t.shape)
 	val2 = np.empty(t.shape)
 	val3 = np.empty(t.shape)
@@ -63,30 +119,34 @@ def geo(coord_dictionary, config):
 	vec2 = np.empty(t.shape+(3,))
 	vec3 = np.empty(t.shape+(3,))
 	kdist = np.empty(t.shape)
+
 	# loop around time ranges
 	for i in range(N):
+
+		# work out which time range we are working in
 		time_range = (times[i]<=t)*(t<=times[i+1])
 
-		# do the maths
 		coords = np.vstack((x[time_range],y[time_range],z[time_range])+spacetime*(v_speed*t[time_range],))
-		num_pts = coords.shape[-1]
+		# num_pts = coords.shape[-1] denotes the number of working points in comments
 		if decimate:
 			spatial_coords, ind, inv, cnt = np.unique(np.floor(coords[0:d,:]/u), return_index = True, return_inverse = True, return_counts = True, axis=1)
 		else:
 			ind = np.arange(sum(time_range))
 			inv = ind
 		coords = coords[:,ind] # (d,num_pts)
+
+		# find the k nearest neighbours of each point
 		nhbrs = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords))
 		distances, indices = nhbrs.kneighbors(np.transpose(coords)) # (num_pts,k)
 		# (d,num_pts,k)
 
-		#Now optimise k
-
+		# work out which neighbours are being disregarded due to distance
 		keeping = distances < radius # (num_pts,k)
 		ks = np.sum(keeping, axis = 1) # (num_pts)
 
-		k_opt, evals, evects = optimise_k(coords, distances, indices, 1, k, optimise)
+		k_opt, evals, evects = optimise_k(coords, distances, indices, 10, k, optimise)
 
+		# now we begin to optimise k
 		for j in np.unique(k_opt):
 			raw_deviations = keeping[k_opt == j,:j]*(coords[:,indices[k_opt == j,:j]] - coords[:, k_opt == j,None])/np.sqrt(ks[None,k_opt == j,None]) # (d,num_pts,k)
 			cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)

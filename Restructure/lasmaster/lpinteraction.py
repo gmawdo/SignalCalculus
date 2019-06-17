@@ -1,7 +1,9 @@
-from laspy.file import File
 import numpy as np
+from laspy.file import File
 from lasmaster import geo
 from lasmaster import fun
+from sklearn.neighbors import NearestNeighbors
+import time
 
 # Governs the interaction with laspy
 
@@ -31,14 +33,14 @@ def name_modifier(config):
 	U = decimate*("dec"+str(U_int).zfill(2)+"_"+str(U_rat).zfill(2))
 	return "attr"+num+K+R+C+U
 
-# the attr function applies the attribute defintions to the output of geo.geo
+# the attr function applies the attribute defintions to the output of geo.eig
 def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 	in_file = File(file_name, mode = "r")
 	header=in_file.header
 	
 	coord_dictionary = {"x": in_file.x, "y": in_file.y, "z": in_file.z, "gps_time": in_file.gps_time}
 
-	val1, val2, val3, vec1, vec2, vec3, k, kdist = geo.geo(coord_dictionary, config)
+	val1, val2, val3, vec1, vec2, vec3, k, kdist = geo.eig(coord_dictionary, config)
 	
 	mod = name_modifier(config)
 	out_file = File(mod+file_name, mode = "w", header = header)
@@ -74,8 +76,39 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		Stack = np.stack((in_file.linearity, in_file.planarity, in_file.scattering), axis = 1)
 		in_file.classification = np.argmax(Stack, axis=1)	
 
+def radius_intensity(file_name, config):
+	in_file = File(file_name, mode = "r")
+	header=in_file.header
+	
+	coord_dictionary = {"x": in_file.x, "y": in_file.y, "z": in_file.z, "gps_time": in_file.gps_time}
+
+	radius_opt = geo.optimise_radius(coord_dictionary, config)
+	
+	mod = "radius_opt"
+	out_file = File(mod+file_name, mode = "w", header = header)
+	out_file.points = in_file.points
+	out_file.intensity = np.clip(100*radius_opt, 0 ,1000)
+	out_file.close()
 
 
-
-
-
+# C L I P   N E A R   F L I G H T   L I N E
+def nfl(file_name, clip = 100, fl = 10, change_name = True):
+	start = time.time()
+	in_file = File(file_name, mode = "r")
+	x_array = in_file.x
+	y_array = in_file.y
+	class10 = in_file.classification==fl
+	x_array = in_file.x
+	y_array = in_file.y
+	coords = np.vstack((x_array,y_array))
+	x_flight = x_array[class10]
+	y_flight = y_array[class10]
+	coords_flight = np.vstack((x_flight,y_flight))
+	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(coords_flight))
+	distances, indices = nhbrs.kneighbors(np.transpose(coords))
+	out_file = File(file_name[:-4]+change_name*("NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2))+".las", mode = "w", header = in_file.header)
+	out_file.points = in_file.points[np.logical_and(distances[:,0]<clip, np.logical_not(class10))]
+	out_file.close()
+	end = time.time()
+	return file_name[:-4]+change_name*("NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2))+".las"
+	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
