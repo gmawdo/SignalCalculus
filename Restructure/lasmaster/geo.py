@@ -2,6 +2,14 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from lasmaster.infotheory import entropy
 
+def ladder_tensor(m, n):
+	I = np.empty((n,n,n))
+	for i in range(n):
+		I[i,:,:]=np.identity(n)
+		I[i,(i+1):,:]=0
+	return I[m-1:,:,:] # returns an (n-m+1) x n x n, rank 3 tensor
+
+
 def optimise_k(coords, distances, indices, min_num, k, optimise):
 	stack = ()
 	if optimise:
@@ -22,7 +30,6 @@ def optimise_k(coords, distances, indices, min_num, k, optimise):
 		scattering = evals[:,-3]/evals[:,-1]
 		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
 		stack = stack+(dim_ent,)
-		print(dim_ent, stack)
 	dimensional_entropy = np.stack(stack, axis = 1)
 	k_opt = aux+np.argmin(dimensional_entropy, axis = 1)
 	return k_opt, evals, evects
@@ -33,7 +40,7 @@ def optimise_radius(coord_dictionary, config):
 	z = coord_dictionary["z"]
 	t = coord_dictionary["gps_time"]
 	
-	min_num = 10
+	min_num = 4
 
 	N = config["timeIntervals"]
 	k = config["k"]
@@ -49,18 +56,23 @@ def optimise_radius(coord_dictionary, config):
 	d = 3+spacetime
 
 	stack = ()
-	coords1, ind, inv, cnt = np.unique(np.floor(coords[0:d,:]/1), return_index = True, return_inverse = True, return_counts = True, axis=1)
+	
 	if optimise:
 		aux = min_num
 	else:
 		aux = k
 
 	nhbrs = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords))
-	distances1, indices1 = nhbrs.kneighbors(np.transpose(coords1)) # (num_pts,k)
+	distances, indices = nhbrs.kneighbors(np.transpose(coords)) # (num_pts,k)
+	J = ladder_tensor(aux, k) # we use this tensor to avoid a loop # (k-aux+1, k, k)
+	raw_deviations_prestack = (coords[:,indices] - coords[:,:,None]) # (d,num_pts,k)
+	raw_deviations = np.matmul(raw_deviations_prestack[:,None,:,:], J) # (d,k-aux+1,num_pts,k)
+	cov_matrices = np.matmul(raw_deviations.transpose(1,2,0,3), raw_deviations.transpose(1,2,3,0)) #(num_pts,d,d)
 	for j in range(aux, k+1):
-		indicesj = indices1[:,:j]
-		distancesj = distances1[:,:j]
-		raw_deviations = ((coords)[:,indicesj] - coords1[:,:,None])/np.sqrt(j) # (d,num_pts,k)
+		indicesj = indices[:,:j]
+		distancesj = distances[:,:j]
+		coordsj = (coords)[:,indicesj]
+		raw_deviations = (coordsj - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
 		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
 		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
 		# this is crucial in order to get accurate eigenvalues and eigenvectors
@@ -73,15 +85,66 @@ def optimise_radius(coord_dictionary, config):
 		stack = stack+(dim_ent,)
 		print(str(j), "/", str(k))
 	dimensional_entropy = np.stack(stack, axis = 1)
-	k_opt = aux+np.argmin(dimensional_entropy, axis = 1)
+	k_opt = aux + np.argmin(dimensional_entropy, axis = 1)
+	print(min(k_opt), max(k_opt))
+	#radius_opt = distances[np.arange(distances.shape[0]),k_opt-1]
+	#radius_opt = np.median(radius_opt[indices], axis = 1)
+	#radius_opt = np.median(radius_opt[indices], axis = 1)
+	return k_opt
 
-	density = cnt[inv]
-	radius_opt = distances1[np.arange(distances1.shape[0]),np.argmin(dimensional_entropy, axis = 1)][inv]
+def optimise_k(coord_dictionary, config):
+	x = coord_dictionary["x"]
+	y = coord_dictionary["y"]
+	z = coord_dictionary["z"]
+	t = coord_dictionary["gps_time"]
+	
+	min_num = 4
 
-	distances, indices = nhbrs.kneighbors(np.transpose(coords))
-	radius_opt = np.median(radius_opt[indices], axis = 1)
-	radius_opt = np.median(radius_opt[indices], axis = 1)
-	return radius_opt
+	N = config["timeIntervals"]
+	k = config["k"]
+	radius = config["radius"]
+	v_speed = config["virtualSpeed"]
+	u = config["decimation"]
+	optimise = config["k-optimise"]
+
+	spacetime = bool(v_speed)
+	decimate = bool(u)
+	coords = np.vstack((x,y,z)+spacetime*(v_speed*t,))
+	# work out how many dimensions we are working in
+	d = 3+spacetime
+
+	stack = ()
+	
+	if optimise:
+		aux = min_num
+	else:
+		aux = k
+
+	nhbrs = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords))
+	distances, indices = nhbrs.kneighbors(np.transpose(coords)) # (num_pts,k)
+	for j in range(aux, k+1):
+		indicesj = indices[:,:j]
+		distancesj = distances[:,:j]
+		coordsj = (coords)[:,indicesj]
+		raw_deviations = (coordsj - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
+		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
+		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
+		# this is crucial in order to get accurate eigenvalues and eigenvectors
+		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
+		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
+		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1]
+		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1]
+		scattering = evals[:,-3]/evals[:,-1]
+		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
+		stack = stack+(dim_ent,)
+		print(str(j), "/", str(k))
+	dimensional_entropy = np.stack(stack, axis = 1)
+	k_opt = aux + np.argmin(dimensional_entropy, axis = 1)
+	print(min(k_opt), max(k_opt))
+	#radius_opt = distances[np.arange(distances.shape[0]),k_opt-1]
+	#radius_opt = np.median(radius_opt[indices], axis = 1)
+	#radius_opt = np.median(radius_opt[indices], axis = 1)
+	return k_opt
 
 
 # G E O M E T R Y   M O D U L E
@@ -99,7 +162,6 @@ def eig(coord_dictionary, config):
 	radius = config["radius"]
 	v_speed = config["virtualSpeed"]
 	u = config["decimation"]
-	optimise = config["k-optimise"]
 
 	spacetime = bool(v_speed)
 	decimate = bool(u)
@@ -144,16 +206,19 @@ def eig(coord_dictionary, config):
 		keeping = distances < radius # (num_pts,k)
 		ks = np.sum(keeping, axis = 1) # (num_pts)
 
-		k_opt, evals, evects = optimise_k(coords, distances, indices, 10, k, optimise)
+		#raw_deviations = keeping[k_opt == j,:j]*(coords[:,indices[k_opt == j,:j]] - coords[:, k_opt == j,None])/np.sqrt(ks[None,k_opt == j,None]) # (d,num_pts,k)
+		#cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
+		## the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
+		## this is crucial in order to get accurate eigenvalues and eigenvectors
+		#cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
+		#evals[k_opt == j], evects[k_opt == j] = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
 
-		# now we begin to optimise k
-		for j in np.unique(k_opt):
-			raw_deviations = keeping[k_opt == j,:j]*(coords[:,indices[k_opt == j,:j]] - coords[:, k_opt == j,None])/np.sqrt(ks[None,k_opt == j,None]) # (d,num_pts,k)
-			cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
-			# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
-			# this is crucial in order to get accurate eigenvalues and eigenvectors
-			cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
-			evals[k_opt == j], evects[k_opt == j] = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
+		raw_deviations = keeping*(coords[:,indices] - coords[:,:,None])/np.sqrt(ks[None,:,None]) # (d,num_pts,k)
+		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
+		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
+		# this is crucial in order to get accurate eigenvalues and eigenvectors
+		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
+		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
 
 		val1[time_range] = evals[inv,-3]
 		val2[time_range] = evals[inv,-2]
@@ -162,4 +227,4 @@ def eig(coord_dictionary, config):
 		vec2[time_range,:] = evects[inv,:-1,-2]/(np.linalg.norm(evects[inv,:-1,-2], axis = 1)[:,None])
 		vec3[time_range,:] = evects[inv,:-1,-1]/(np.linalg.norm(evects[inv,:-1,-1], axis = 1)[:,None])
 		kdist[time_range] = distances[inv,-1]
-	return val1, val2, val3, vec1, vec2, vec3, k_opt, kdist #note that I have not set k or kdist properly
+	return val1, val2, val3, vec1, vec2, vec3, k, kdist #note that I have not set k or kdist properly

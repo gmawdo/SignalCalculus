@@ -38,7 +38,6 @@ def std_fun_kdist():
 	sphere_constant = 4*np.pi/3
 	output = 	{
 			"ptdens":	(lambda k, d: k/(sphere_constant*(d**3))),
-			"k_opt": 	(lambda k, d: k),
 			}
 	return output
 	

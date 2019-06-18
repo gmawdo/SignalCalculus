@@ -73,8 +73,7 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
 
-		Stack = np.stack((in_file.linearity, in_file.planarity, in_file.scattering), axis = 1)
-		in_file.classification = np.argmax(Stack, axis=1)	
+	out_file.close()
 
 def radius_intensity(file_name, config):
 	in_file = File(file_name, mode = "r")
@@ -87,7 +86,7 @@ def radius_intensity(file_name, config):
 	mod = "radius_opt"
 	out_file = File(mod+file_name, mode = "w", header = header)
 	out_file.points = in_file.points
-	out_file.intensity = np.clip(100*radius_opt, 0 ,1000)
+	out_file.intensity = 20*radius_opt
 	out_file.close()
 
 
