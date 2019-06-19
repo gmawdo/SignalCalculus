@@ -81,12 +81,13 @@ def radius_intensity(file_name, config):
 	
 	coord_dictionary = {"x": in_file.x, "y": in_file.y, "z": in_file.z, "gps_time": in_file.gps_time}
 
-	radius_opt = geo.optimise_radius(coord_dictionary, config)
+	k_opt = geo.optimise_radius(coord_dictionary, config)
 	
 	mod = "radius_opt"
 	out_file = File(mod+file_name, mode = "w", header = header)
 	out_file.points = in_file.points
-	out_file.intensity = 20*radius_opt
+	out_file.intensity = 100*k_opt
+	out_file.classification = k_opt
 	out_file.close()
 
 

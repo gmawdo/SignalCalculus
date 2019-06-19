@@ -9,31 +9,6 @@ def ladder_tensor(m, n):
 		I[i,(i+1):,:]=0
 	return I[m-1:,:,:] # returns an (n-m+1) x n x n, rank 3 tensor
 
-
-def optimise_k(coords, distances, indices, min_num, k, optimise):
-	stack = ()
-	if optimise:
-		aux = k
-	else:
-		aux = min_num
-	for j in range(aux, k+1):
-		indicesj = indices[:,:j]
-		distancesj = distances[:,:j]
-		raw_deviations = ((coords)[:,indicesj] - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
-		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
-		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
-		# this is crucial in order to get accurate eigenvalues and eigenvectors
-		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
-		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
-		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1]
-		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1]
-		scattering = evals[:,-3]/evals[:,-1]
-		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
-		stack = stack+(dim_ent,)
-	dimensional_entropy = np.stack(stack, axis = 1)
-	k_opt = aux+np.argmin(dimensional_entropy, axis = 1)
-	return k_opt, evals, evects
-
 def optimise_radius(coord_dictionary, config):
 	x = coord_dictionary["x"]
 	y = coord_dictionary["y"]
@@ -66,81 +41,36 @@ def optimise_radius(coord_dictionary, config):
 	distances, indices = nhbrs.kneighbors(np.transpose(coords)) # (num_pts,k)
 	J = ladder_tensor(aux, k) # we use this tensor to avoid a loop # (k-aux+1, k, k)
 	raw_deviations_prestack = (coords[:,indices] - coords[:,:,None]) # (d,num_pts,k)
+	
+	# matrix multiplications
 	raw_deviations = np.matmul(raw_deviations_prestack[:,None,:,:], J) # (d,k-aux+1,num_pts,k)
-	cov_matrices = np.matmul(raw_deviations.transpose(1,2,0,3), raw_deviations.transpose(1,2,3,0)) #(num_pts,d,d)
-	for j in range(aux, k+1):
-		indicesj = indices[:,:j]
-		distancesj = distances[:,:j]
-		coordsj = (coords)[:,indicesj]
-		raw_deviations = (coordsj - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
-		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
-		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
-		# this is crucial in order to get accurate eigenvalues and eigenvectors
-		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
-		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
-		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1]
-		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1]
-		scattering = evals[:,-3]/evals[:,-1]
-		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
-		stack = stack+(dim_ent,)
-		print(str(j), "/", str(k))
-	dimensional_entropy = np.stack(stack, axis = 1)
-	k_opt = aux + np.argmin(dimensional_entropy, axis = 1)
-	print(min(k_opt), max(k_opt))
-	#radius_opt = distances[np.arange(distances.shape[0]),k_opt-1]
-	#radius_opt = np.median(radius_opt[indices], axis = 1)
-	#radius_opt = np.median(radius_opt[indices], axis = 1)
-	return k_opt
+	cov_matrices = np.matmul(raw_deviations.transpose(1,2,0,3), raw_deviations.transpose(1,2,3,0)) #(k-aux+1,num_pts,d,d)
+	cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,1,3,2)) #(k-aux+1,num_pts,d,d)
 
-def optimise_k(coord_dictionary, config):
-	x = coord_dictionary["x"]
-	y = coord_dictionary["y"]
-	z = coord_dictionary["z"]
-	t = coord_dictionary["gps_time"]
-	
-	min_num = 4
-
-	N = config["timeIntervals"]
-	k = config["k"]
-	radius = config["radius"]
-	v_speed = config["virtualSpeed"]
-	u = config["decimation"]
-	optimise = config["k-optimise"]
-
-	spacetime = bool(v_speed)
-	decimate = bool(u)
-	coords = np.vstack((x,y,z)+spacetime*(v_speed*t,))
-	# work out how many dimensions we are working in
-	d = 3+spacetime
-
-	stack = ()
-	
-	if optimise:
-		aux = min_num
-	else:
-		aux = k
-
-	nhbrs = NearestNeighbors(n_neighbors = k, algorithm = "kd_tree").fit(np.transpose(coords))
-	distances, indices = nhbrs.kneighbors(np.transpose(coords)) # (num_pts,k)
-	for j in range(aux, k+1):
-		indicesj = indices[:,:j]
-		distancesj = distances[:,:j]
-		coordsj = (coords)[:,indicesj]
-		raw_deviations = (coordsj - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
-		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
-		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
-		# this is crucial in order to get accurate eigenvalues and eigenvectors
-		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
-		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
-		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1]
-		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1]
-		scattering = evals[:,-3]/evals[:,-1]
-		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
-		stack = stack+(dim_ent,)
-		print(str(j), "/", str(k))
-	dimensional_entropy = np.stack(stack, axis = 1)
-	k_opt = aux + np.argmin(dimensional_entropy, axis = 1)
-	print(min(k_opt), max(k_opt))
+	evals, evects = np.linalg.eigh(cov_matrices) #(k-aux+1,num_pts, d), (k-aux+1,num_pts,d,d)
+	print(evals.shape, evects.shape)
+	linearity = (evals[:,:,-1]-evals[:,:,-2])/evals[:,:,-1] #(k-aux+1,num_pts)
+	planarity = (evals[:,:,-2]-evals[:,:,-3])/evals[:,:,-1] #(k-aux+1,num_pts)
+	scattering = evals[:,:,-3]/evals[:,:,-1] #(k-aux+1,num_pts)
+	dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = -1)) #(k-aux+1,num_pts)
+#	for j in range(aux, k+1):
+#		indicesj = indices[:,:j]
+#		distancesj = distances[:,:j]
+#		coordsj = (coords)[:,indicesj]
+#		raw_deviations = (coordsj - coords[:,:,None])/np.sqrt(j) # (d,num_pts,k)
+#		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
+#		# the next line forces cov_matrices to be symmetric so that the LAPACK routine in linalg.eigh is more stable
+#		# this is crucial in order to get accurate eigenvalues and eigenvectors
+#		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1))
+#		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
+#		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1]
+#		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1]
+#		scattering = evals[:,-3]/evals[:,-1]
+#		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1))
+#		stack = stack+(dim_ent,)
+#		print(str(j), "/", str(k))
+#	dimensional_entropy = np.stack(stack, axis = 1)
+	k_opt = aux + np.argmin(dim_ent, axis = 0)
 	#radius_opt = distances[np.arange(distances.shape[0]),k_opt-1]
 	#radius_opt = np.median(radius_opt[indices], axis = 1)
 	#radius_opt = np.median(radius_opt[indices], axis = 1)

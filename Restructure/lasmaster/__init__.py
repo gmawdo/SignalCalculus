@@ -9,16 +9,16 @@ import numpy as np
 
 wpd_config = 	{
 			"timeIntervals"	:	6,
-			"k"				:	50,
+			"k"				:	10,
 			"radius"		:	0.5,
 			"virtualSpeed"	:	2,
-			"decimation"	:	0.1,
+			"decimation"	:	0.0,
 			"k-optimise"	:	False,
 		}
 
 enel_config = 	{
 			"timeIntervals"	:	1,
-			"k"				:	50,
+			"k"				:	10,
 			"radius"		:	0.5,
 			"virtualSpeed"	:	0,
 			"decimation"	:	0,
@@ -44,6 +44,7 @@ def enel_attr(file_name):
 def optimal_radius(file_name):
 	start = time.time()
 	cf = enel_config
+	cf["k"]=10
 	lpinteraction.radius_intensity(file_name, cf)
 	end = time.time()
 	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
