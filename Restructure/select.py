@@ -61,7 +61,7 @@ for i in range(aux,10):
 		fig = plt.figure()
 		y_pos = range(3)
 		plt.bar(y_pos, stack[i-aux, j, :], align='center', alpha=0.5)
-		plt.xticks(y_pos, ["linearity","planarity","scaling"])
+		plt.xticks(y_pos, ["linearity","planarity","scatteringing"])
 		plt.xlabel('States')
 		plt.ylabel('Probability')
 		plt.title('Pt '+str(j)+' k = '+str(i)+' entropy = '+str(dim_ent[i-aux,j]))

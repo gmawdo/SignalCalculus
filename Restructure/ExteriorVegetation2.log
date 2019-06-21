@@ -1,0 +1,1604 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.1.29)  21 JUN 2019 14:24
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**ExteriorVegetation2.tex
+(./ExteriorVegetation2.tex
+LaTeX2e <2017-04-15>
+Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
+Document Class: beamer 2018/02/20 v3.50 A class for typesetting presentations
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasemodes.sty
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2018/02/11 v2.5e e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count79
+)
+\beamer@tempbox=\box26
+\beamer@tempcount=\count80
+\c@beamerpauses=\count81
+
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasedecode.sty
+\beamer@slideinframe=\count82
+\beamer@minimum=\count83
+)
+\beamer@commentbox=\box27
+\beamer@modecount=\count84
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+\headdp=\dimen102
+\footheight=\dimen103
+\sidebarheight=\dimen104
+\beamer@tempdim=\dimen105
+\beamer@finalheight=\dimen106
+\beamer@animht=\dimen107
+\beamer@animdp=\dimen108
+\beamer@animwd=\dimen109
+\beamer@leftmargin=\dimen110
+\beamer@rightmargin=\dimen111
+\beamer@leftsidebar=\dimen112
+\beamer@rightsidebar=\dimen113
+\beamer@boxsize=\dimen114
+\beamer@vboxoffset=\dimen115
+\beamer@descdefault=\dimen116
+\beamer@descriptionwidth=\dimen117
+\beamer@lastskip=\skip41
+\beamer@areabox=\box28
+\beamer@animcurrent=\box29
+\beamer@animshowbox=\box30
+\beamer@sectionbox=\box31
+\beamer@logobox=\box32
+\beamer@linebox=\box33
+\beamer@sectioncount=\count85
+\beamer@subsubsectionmax=\count86
+\beamer@subsectionmax=\count87
+\beamer@sectionmax=\count88
+\beamer@totalheads=\count89
+\beamer@headcounter=\count90
+\beamer@partstartpage=\count91
+\beamer@sectionstartpage=\count92
+\beamer@subsectionstartpage=\count93
+\beamer@animationtempa=\count94
+\beamer@animationtempb=\count95
+\beamer@xpos=\count96
+\beamer@ypos=\count97
+\beamer@ypos@offset=\count98
+\beamer@showpartnumber=\count99
+\beamer@currentsubsection=\count100
+\beamer@coveringdepth=\count101
+\beamer@sectionadjust=\count102
+\beamer@tocsectionnumber=\count103
+
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseoptions.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+))
+\beamer@paperwidth=\skip42
+\beamer@paperheight=\skip43
+
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count104
+\Gm@cntv=\count105
+\c@Gm@tempcnt=\count106
+\Gm@bindingoffset=\dimen118
+\Gm@wd@mp=\dimen119
+\Gm@odd@mp=\dimen120
+\Gm@even@mp=\dimen121
+\Gm@layoutwidth=\dimen122
+\Gm@layoutheight=\dimen123
+\Gm@layouthoffset=\dimen124
+\Gm@layoutvoffset=\dimen125
+\Gm@dimlist=\toks15
+)
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen126
+\Gin@req@width=\dimen127
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+\pgfutil@everybye=\toks16
+\pgfutil@tempdima=\dimen128
+\pgfutil@tempdimb=\dimen129
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+\pgfutil@abb=\box34
+(/usr/share/texlive/texmf-dist/tex/latex/ms/everyshi.sty
+Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+Package: pgfrcs 2015/08/07 v3.0.1a (rcs-revision 1.31)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2014/07/09 v3.0.1a (rcs-revision 1.48)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks17
+\pgfkeys@temptoks=\toks18
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
+ex
+\pgfkeys@tmptoks=\toks19
+))
+\pgf@x=\dimen130
+\pgf@y=\dimen131
+\pgf@xa=\dimen132
+\pgf@ya=\dimen133
+\pgf@xb=\dimen134
+\pgf@yb=\dimen135
+\pgf@xc=\dimen136
+\pgf@yc=\dimen137
+\w@pgf@writea=\write3
+\r@pgf@reada=\read1
+\c@pgf@counta=\count107
+\c@pgf@countb=\count108
+\c@pgf@countc=\count109
+\c@pgf@countd=\count110
+\t@pgf@toka=\toks20
+\t@pgf@tokb=\toks21
+\t@pgf@tokc=\toks22
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+File: pgfsys-pdftex.def 2014/10/11  (rcs-revision 1.35)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f
+File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
+)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex
+File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
+\pgfsyssoftpath@smallbuffer@items=\count111
+\pgfsyssoftpath@bigbuffer@items=\count112
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex
+File: pgfsysprotocol.code.tex 2006/10/16  (rcs-revision 1.4)
+)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2010/04/11 v3.0.1a (rcs-revision 1.7)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen138
+\pgfmath@count=\count113
+\pgfmath@box=\box35
+\pgfmath@toks=\toks23
+\pgfmath@stack@operand=\toks24
+\pgfmath@stack@operation=\toks25
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count114
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x
+File: pgfcorepoints.code.tex 2013/10/07  (rcs-revision 1.27)
+\pgf@picminx=\dimen139
+\pgf@picmaxx=\dimen140
+\pgf@picminy=\dimen141
+\pgf@picmaxy=\dimen142
+\pgf@pathminx=\dimen143
+\pgf@pathmaxx=\dimen144
+\pgf@pathminy=\dimen145
+\pgf@pathmaxy=\dimen146
+\pgf@xx=\dimen147
+\pgf@xy=\dimen148
+\pgf@yx=\dimen149
+\pgf@yy=\dimen150
+\pgf@zx=\dimen151
+\pgf@zy=\dimen152
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex
+File: pgfcorepathconstruct.code.tex 2013/10/07  (rcs-revision 1.29)
+\pgf@path@lastx=\dimen153
+\pgf@path@lasty=\dimen154
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex
+File: pgfcorepathusage.code.tex 2014/11/02  (rcs-revision 1.24)
+\pgf@shorten@end@additional=\dimen155
+\pgf@shorten@start@additional=\dimen156
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x
+File: pgfcorescopes.code.tex 2015/05/08  (rcs-revision 1.46)
+\pgfpic=\box36
+\pgf@hbox=\box37
+\pgf@layerbox@main=\box38
+\pgf@picture@serial@count=\count115
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex
+File: pgfcoregraphicstate.code.tex 2014/11/02  (rcs-revision 1.12)
+\pgflinewidth=\dimen157
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex
+File: pgfcoretransformations.code.tex 2015/08/07  (rcs-revision 1.20)
+\pgf@pt@x=\dimen158
+\pgf@pt@y=\dimen159
+\pgf@pt@temp=\dimen160
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2008/10/09  (rcs-revision 1.3)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex
+File: pgfcoreobjects.code.tex 2006/10/11  (rcs-revision 1.2)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex
+File: pgfcorepathprocessing.code.tex 2013/09/09  (rcs-revision 1.9)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x
+File: pgfcorearrows.code.tex 2015/05/14  (rcs-revision 1.43)
+\pgfarrowsep=\dimen161
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
+\pgf@max=\dimen162
+\pgf@sys@shading@range@num=\count116
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2013/07/15  (rcs-revision 1.18)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex
+File: pgfcoreexternal.code.tex 2014/07/09  (rcs-revision 1.21)
+\pgfexternal@startupbox=\box39
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x
+File: pgfcorelayers.code.tex 2013/07/18  (rcs-revision 1.7)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex
+File: pgfcoretransparency.code.tex 2013/09/30  (rcs-revision 1.5)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex
+File: pgfcorepatterns.code.tex 2013/11/07  (rcs-revision 1.5)
+))) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/xxcolor.sty
+Package: xxcolor 2003/10/24 ver 0.1
+\XC@nummixins=\count117
+\XC@countmixins=\count118
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/atbegshi.sty
+Package: atbegshi 2016/06/09 v1.18 At begin shipout hook (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2018/02/06 v6.86b Hypertext links for LaTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+Package: hobsub-hyperref 2016/05/16 v1.14 Bundle oberdiek, subset hyperref (HO)
+
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
+Package: hobsub-generic 2016/05/16 v1.14 Bundle oberdiek, subset generic (HO)
+Package: hobsub 2016/05/16 v1.14 Construct package bundles (HO)
+Package hobsub Info: Skipping package `infwarerr' (already loaded).
+Package hobsub Info: Skipping package `ltxcmds' (already loaded).
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+Package hobsub Info: Skipping package `ifvtex' (already loaded).
+Package: intcalc 2016/05/16 v1.2 Expandable calculations with integers (HO)
+Package hobsub Info: Skipping package `ifpdf' (already loaded).
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+Package: pdfescape 2016/05/16 v1.14 Implements pdfTeX's escape features (HO)
+Package: bigintcalc 2016/05/16 v1.4 Expandable calculations on big integers (HO
+)
+Package: bitset 2016/05/16 v1.2 Handle bit-vector datatype (HO)
+Package: uniquecounter 2016/05/16 v1.3 Provide unlimited unique counter (HO)
+)
+Package hobsub Info: Skipping package `hobsub' (already loaded).
+Package: letltxmacro 2016/05/16 v1.5 Let assignment for LaTeX macros (HO)
+Package: hopatch 2016/05/16 v1.3 Wrapper for package hooks (HO)
+Package: xcolor-patch 2016/05/16 xcolor patch
+Package: atveryend 2016/05/16 v1.9 Hooks at the very end of document (HO)
+Package hobsub Info: Skipping package `atbegshi' (already loaded).
+Package: refcount 2016/05/16 v3.5 Data extraction from label references (HO)
+Package: hycolor 2016/05/16 v1.8 Color options for hyperref/bookmark (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/auxhook.sty
+Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+)
+\@linkdim=\dimen163
+\Hy@linkcounter=\count119
+\Hy@pagecounter=\count120
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2018/02/06 v6.86b Hyperref: PDFDocEncoding definition (HO)
+)
+\Hy@SavedSpaceFactor=\count121
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+Package hyperref Info: Option `bookmarks' set `true' on input line 4383.
+Package hyperref Info: Option `bookmarksopen' set `true' on input line 4383.
+Package hyperref Info: Option `implicit' set `false' on input line 4383.
+Package hyperref Info: Hyper figures OFF on input line 4509.
+Package hyperref Info: Link nesting OFF on input line 4514.
+Package hyperref Info: Hyper index ON on input line 4517.
+Package hyperref Info: Plain pages OFF on input line 4524.
+Package hyperref Info: Backreferencing OFF on input line 4529.
+Package hyperref Info: Implicit mode OFF; no redefinition of LaTeX internals.
+Package hyperref Info: Bookmarks ON on input line 4762.
+\c@Hy@tempcnt=\count122
+
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 5115.
+\XeTeXLinkMargin=\dimen164
+\Fld@menulength=\count123
+\Field@Width=\dimen165
+\Fld@charsize=\dimen166
+Package hyperref Info: Hyper figures OFF on input line 6369.
+Package hyperref Info: Link nesting OFF on input line 6374.
+Package hyperref Info: Hyper index ON on input line 6377.
+Package hyperref Info: backreferencing OFF on input line 6384.
+Package hyperref Info: Link coloring OFF on input line 6389.
+Package hyperref Info: Link coloring with OCG OFF on input line 6394.
+Package hyperref Info: PDF/A mode OFF on input line 6399.
+LaTeX Info: Redefining \ref on input line 6439.
+LaTeX Info: Redefining \pageref on input line 6443.
+\Hy@abspage=\count124
+
+
+Package hyperref Message: Stopped early.
+
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+ (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2018/02/06 v6.86b Hyperref driver for pdfTeX
+\Fld@listcount=\count125
+\c@bookmark@seq@number=\count126
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
+Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+82.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaserequires.sty
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasecompatibility.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasefont.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks26
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/sansmathaccent/sansmathaccent.sty
+Package: sansmathaccent 2013/03/28
+
+(/usr/share/texlive/texmf-dist/tex/latex/filehook/filehook.sty
+Package: filehook 2011/10/12 v0.5d Hooks for input files
+)))
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasetranslator.sty
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator.sty
+Package: translator 2018/01/04 v1.12 Easy translation of strings in LaTeX
+))
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasemisc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasetwoscreens.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseoverlay.sty
+\beamer@argscount=\count127
+\beamer@lastskipcover=\skip44
+\beamer@trivlistdepth=\count128
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasetitle.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasesection.sty
+\c@lecture=\count129
+\c@part=\count130
+\c@section=\count131
+\c@subsection=\count132
+\c@subsubsection=\count133
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseframe.sty
+\beamer@framebox=\box40
+\beamer@frametitlebox=\box41
+\beamer@zoombox=\box42
+\beamer@zoomcount=\count134
+\beamer@zoomframecount=\count135
+\beamer@frametextheight=\dimen167
+\c@subsectionslide=\count136
+\beamer@frametopskip=\skip45
+\beamer@framebottomskip=\skip46
+\beamer@frametopskipautobreak=\skip47
+\beamer@framebottomskipautobreak=\skip48
+\beamer@envbody=\toks27
+\framewidth=\dimen168
+\c@framenumber=\count137
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseverbatim.sty
+\beamer@verbatimfileout=\write4
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseframesize.sty
+\beamer@splitbox=\box43
+\beamer@autobreakcount=\count138
+\beamer@autobreaklastheight=\dimen169
+\beamer@frametitletoks=\toks28
+\beamer@framesubtitletoks=\toks29
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseframecomponents.sty
+\beamer@footins=\box44
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasecolor.sty
+\beamer@bg@ht=\dimen170
+\beamer@bg@wd=\dimen171
+\beamer@bg@dp=\dimen172
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasenotes.sty
+\beamer@frameboxcopy=\box45
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasetoc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasetemplates.sty
+\beamer@sbttoks=\toks30
+
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseauxtemplates.sty
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaseboxes.sty
+\bmb@box=\box46
+\bmb@colorbox=\box47
+\bmb@boxshadow=\box48
+\bmb@boxshadowball=\box49
+\bmb@boxshadowballlarge=\box50
+\bmb@temp=\dimen173
+\bmb@dima=\dimen174
+\bmb@dimb=\dimen175
+\bmb@prevheight=\dimen176
+)
+\beamer@blockheadheight=\dimen177
+))
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbaselocalstructure.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/enumerate.sty
+Package: enumerate 2015/07/23 v3.00 enumerate extensions (DPC)
+\@enLab=\toks31
+)
+\c@figure=\count139
+\c@table=\count140
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasenavigation.sty
+\beamer@section@min@dim=\dimen178
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasetheorems.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2017/09/02 v2.17a AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks32
+\ex@=\dimen179
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen180
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count141
+LaTeX Info: Redefining \frac on input line 213.
+\uproot@=\count142
+\leftroot@=\count143
+LaTeX Info: Redefining \overline on input line 375.
+\classnum@=\count144
+\DOTSCASE@=\count145
+LaTeX Info: Redefining \ldots on input line 472.
+LaTeX Info: Redefining \dots on input line 475.
+LaTeX Info: Redefining \cdots on input line 596.
+\Mathstrutbox@=\box51
+\strutbox@=\box52
+\big@size=\dimen181
+LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
+\macc@depth=\count146
+\c@MaxMatrixCols=\count147
+\dotsspace@=\muskip11
+\c@parentequation=\count148
+\dspbrk@lvl=\count149
+\tag@help=\toks33
+\row@=\count150
+\column@=\count151
+\maxfields@=\count152
+\andhelp@=\toks34
+\eqnshift@=\dimen182
+\alignsep@=\dimen183
+\tagshift@=\dimen184
+\tagwidth@=\dimen185
+\totwidth@=\dimen186
+\lineht@=\dimen187
+\@envbody=\toks35
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks36
+LaTeX Info: Redefining \[ on input line 2817.
+LaTeX Info: Redefining \] on input line 2818.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2017/10/31 v2.20.4
+\thm@style=\toks37
+\thm@bodyfont=\toks38
+\thm@headfont=\toks39
+\thm@notefont=\toks40
+\thm@headpunct=\toks41
+\thm@preskip=\skip54
+\thm@postskip=\skip55
+\thm@headsep=\skip56
+\dth@everypar=\toks42
+)
+\c@theorem=\count153
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasethemes.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerthemedefault.sty
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerfontthemedefault.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamercolorthemedefault.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerinnerthemedefault.sty
+\beamer@dima=\dimen188
+\beamer@dimb=\dimen189
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerouterthemedefault.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerfontthemeserif.sty)
+(./ExteriorVegetation2.aux)
+\openout1 = `ExteriorVegetation2.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: custom
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: includehead includefoot 
+* h-part:(L,W,R)=(28.45274pt, 307.28987pt, 28.45274pt)
+* v-part:(T,H,B)=(0.0pt, 273.14662pt, 0.0pt)
+* \paperwidth=364.19536pt
+* \paperheight=273.14662pt
+* \textwidth=307.28987pt
+* \textheight=244.6939pt
+* \oddsidemargin=-43.81725pt
+* \evensidemargin=-43.81725pt
+* \topmargin=-72.26999pt
+* \headheight=14.22636pt
+* \headsep=0.0pt
+* \topskip=11.0pt
+* \footskip=14.22636pt
+* \marginparwidth=4.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count154
+\scratchdimen=\dimen190
+\scratchbox=\box53
+\nofMPsegments=\count155
+\nofMParguments=\count156
+\everyMPshowfont=\toks43
+\MPscratchCnt=\count157
+\MPscratchDim=\dimen191
+\MPnumerator=\count158
+\makeMPintoPDFobject=\count159
+\everyMPtoPDFconversion=\toks44
+) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+ABD: EveryShipout initializing macros
+\AtBeginShipoutBox=\box54
+Package hyperref Info: Link coloring OFF on input line 11.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
+Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
+)
+\c@section@level=\count160
+)
+LaTeX Info: Redefining \ref on input line 11.
+LaTeX Info: Redefining \pageref on input line 11.
+LaTeX Info: Redefining \nameref on input line 11.
+
+(./ExteriorVegetation2.out) (./ExteriorVegetation2.out)
+\@outlinefile=\write5
+\openout5 = `ExteriorVegetation2.out'.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator-basic-dictionary
+-English.dict
+Dictionary: translator-basic-dictionary, Language: English 
+)
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator-bibliography-dic
+tionary-English.dict
+Dictionary: translator-bibliography-dictionary, Language: English 
+)
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator-environment-dict
+ionary-English.dict
+Dictionary: translator-environment-dictionary, Language: English 
+)
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator-months-dictionar
+y-English.dict
+Dictionary: translator-months-dictionary, Language: English 
+)
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator-numbers-dictiona
+ry-English.dict
+Dictionary: translator-numbers-dictionary, Language: English 
+)
+(/usr/share/texlive/texmf-dist/tex/latex/translator/translator-theorem-dictiona
+ry-English.dict
+Dictionary: translator-theorem-dictionary, Language: English 
+) (./ExteriorVegetation2.nav) [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+<TREEEntropyExteriorVeg.png, id=20, 462.528pt x 346.896pt>
+File: TREEEntropyExteriorVeg.png Graphic file (type png)
+<use TREEEntropyExteriorVeg.png>
+Package pdftex.def Info: TREEEntropyExteriorVeg.png  used on input line 21.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [2
+
+ <./TREEEntropyExteriorVeg.png>]
+<TREEPtExteriorVegk2.png, id=28, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk2.png Graphic file (type png)
+<use TREEPtExteriorVegk2.png>
+Package pdftex.def Info: TREEPtExteriorVegk2.png  used on input line 28.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [3
+
+ <./TREEPtExteriorVegk2.png>]
+<TREEPtExteriorVegk3.png, id=35, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk3.png Graphic file (type png)
+<use TREEPtExteriorVegk3.png>
+Package pdftex.def Info: TREEPtExteriorVegk3.png  used on input line 35.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [4
+
+ <./TREEPtExteriorVegk3.png>]
+<TREEPtExteriorVegk4.png, id=42, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk4.png Graphic file (type png)
+<use TREEPtExteriorVegk4.png>
+Package pdftex.def Info: TREEPtExteriorVegk4.png  used on input line 42.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [5
+
+ <./TREEPtExteriorVegk4.png>]
+<TREEPtExteriorVegk5.png, id=49, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk5.png Graphic file (type png)
+<use TREEPtExteriorVegk5.png>
+Package pdftex.def Info: TREEPtExteriorVegk5.png  used on input line 49.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+
+[6
+
+ <./TREEPtExteriorVegk5.png>]
+<TREEPtExteriorVegk6.png, id=56, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk6.png Graphic file (type png)
+<use TREEPtExteriorVegk6.png>
+Package pdftex.def Info: TREEPtExteriorVegk6.png  used on input line 56.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [7
+
+ <./TREEPtExteriorVegk6.png>]
+<TREEPtExteriorVegk7.png, id=64, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk7.png Graphic file (type png)
+<use TREEPtExteriorVegk7.png>
+Package pdftex.def Info: TREEPtExteriorVegk7.png  used on input line 63.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [8
+
+ <./TREEPtExteriorVegk7.png>]
+<TREEPtExteriorVegk8.png, id=71, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk8.png Graphic file (type png)
+<use TREEPtExteriorVegk8.png>
+Package pdftex.def Info: TREEPtExteriorVegk8.png  used on input line 70.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [9
+
+ <./TREEPtExteriorVegk8.png>]
+<TREEPtExteriorVegk9.png, id=78, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk9.png Graphic file (type png)
+<use TREEPtExteriorVegk9.png>
+Package pdftex.def Info: TREEPtExteriorVegk9.png  used on input line 77.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [10
+
+ <./TREEPtExteriorVegk9.png>]
+<TREEPtExteriorVegk10.png, id=85, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk10.png Graphic file (type png)
+<use TREEPtExteriorVegk10.png>
+Package pdftex.def Info: TREEPtExteriorVegk10.png  used on input line 84.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [11
+
+ <./TREEPtExteriorVegk10.png>]
+<TREEPtExteriorVegk11.png, id=92, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk11.png Graphic file (type png)
+<use TREEPtExteriorVegk11.png>
+Package pdftex.def Info: TREEPtExteriorVegk11.png  used on input line 91.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [12
+
+ <./TREEPtExteriorVegk11.png>]
+<TREEPtExteriorVegk12.png, id=99, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk12.png Graphic file (type png)
+<use TREEPtExteriorVegk12.png>
+Package pdftex.def Info: TREEPtExteriorVegk12.png  used on input line 98.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [13
+
+ <./TREEPtExteriorVegk12.png>]
+<TREEPtExteriorVegk13.png, id=107, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk13.png Graphic file (type png)
+<use TREEPtExteriorVegk13.png>
+Package pdftex.def Info: TREEPtExteriorVegk13.png  used on input line 105.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [14
+
+ <./TREEPtExteriorVegk13.png>]
+<TREEPtExteriorVegk14.png, id=114, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk14.png Graphic file (type png)
+<use TREEPtExteriorVegk14.png>
+Package pdftex.def Info: TREEPtExteriorVegk14.png  used on input line 112.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [15
+
+ <./TREEPtExteriorVegk14.png>]
+<TREEPtExteriorVegk15.png, id=121, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk15.png Graphic file (type png)
+<use TREEPtExteriorVegk15.png>
+Package pdftex.def Info: TREEPtExteriorVegk15.png  used on input line 119.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [16
+
+ <./TREEPtExteriorVegk15.png>]
+<TREEPtExteriorVegk16.png, id=128, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk16.png Graphic file (type png)
+<use TREEPtExteriorVegk16.png>
+Package pdftex.def Info: TREEPtExteriorVegk16.png  used on input line 126.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [17
+
+ <./TREEPtExteriorVegk16.png>]
+<TREEPtExteriorVegk17.png, id=135, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk17.png Graphic file (type png)
+<use TREEPtExteriorVegk17.png>
+Package pdftex.def Info: TREEPtExteriorVegk17.png  used on input line 133.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [18
+
+ <./TREEPtExteriorVegk17.png>]
+<TREEPtExteriorVegk18.png, id=142, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk18.png Graphic file (type png)
+<use TREEPtExteriorVegk18.png>
+Package pdftex.def Info: TREEPtExteriorVegk18.png  used on input line 140.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [19
+
+ <./TREEPtExteriorVegk18.png>]
+<TREEPtExteriorVegk19.png, id=150, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk19.png Graphic file (type png)
+<use TREEPtExteriorVegk19.png>
+Package pdftex.def Info: TREEPtExteriorVegk19.png  used on input line 147.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+
+[20
+
+ <./TREEPtExteriorVegk19.png>]
+<TREEPtExteriorVegk20.png, id=157, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk20.png Graphic file (type png)
+<use TREEPtExteriorVegk20.png>
+Package pdftex.def Info: TREEPtExteriorVegk20.png  used on input line 154.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [21
+
+ <./TREEPtExteriorVegk20.png>]
+<TREEPtExteriorVegk21.png, id=164, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk21.png Graphic file (type png)
+<use TREEPtExteriorVegk21.png>
+Package pdftex.def Info: TREEPtExteriorVegk21.png  used on input line 161.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [22
+
+ <./TREEPtExteriorVegk21.png>]
+<TREEPtExteriorVegk22.png, id=171, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk22.png Graphic file (type png)
+<use TREEPtExteriorVegk22.png>
+Package pdftex.def Info: TREEPtExteriorVegk22.png  used on input line 168.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [23
+
+ <./TREEPtExteriorVegk22.png>]
+<TREEPtExteriorVegk23.png, id=178, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk23.png Graphic file (type png)
+<use TREEPtExteriorVegk23.png>
+Package pdftex.def Info: TREEPtExteriorVegk23.png  used on input line 175.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [24
+
+ <./TREEPtExteriorVegk23.png>]
+<TREEPtExteriorVegk24.png, id=185, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk24.png Graphic file (type png)
+<use TREEPtExteriorVegk24.png>
+Package pdftex.def Info: TREEPtExteriorVegk24.png  used on input line 182.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [25
+
+ <./TREEPtExteriorVegk24.png>]
+<TREEPtExteriorVegk25.png, id=194, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk25.png Graphic file (type png)
+<use TREEPtExteriorVegk25.png>
+Package pdftex.def Info: TREEPtExteriorVegk25.png  used on input line 189.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [26
+
+ <./TREEPtExteriorVegk25.png>]
+<TREEPtExteriorVegk26.png, id=201, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk26.png Graphic file (type png)
+<use TREEPtExteriorVegk26.png>
+Package pdftex.def Info: TREEPtExteriorVegk26.png  used on input line 196.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[27
+
+ <./TREEPtExteriorVegk26.png>]
+<TREEPtExteriorVegk27.png, id=208, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk27.png Graphic file (type png)
+<use TREEPtExteriorVegk27.png>
+Package pdftex.def Info: TREEPtExteriorVegk27.png  used on input line 203.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [28
+
+ <./TREEPtExteriorVegk27.png>]
+<TREEPtExteriorVegk28.png, id=215, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk28.png Graphic file (type png)
+<use TREEPtExteriorVegk28.png>
+Package pdftex.def Info: TREEPtExteriorVegk28.png  used on input line 210.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [29
+
+ <./TREEPtExteriorVegk28.png>]
+<TREEPtExteriorVegk29.png, id=222, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk29.png Graphic file (type png)
+<use TREEPtExteriorVegk29.png>
+Package pdftex.def Info: TREEPtExteriorVegk29.png  used on input line 217.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [30
+
+ <./TREEPtExteriorVegk29.png>]
+<TREEPtExteriorVegk30.png, id=229, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk30.png Graphic file (type png)
+<use TREEPtExteriorVegk30.png>
+Package pdftex.def Info: TREEPtExteriorVegk30.png  used on input line 224.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [31
+
+ <./TREEPtExteriorVegk30.png>]
+<TREEPtExteriorVegk31.png, id=237, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk31.png Graphic file (type png)
+<use TREEPtExteriorVegk31.png>
+Package pdftex.def Info: TREEPtExteriorVegk31.png  used on input line 231.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [32
+
+ <./TREEPtExteriorVegk31.png>]
+<TREEPtExteriorVegk32.png, id=244, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk32.png Graphic file (type png)
+<use TREEPtExteriorVegk32.png>
+Package pdftex.def Info: TREEPtExteriorVegk32.png  used on input line 238.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [33
+
+ <./TREEPtExteriorVegk32.png>]
+<TREEPtExteriorVegk33.png, id=251, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk33.png Graphic file (type png)
+<use TREEPtExteriorVegk33.png>
+Package pdftex.def Info: TREEPtExteriorVegk33.png  used on input line 245.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[34
+
+ <./TREEPtExteriorVegk33.png>]
+<TREEPtExteriorVegk34.png, id=258, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk34.png Graphic file (type png)
+<use TREEPtExteriorVegk34.png>
+Package pdftex.def Info: TREEPtExteriorVegk34.png  used on input line 252.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [35
+
+ <./TREEPtExteriorVegk34.png>]
+<TREEPtExteriorVegk35.png, id=265, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk35.png Graphic file (type png)
+<use TREEPtExteriorVegk35.png>
+Package pdftex.def Info: TREEPtExteriorVegk35.png  used on input line 259.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [36
+
+ <./TREEPtExteriorVegk35.png>]
+<TREEPtExteriorVegk36.png, id=272, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk36.png Graphic file (type png)
+<use TREEPtExteriorVegk36.png>
+Package pdftex.def Info: TREEPtExteriorVegk36.png  used on input line 266.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [37
+
+ <./TREEPtExteriorVegk36.png>]
+<TREEPtExteriorVegk37.png, id=280, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk37.png Graphic file (type png)
+<use TREEPtExteriorVegk37.png>
+Package pdftex.def Info: TREEPtExteriorVegk37.png  used on input line 273.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [38
+
+ <./TREEPtExteriorVegk37.png>]
+<TREEPtExteriorVegk38.png, id=287, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk38.png Graphic file (type png)
+<use TREEPtExteriorVegk38.png>
+Package pdftex.def Info: TREEPtExteriorVegk38.png  used on input line 280.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [39
+
+ <./TREEPtExteriorVegk38.png>]
+<TREEPtExteriorVegk39.png, id=294, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk39.png Graphic file (type png)
+<use TREEPtExteriorVegk39.png>
+Package pdftex.def Info: TREEPtExteriorVegk39.png  used on input line 287.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [40
+
+ <./TREEPtExteriorVegk39.png>]
+<TREEPtExteriorVegk40.png, id=301, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk40.png Graphic file (type png)
+<use TREEPtExteriorVegk40.png>
+Package pdftex.def Info: TREEPtExteriorVegk40.png  used on input line 294.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[41
+
+ <./TREEPtExteriorVegk40.png>]
+<TREEPtExteriorVegk41.png, id=308, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk41.png Graphic file (type png)
+<use TREEPtExteriorVegk41.png>
+Package pdftex.def Info: TREEPtExteriorVegk41.png  used on input line 301.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [42
+
+ <./TREEPtExteriorVegk41.png>]
+<TREEPtExteriorVegk42.png, id=315, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk42.png Graphic file (type png)
+<use TREEPtExteriorVegk42.png>
+Package pdftex.def Info: TREEPtExteriorVegk42.png  used on input line 308.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [43
+
+ <./TREEPtExteriorVegk42.png>]
+<TREEPtExteriorVegk43.png, id=323, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk43.png Graphic file (type png)
+<use TREEPtExteriorVegk43.png>
+Package pdftex.def Info: TREEPtExteriorVegk43.png  used on input line 315.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [44
+
+ <./TREEPtExteriorVegk43.png>]
+<TREEPtExteriorVegk44.png, id=330, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk44.png Graphic file (type png)
+<use TREEPtExteriorVegk44.png>
+Package pdftex.def Info: TREEPtExteriorVegk44.png  used on input line 322.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [45
+
+ <./TREEPtExteriorVegk44.png>]
+<TREEPtExteriorVegk45.png, id=337, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk45.png Graphic file (type png)
+<use TREEPtExteriorVegk45.png>
+Package pdftex.def Info: TREEPtExteriorVegk45.png  used on input line 329.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [46
+
+ <./TREEPtExteriorVegk45.png>]
+<TREEPtExteriorVegk46.png, id=344, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk46.png Graphic file (type png)
+<use TREEPtExteriorVegk46.png>
+Package pdftex.def Info: TREEPtExteriorVegk46.png  used on input line 336.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [47
+
+ <./TREEPtExteriorVegk46.png>]
+<TREEPtExteriorVegk47.png, id=351, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk47.png Graphic file (type png)
+<use TREEPtExteriorVegk47.png>
+Package pdftex.def Info: TREEPtExteriorVegk47.png  used on input line 343.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[48
+
+ <./TREEPtExteriorVegk47.png>]
+<TREEPtExteriorVegk48.png, id=358, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk48.png Graphic file (type png)
+<use TREEPtExteriorVegk48.png>
+Package pdftex.def Info: TREEPtExteriorVegk48.png  used on input line 350.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [49
+
+ <./TREEPtExteriorVegk48.png>]
+<TREEPtExteriorVegk49.png, id=366, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk49.png Graphic file (type png)
+<use TREEPtExteriorVegk49.png>
+Package pdftex.def Info: TREEPtExteriorVegk49.png  used on input line 357.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [50
+
+ <./TREEPtExteriorVegk49.png>]
+<TREEPtExteriorVegk50.png, id=374, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk50.png Graphic file (type png)
+<use TREEPtExteriorVegk50.png>
+Package pdftex.def Info: TREEPtExteriorVegk50.png  used on input line 364.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [51
+
+ <./TREEPtExteriorVegk50.png>]
+<TREEPtExteriorVegk51.png, id=381, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk51.png Graphic file (type png)
+<use TREEPtExteriorVegk51.png>
+Package pdftex.def Info: TREEPtExteriorVegk51.png  used on input line 371.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [52
+
+ <./TREEPtExteriorVegk51.png>]
+<TREEPtExteriorVegk52.png, id=388, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk52.png Graphic file (type png)
+<use TREEPtExteriorVegk52.png>
+Package pdftex.def Info: TREEPtExteriorVegk52.png  used on input line 378.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [53
+
+ <./TREEPtExteriorVegk52.png>]
+<TREEPtExteriorVegk53.png, id=395, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk53.png Graphic file (type png)
+<use TREEPtExteriorVegk53.png>
+Package pdftex.def Info: TREEPtExteriorVegk53.png  used on input line 385.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [54
+
+ <./TREEPtExteriorVegk53.png>]
+<TREEPtExteriorVegk54.png, id=402, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk54.png Graphic file (type png)
+<use TREEPtExteriorVegk54.png>
+Package pdftex.def Info: TREEPtExteriorVegk54.png  used on input line 392.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[55
+
+ <./TREEPtExteriorVegk54.png>]
+<TREEPtExteriorVegk55.png, id=410, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk55.png Graphic file (type png)
+<use TREEPtExteriorVegk55.png>
+Package pdftex.def Info: TREEPtExteriorVegk55.png  used on input line 399.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [56
+
+ <./TREEPtExteriorVegk55.png>]
+<TREEPtExteriorVegk56.png, id=417, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk56.png Graphic file (type png)
+<use TREEPtExteriorVegk56.png>
+Package pdftex.def Info: TREEPtExteriorVegk56.png  used on input line 406.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [57
+
+ <./TREEPtExteriorVegk56.png>]
+<TREEPtExteriorVegk57.png, id=424, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk57.png Graphic file (type png)
+<use TREEPtExteriorVegk57.png>
+Package pdftex.def Info: TREEPtExteriorVegk57.png  used on input line 413.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [58
+
+ <./TREEPtExteriorVegk57.png>]
+<TREEPtExteriorVegk58.png, id=431, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk58.png Graphic file (type png)
+<use TREEPtExteriorVegk58.png>
+Package pdftex.def Info: TREEPtExteriorVegk58.png  used on input line 420.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [59
+
+ <./TREEPtExteriorVegk58.png>]
+<TREEPtExteriorVegk59.png, id=438, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk59.png Graphic file (type png)
+<use TREEPtExteriorVegk59.png>
+Package pdftex.def Info: TREEPtExteriorVegk59.png  used on input line 427.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [60
+
+ <./TREEPtExteriorVegk59.png>]
+<TREEPtExteriorVegk60.png, id=445, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk60.png Graphic file (type png)
+<use TREEPtExteriorVegk60.png>
+Package pdftex.def Info: TREEPtExteriorVegk60.png  used on input line 434.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [61
+
+ <./TREEPtExteriorVegk60.png>]
+<TREEPtExteriorVegk61.png, id=453, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk61.png Graphic file (type png)
+<use TREEPtExteriorVegk61.png>
+Package pdftex.def Info: TREEPtExteriorVegk61.png  used on input line 441.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[62
+
+ <./TREEPtExteriorVegk61.png>]
+<TREEPtExteriorVegk62.png, id=460, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk62.png Graphic file (type png)
+<use TREEPtExteriorVegk62.png>
+Package pdftex.def Info: TREEPtExteriorVegk62.png  used on input line 448.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [63
+
+ <./TREEPtExteriorVegk62.png>]
+<TREEPtExteriorVegk63.png, id=467, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk63.png Graphic file (type png)
+<use TREEPtExteriorVegk63.png>
+Package pdftex.def Info: TREEPtExteriorVegk63.png  used on input line 455.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [64
+
+ <./TREEPtExteriorVegk63.png>]
+<TREEPtExteriorVegk64.png, id=474, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk64.png Graphic file (type png)
+<use TREEPtExteriorVegk64.png>
+Package pdftex.def Info: TREEPtExteriorVegk64.png  used on input line 462.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [65
+
+ <./TREEPtExteriorVegk64.png>]
+<TREEPtExteriorVegk65.png, id=481, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk65.png Graphic file (type png)
+<use TREEPtExteriorVegk65.png>
+Package pdftex.def Info: TREEPtExteriorVegk65.png  used on input line 469.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [66
+
+ <./TREEPtExteriorVegk65.png>]
+<TREEPtExteriorVegk66.png, id=488, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk66.png Graphic file (type png)
+<use TREEPtExteriorVegk66.png>
+Package pdftex.def Info: TREEPtExteriorVegk66.png  used on input line 476.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [67
+
+ <./TREEPtExteriorVegk66.png>]
+<TREEPtExteriorVegk67.png, id=496, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk67.png Graphic file (type png)
+<use TREEPtExteriorVegk67.png>
+Package pdftex.def Info: TREEPtExteriorVegk67.png  used on input line 483.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [68
+
+ <./TREEPtExteriorVegk67.png>]
+<TREEPtExteriorVegk68.png, id=503, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk68.png Graphic file (type png)
+<use TREEPtExteriorVegk68.png>
+Package pdftex.def Info: TREEPtExteriorVegk68.png  used on input line 490.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[69
+
+ <./TREEPtExteriorVegk68.png>]
+<TREEPtExteriorVegk69.png, id=510, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk69.png Graphic file (type png)
+<use TREEPtExteriorVegk69.png>
+Package pdftex.def Info: TREEPtExteriorVegk69.png  used on input line 497.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [70
+
+ <./TREEPtExteriorVegk69.png>]
+<TREEPtExteriorVegk70.png, id=517, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk70.png Graphic file (type png)
+<use TREEPtExteriorVegk70.png>
+Package pdftex.def Info: TREEPtExteriorVegk70.png  used on input line 504.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [71
+
+ <./TREEPtExteriorVegk70.png>]
+<TREEPtExteriorVegk71.png, id=524, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk71.png Graphic file (type png)
+<use TREEPtExteriorVegk71.png>
+Package pdftex.def Info: TREEPtExteriorVegk71.png  used on input line 511.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [72
+
+ <./TREEPtExteriorVegk71.png>]
+<TREEPtExteriorVegk72.png, id=531, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk72.png Graphic file (type png)
+<use TREEPtExteriorVegk72.png>
+Package pdftex.def Info: TREEPtExteriorVegk72.png  used on input line 518.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [73
+
+ <./TREEPtExteriorVegk72.png>]
+<TREEPtExteriorVegk73.png, id=539, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk73.png Graphic file (type png)
+<use TREEPtExteriorVegk73.png>
+Package pdftex.def Info: TREEPtExteriorVegk73.png  used on input line 525.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [74
+
+ <./TREEPtExteriorVegk73.png>]
+<TREEPtExteriorVegk74.png, id=546, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk74.png Graphic file (type png)
+<use TREEPtExteriorVegk74.png>
+Package pdftex.def Info: TREEPtExteriorVegk74.png  used on input line 532.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [75
+
+ <./TREEPtExteriorVegk74.png>]
+<TREEPtExteriorVegk75.png, id=554, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk75.png Graphic file (type png)
+<use TREEPtExteriorVegk75.png>
+Package pdftex.def Info: TREEPtExteriorVegk75.png  used on input line 539.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[76
+
+ <./TREEPtExteriorVegk75.png>]
+<TREEPtExteriorVegk76.png, id=561, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk76.png Graphic file (type png)
+<use TREEPtExteriorVegk76.png>
+Package pdftex.def Info: TREEPtExteriorVegk76.png  used on input line 546.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [77
+
+ <./TREEPtExteriorVegk76.png>]
+<TREEPtExteriorVegk77.png, id=568, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk77.png Graphic file (type png)
+<use TREEPtExteriorVegk77.png>
+Package pdftex.def Info: TREEPtExteriorVegk77.png  used on input line 553.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [78
+
+ <./TREEPtExteriorVegk77.png>]
+<TREEPtExteriorVegk78.png, id=575, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk78.png Graphic file (type png)
+<use TREEPtExteriorVegk78.png>
+Package pdftex.def Info: TREEPtExteriorVegk78.png  used on input line 560.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [79
+
+ <./TREEPtExteriorVegk78.png>]
+<TREEPtExteriorVegk79.png, id=583, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk79.png Graphic file (type png)
+<use TREEPtExteriorVegk79.png>
+Package pdftex.def Info: TREEPtExteriorVegk79.png  used on input line 567.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [80
+
+ <./TREEPtExteriorVegk79.png>]
+<TREEPtExteriorVegk80.png, id=590, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk80.png Graphic file (type png)
+<use TREEPtExteriorVegk80.png>
+Package pdftex.def Info: TREEPtExteriorVegk80.png  used on input line 574.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [81
+
+ <./TREEPtExteriorVegk80.png>]
+<TREEPtExteriorVegk81.png, id=597, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk81.png Graphic file (type png)
+<use TREEPtExteriorVegk81.png>
+Package pdftex.def Info: TREEPtExteriorVegk81.png  used on input line 581.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [82
+
+ <./TREEPtExteriorVegk81.png>]
+<TREEPtExteriorVegk82.png, id=604, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk82.png Graphic file (type png)
+<use TREEPtExteriorVegk82.png>
+Package pdftex.def Info: TREEPtExteriorVegk82.png  used on input line 588.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[83
+
+ <./TREEPtExteriorVegk82.png>]
+<TREEPtExteriorVegk83.png, id=611, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk83.png Graphic file (type png)
+<use TREEPtExteriorVegk83.png>
+Package pdftex.def Info: TREEPtExteriorVegk83.png  used on input line 595.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [84
+
+ <./TREEPtExteriorVegk83.png>]
+<TREEPtExteriorVegk84.png, id=618, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk84.png Graphic file (type png)
+<use TREEPtExteriorVegk84.png>
+Package pdftex.def Info: TREEPtExteriorVegk84.png  used on input line 602.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [85
+
+ <./TREEPtExteriorVegk84.png>]
+<TREEPtExteriorVegk85.png, id=626, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk85.png Graphic file (type png)
+<use TREEPtExteriorVegk85.png>
+Package pdftex.def Info: TREEPtExteriorVegk85.png  used on input line 609.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [86
+
+ <./TREEPtExteriorVegk85.png>]
+<TREEPtExteriorVegk86.png, id=633, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk86.png Graphic file (type png)
+<use TREEPtExteriorVegk86.png>
+Package pdftex.def Info: TREEPtExteriorVegk86.png  used on input line 616.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [87
+
+ <./TREEPtExteriorVegk86.png>]
+<TREEPtExteriorVegk87.png, id=640, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk87.png Graphic file (type png)
+<use TREEPtExteriorVegk87.png>
+Package pdftex.def Info: TREEPtExteriorVegk87.png  used on input line 623.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [88
+
+ <./TREEPtExteriorVegk87.png>]
+<TREEPtExteriorVegk88.png, id=647, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk88.png Graphic file (type png)
+<use TREEPtExteriorVegk88.png>
+Package pdftex.def Info: TREEPtExteriorVegk88.png  used on input line 630.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [89
+
+ <./TREEPtExteriorVegk88.png>]
+<TREEPtExteriorVegk89.png, id=654, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk89.png Graphic file (type png)
+<use TREEPtExteriorVegk89.png>
+Package pdftex.def Info: TREEPtExteriorVegk89.png  used on input line 637.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[90
+
+ <./TREEPtExteriorVegk89.png>]
+<TREEPtExteriorVegk90.png, id=661, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk90.png Graphic file (type png)
+<use TREEPtExteriorVegk90.png>
+Package pdftex.def Info: TREEPtExteriorVegk90.png  used on input line 644.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [91
+
+ <./TREEPtExteriorVegk90.png>]
+<TREEPtExteriorVegk91.png, id=669, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk91.png Graphic file (type png)
+<use TREEPtExteriorVegk91.png>
+Package pdftex.def Info: TREEPtExteriorVegk91.png  used on input line 651.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [92
+
+ <./TREEPtExteriorVegk91.png>]
+<TREEPtExteriorVegk92.png, id=676, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk92.png Graphic file (type png)
+<use TREEPtExteriorVegk92.png>
+Package pdftex.def Info: TREEPtExteriorVegk92.png  used on input line 658.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [93
+
+ <./TREEPtExteriorVegk92.png>]
+<TREEPtExteriorVegk93.png, id=683, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk93.png Graphic file (type png)
+<use TREEPtExteriorVegk93.png>
+Package pdftex.def Info: TREEPtExteriorVegk93.png  used on input line 665.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [94
+
+ <./TREEPtExteriorVegk93.png>]
+<TREEPtExteriorVegk94.png, id=690, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk94.png Graphic file (type png)
+<use TREEPtExteriorVegk94.png>
+Package pdftex.def Info: TREEPtExteriorVegk94.png  used on input line 672.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [95
+
+ <./TREEPtExteriorVegk94.png>]
+<TREEPtExteriorVegk95.png, id=697, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk95.png Graphic file (type png)
+<use TREEPtExteriorVegk95.png>
+Package pdftex.def Info: TREEPtExteriorVegk95.png  used on input line 679.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [96
+
+ <./TREEPtExteriorVegk95.png>]
+<TREEPtExteriorVegk96.png, id=704, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk96.png Graphic file (type png)
+<use TREEPtExteriorVegk96.png>
+Package pdftex.def Info: TREEPtExteriorVegk96.png  used on input line 686.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+[97
+
+ <./TREEPtExteriorVegk96.png>]
+<TREEPtExteriorVegk97.png, id=712, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk97.png Graphic file (type png)
+<use TREEPtExteriorVegk97.png>
+Package pdftex.def Info: TREEPtExteriorVegk97.png  used on input line 693.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [98
+
+ <./TREEPtExteriorVegk97.png>]
+<TREEPtExteriorVegk98.png, id=719, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk98.png Graphic file (type png)
+<use TREEPtExteriorVegk98.png>
+Package pdftex.def Info: TREEPtExteriorVegk98.png  used on input line 700.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [99
+
+ <./TREEPtExteriorVegk98.png>]
+<TREEPtExteriorVegk99.png, id=726, 462.528pt x 346.896pt>
+File: TREEPtExteriorVegk99.png Graphic file (type png)
+<use TREEPtExteriorVegk99.png>
+Package pdftex.def Info: TREEPtExteriorVegk99.png  used on input line 707.
+(pdftex.def)             Requested size: 276.559pt x 207.4299pt.
+ [100
+
+ <./TREEPtExteriorVegk99.png>]
+\tf@nav=\write6
+\openout6 = `ExteriorVegetation2.nav'.
+
+\tf@toc=\write7
+\openout7 = `ExteriorVegetation2.toc'.
+
+\tf@snm=\write8
+\openout8 = `ExteriorVegetation2.snm'.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 708.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 708.
+
+(./ExteriorVegetation2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 708.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 708.
+Package rerunfilecheck Info: File `ExteriorVegetation2.out' has not changed.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+ ) 
+Here is how much of TeX's memory you used:
+ 17586 strings out of 492982
+ 333591 string characters out of 6134896
+ 387189 words of memory out of 5000000
+ 20499 multiletter control sequences out of 15000+600000
+ 5731 words of font info for 21 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 56i,11n,55p,826b,371s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on ExteriorVegetation2.pdf (100 pages, 1416932 bytes).
+PDF statistics:
+ 785 PDF objects out of 1000 (max. 8388607)
+ 473 compressed objects within 5 object streams
+ 201 named destinations out of 1000 (max. 500000)
+ 538 words of extra memory for PDF output out of 10000 (max. 10000000)
+
