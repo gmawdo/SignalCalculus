@@ -18,9 +18,9 @@ wpd_config = 	{
 
 enel_config = 	{
 			"timeIntervals"	:	1,
-			"k"				:	10,
+			"k"				:	60,
 			"radius"		:	0.5,
-			"virtualSpeed"	:	0,
+			"virtualSpeed"	:	2,
 			"decimation"	:	0,
 			"k-optimise"	:	True,
 		}
