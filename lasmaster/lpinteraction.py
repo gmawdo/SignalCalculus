@@ -9,7 +9,6 @@ import time
 
 # the following function simply generates a name for output file
 def name_modifier(config):
-		
 	N = config["timeIntervals"]
 	k = config["k"]
 	radius = config["radius"]
@@ -74,22 +73,6 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		out_file.writer.set_dimension(dimension, value)
 
 	out_file.close()
-
-def radius_intensity(file_name, config):
-	in_file = File(file_name, mode = "r")
-	header=in_file.header
-	
-	coord_dictionary = {"x": in_file.x, "y": in_file.y, "z": in_file.z, "gps_time": in_file.gps_time}
-
-	k_opt = geo.optimise_radius(coord_dictionary, config)
-	
-	mod = "radius_opt"
-	out_file = File(mod+file_name, mode = "w", header = header)
-	out_file.points = in_file.points
-	out_file.intensity = 100*k_opt
-	out_file.classification = k_opt
-	out_file.close()
-
 
 # C L I P   N E A R   F L I G H T   L I N E
 def nfl(file_name, clip = 100, fl = 10, change_name = True):
