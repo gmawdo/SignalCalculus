@@ -47,6 +47,8 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 			if not(dimension in dimensions):
 				out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
 
+	out_file.define_new_dimension(name = "kopt", data_type = 6, description = "koptimal")
+
 	# add pre-existing point records
 	for dimension in dimensions:
 		dat = in_file.reader.get_dimension(dimension)
@@ -66,6 +68,8 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		value = fun_kdist[dimension](k, kdist)
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
+
+	out_file.writer.set_dimension("kopt", k)
 
 	out_file.close()
 

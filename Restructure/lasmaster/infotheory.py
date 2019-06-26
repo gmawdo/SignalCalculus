@@ -9,7 +9,7 @@ def entropy(distribution):
 	N = distribution.shape[-1]
 	logs = np.log(distribution)
 	logs[np.logical_or(np.isnan(logs),np.isinf(logs))]=0
-	entropies = np.average(-logs, axis = -1, weights = distribution)/np.log(N)
+	entropies = np.sum(-distribution*logs, axis = -1)/np.log(N)
 	return entropies
 
 # J E N S E N - S H A N N O N   D I V E R G E N C E

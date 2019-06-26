@@ -22,9 +22,9 @@ def std_fun_eig():
 def std_fun_vec():
 	normalised = (lambda v0, v1, v2: np.sqrt(v0[:,0]**2+v0[:,1]**2+v0[:,2]**2))
 	output =	{					
-			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,2])/normalised(v0, v1, v2))/np.pi),0,1)),
-			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,2])/normalised(v0, v1, v2))/np.pi),0,1)),
-			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,2])/normalised(v0, v1, v2))/np.pi),0,1)),
+			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,-2])/normalised(v0, v1, v2))/np.pi),0,1)),
+			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,-2])/normalised(v0, v1, v2))/np.pi),0,1)),
+			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,-2])/normalised(v0, v1, v2))/np.pi),0,1)),
 			}
 	return output
 
