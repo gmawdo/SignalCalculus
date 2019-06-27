@@ -13,18 +13,18 @@ def std_fun_eig():
 			"scattering"	:	(lambda x, y, z: x/z),
 			"linearity"		:	(lambda x, y, z: (z-y)/z),
 			"planarity"		:	(lambda x, y, z: (y-x)/z),
-			"entent"		:	(lambda x, y, z: entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1))),
+			"entent"		:	lambda x, y, z: np.clip(entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1)), 0, 1),
 			}	
 	return output
 
 # F U N C T I O N S   O F   E I G E N V E C T O R S
 # the point of doing this is that anyone can now define their own attributes, so long as they are functions of eigenvectors
 def std_fun_vec():
-	normalised = (lambda v0, v1, v2: np.sqrt(v0[:,0]**2+v0[:,1]**2+v0[:,2]**2))
+	normalised = (lambda v: np.sqrt(v[:,0]**2+v[:,1]**2+v[:,2]**2))
 	output =	{					
-			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,-2])/normalised(v0, v1, v2))/np.pi),0,1)),
-			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,-2])/normalised(v0, v1, v2))/np.pi),0,1)),
-			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,-2])/normalised(v0, v1, v2))/np.pi),0,1)),
+			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,2])/normalised(v0)))/np.pi,0,1)),
+			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,2])/normalised(v1)))/np.pi,0,1)),
+			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,2])/normalised(v2)))/np.pi,0,1)),
 			}
 	return output
 

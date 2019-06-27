@@ -13,8 +13,8 @@ uniform float pointRadius = 0.1;   //# uiname=Point Radius; min=0.001; max=200
 uniform float trimRadius = 1000000;//# uiname=Trim Radius; min=1; max=1000000
 uniform float exposure = 1.0;      //# uiname=Exposure; min=0.01; max=10000
 uniform float contrast = 1.0;      //# uiname=Contrast; min=0.01; max=10000
-uniform int colorMode = 0;         //# uiname=Colour Mode; enum=Intensity1000|Colour|Return Index|Point Source|Las Classification|File Number|ClassificationMod32|ExposureContrast
-uniform int selectionMode = 0;     //# uiname=Selection; enum=All|Classified|First Return|Last Return|First Of Several|Class0|Class1|Class2|Class3|Class4|Class5|Class6|Class7|Class8|Class9|Class10|Class11|Class12|Intensity[000,100)|Intensity[100,200)|Intensity[200,300)|Intensity[300,400)|Intensity[400,500)|Intensity[500,600)|Intensity[600,700)|Intensity[700,800)|Intensity[800,900)|Intensity[900,1000]
+uniform int colorMode = 0;         //# uiname=Colour Mode; enum=Intensity1000|Colour|Return Index|Point Source|Las Classification|File Number|ClassificationMod32|Intensity100
+uniform int selectionMode = 0;     //# uiname=Selection; enum=All|Classified|First Return|Last Return|First Of Several|Class0|Class1|Class2|Class3|Class4|Class5|Class6|Class7|Class8|Class9|Class10|Class11|Class12|Intensity[000,100)|Intensity[100,200)|Intensity[200,300)|Intensity[300,400)|Intensity[400,500)|Intensity[500,600)|Intensity[600,700)|Intensity[700,800)|Intensity[800,900)|Intensity[900,1000]|Intensity[980,1000]|Intensity[0,20]
 uniform float minPointSize = 0;
 uniform float maxPointSize = 400.0;
 // Point size multiplier to get from a width in projected coordinates to the
@@ -85,9 +85,9 @@ void main()
     {
         // Colour according to some common classifications defined in the LAS spec
         if (classification == 0)      pointColor = vec3(0.0, 0.0, 0.0); // ground
-        else if (classification == 1) pointColor = vec3(1.0, 0.0, 0.0); // low vegetation
-        else if (classification == 2) pointColor = vec3(1.0, 1.0, 1.0); // medium vegetation
-        else if (classification == 3) pointColor = vec3(0.0, 0.0,  1.0); // high vegetation
+        else if (classification == 1) pointColor = vec3(0.0, 0.0, 1.0); // low vegetation
+        else if (classification == 2) pointColor = vec3(0.0, 1.0, 0.0); // medium vegetation
+        else if (classification == 3) pointColor = vec3(1.0, 0.0,  0.0); // high vegetation
         else if (classification == 4) pointColor = vec3(0.0,  1.0,  1.0); // building
         else if (classification == 5) pointColor = vec3(1.0,  1.0,  0.0); // water
         else if (classification == 6) pointColor = vec3(1.0,  1.0,  0.0); // water
@@ -109,12 +109,12 @@ void main()
     else if (colorMode == 6)
     {
         
-       if (classification == 0)      pointColor = vec3(0.48217875, 0.63360915, 0.45598472);
-       else if (classification == 1) pointColor = vec3(0.16457365, 0.5129956 , 0.32243076);
+       if (classification == 0)      pointColor = vec3(0.40336824, 0.16617165, 0.82288401);
+       else if (classification == 1) pointColor = vec3(0.19898032, 0.19456412, 0.60645556);
        else if (classification == 2) pointColor = vec3(0.6159766 , 0.37221269, 0.01181071);
        else if (classification == 3) pointColor = vec3(0.13277352, 0.57771233, 0.28951415);
        else if (classification == 4) pointColor = vec3(0.57204769, 0.12039454, 0.30755777);
-       else if (classification == 5) pointColor = vec3(0.97138527, 0.78416334, 0.73819023);
+       else if (classification == 5) pointColor = vec3(0.17811791, 0.478046  , 0.34383609);
        else if (classification == 6) pointColor = vec3(0.61231075, 0.37323821, 0.01445104);
        else if (classification == 7) pointColor = vec3(0.40122632, 0.05833622, 0.54043746);
        else if (classification == 8) pointColor = vec3(0.60561361, 0.28184849, 0.1125379 );
@@ -140,13 +140,12 @@ void main()
        else if (classification == 28) pointColor = vec3(0.39338508, 0.14798268, 0.45863224);
        else if (classification == 29) pointColor = vec3(0.16392452, 0.22919177, 0.60688372);
        else if (classification == 30) pointColor = vec3(0.16407127, 0.62640183, 0.2095269 );
-       else if (classification == 31) pointColor = vec3(0.68923429, 0.02471148, 0.34055842);
-
+       else if (classification == 31) pointColor = vec3(1,1 ,1);
     }
+ 
     else if (colorMode == 7)
-    {
-        pointColor = tonemap(intensity/400.0, exposure, contrast) * vec3(1);
-    }
+      pointColor = vec3((intensity/100)*(2*(intensity/100)-1),4*(intensity/100)*(1-(intensity/100)),(1-(intensity/100))*(1-2*(intensity/100)));
+  
     if (selectionMode != 0)
     {
         if (selectionMode == 1)
@@ -305,6 +304,18 @@ void main()
         // Intensity USER Edit Keep
         {
             if (intensity < 900||intensity > 1000)
+                markerShape = -1;
+        }
+        else if (selectionMode == 28)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 980||intensity > 1000)
+                markerShape = -1;
+        }
+        else if (selectionMode == 29)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 0||intensity > 20)
                 markerShape = -1;
         }
     }

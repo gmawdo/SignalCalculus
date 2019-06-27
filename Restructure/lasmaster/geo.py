@@ -29,14 +29,12 @@ def optimise_k(relative_positions, k_range): # shape of argument is (d,num_pts,k
 		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1] #num_pts
 		scattering = evals[:,-3]/evals[:,-1] #num_pts
 		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1)) #(num_pts)
-		print(min(dim_ent), min(dim_ent[np.logical_not(np.isnan(dim_ent))]))
 		condition = dim_ent<=entropy_store
 		k_opt[condition] = item #num_pts
 		entropy_store[condition] = dim_ent[condition]
 		eval_store[condition,:] = evals[condition,:]
 		evect_store[condition,:,:] = evects[condition,:,:]
 		unchanged[condition] = False
-		print(condition[condition].size, condition.size)
 
 	entropy_store[unchanged] = 0
 	eval_store[unchanged,:] = 0
