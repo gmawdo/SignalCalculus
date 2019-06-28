@@ -80,6 +80,8 @@ def eig(coord_dictionary, config):
 	vec3 = np.empty(t.shape+(3,), dtype = float)
 	kdist = np.empty(t.shape, dtype = float)
 	kopt = np.empty(t.shape, dtype = int)
+	dist1 = np.empty(t.shape, dtype = float)
+	distmax = np.empty(t.shape, dtype = float)
 
 	coords = np.vstack((x,y,z)+spacetime*(v_speed*t))
 	nhbrs = NearestNeighbors(n_neighbors = max(k_range), algorithm = "kd_tree").fit(np.transpose(coords))
@@ -102,4 +104,15 @@ def eig(coord_dictionary, config):
 		vec3[time_range,:] = evects[:,:,-1]/(np.linalg.norm(evects[:,:,-1], axis = 1)[:,None])
 		kdist[time_range] = distances[np.arange(indices.shape[0]), k_opt-1]
 		kopt[time_range] = k_opt
-	return val1, val2, val3, vec1, vec2, vec3, kopt, kdist
+		dist1[time_range] = distances[:,1]
+		distmax[time_range] = distances[:,-1]
+
+	k_dictionary = {}
+	kdist_dictionary = {}
+	k_dictionary["1"] = 1
+	k_dictionary["max"] = max(k_range)*np.ones(t.shape, dtype = int)
+	k_dictionary["opt"] = k_opt*np.ones(t.shape, dtype = int)
+	kdist_dictionary["1"] = dist1
+	kdist_dictionary["max"] = distmax
+	kdist_dictionary["opt"] = kdist
+	return val1, val2, val3, vec1, vec2, vec3, k_dictionary, kdist_dictionary

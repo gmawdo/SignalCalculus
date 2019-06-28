@@ -25,7 +25,16 @@ def std_fun_vec():
 			"ang0"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v0[:,2])/normalised(v0)))/np.pi,0,1)),
 			"ang1"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v1[:,2])/normalised(v1)))/np.pi,0,1)),
 			"ang2"	:	(lambda v0, v1, v2: np.clip(2*(np.arccos(abs(v2[:,2])/normalised(v2)))/np.pi,0,1)),
-			}
+			"eig20"	:	(lambda v0, v1, v2: v2[:,0]),
+			"eig21"	:	(lambda v0, v1, v2: v2[:,1]),
+			"eig22"	:	(lambda v0, v1, v2: v2[:,2]),
+			"eig10"	:	(lambda v0, v1, v2: v1[:,0]),
+			"eig11"	:	(lambda v0, v1, v2: v1[:,1]),
+			"eig12"	:	(lambda v0, v1, v2: v1[:,2]),
+			"eig00"	:	(lambda v0, v1, v2: v0[:,0]),
+			"eig01"	:	(lambda v0, v1, v2: v0[:,1]),
+			"eig02"	:	(lambda v0, v1, v2: v0[:,2]),
+				}
 	return output
 
 # F U N C T I O N S   O F   D I S T A N C E S
@@ -35,6 +44,7 @@ def std_fun_kdist():
 	sphere_constant = 4*np.pi/3
 	output = 	{
 			"ptdens":	(lambda k, d: k/(sphere_constant*(d**3))),
+			"dist"	:	(lambda k, d: d),
 			}
 	return output
 	

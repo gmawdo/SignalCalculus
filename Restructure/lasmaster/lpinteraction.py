@@ -42,10 +42,15 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 	# extract names of pre-existing attributes
 	dimensions = [spec.name for spec in in_file.point_format]
 
-	for fun_set in fun_eig, fun_vec, fun_kdist:
+	for fun_set in fun_eig, fun_vec:
 		for dimension in fun_set:
 			if not(dimension in dimensions):
 				out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
+
+	for modifier in ["max", "1", "opt"]:
+		for dimension in fun_kdist:
+			if not(dimension in dimensions):
+				out_file.define_new_dimension(name = modifier+dimension, data_type = 9, description = modifier+dimension)
 
 	out_file.define_new_dimension(name = "kopt", data_type = 6, description = "koptimal")
 
@@ -64,12 +69,14 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
 
-	for dimension in fun_kdist:
-		value = fun_kdist[dimension](k, kdist)
-		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
-		out_file.writer.set_dimension(dimension, value)
+	for modifier in ["max", "1", "opt"]: # for "max" we use the maximum k searched, for "1" we use the nearest neighbour 
+	# for "opt" we use the optimal k
+		for dimension in fun_kdist:
+			value = fun_kdist[dimension](k[modifier], kdist[modifier])
+			value[np.logical_or(np.isnan(value),np.isinf(value))]=0
+			out_file.writer.set_dimension(modifier+dimension, value)
 
-	out_file.writer.set_dimension("kopt", k)
+	out_file.writer.set_dimension(modifier+"kopt", k["opt"])
 
 	out_file.close()
 
