@@ -109,9 +109,9 @@ def eig(coord_dictionary, config):
 
 	k_dictionary = {}
 	kdist_dictionary = {}
-	k_dictionary["1"] = 1
+	k_dictionary["1"] = np.ones(t.shape, dtype = int)
 	k_dictionary["max"] = max(k_range)*np.ones(t.shape, dtype = int)
-	k_dictionary["opt"] = k_opt*np.ones(t.shape, dtype = int)
+	k_dictionary["opt"] = kopt
 	kdist_dictionary["1"] = dist1
 	kdist_dictionary["max"] = distmax
 	kdist_dictionary["opt"] = kdist

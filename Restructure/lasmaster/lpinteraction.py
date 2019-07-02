@@ -76,7 +76,7 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 			value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 			out_file.writer.set_dimension(modifier+dimension, value)
 
-	out_file.writer.set_dimension(modifier+"kopt", k["opt"])
+	out_file.writer.set_dimension("kopt", k["opt"])
 
 	out_file.close()
 
