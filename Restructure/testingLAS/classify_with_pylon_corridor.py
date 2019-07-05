@@ -26,7 +26,7 @@ def corridor(c, conductor_condition, R=1, S=2):
 
 
 for filename in os.listdir():
-	if "radius00_50" in filename and filename[:4]=="attr":
+	if "Infty" in filename and filename[:4]=="attr":
 		print(filename)
 		inFile = File(filename, mode = "r")
 		X = inFile.x
