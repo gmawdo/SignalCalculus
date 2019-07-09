@@ -16,7 +16,7 @@ import numpy as np
 # k-optimise dictates which attribute should be minimised in neighbourhood selection
 # if just one value of k is given, optimisation will not occur
 
-example_config = 	{
+example_attr_config = 	{
 			"timeIntervals"	:	10,
 			"k"				:	range(4,50), # must be a generator
 			"radius"		:	0.5,
@@ -24,17 +24,22 @@ example_config = 	{
 			"k-optimise"	:	"diment",
 		}
 
+example_hag_config = 	{
+			"vox"			:	2,
+			"alpha"			:	0.01,
+		}
 
-def wpd_attr(file_name):
+
+def example_attr(file_name):
 	start = time.time()
-	cf = example_config
+	cf = example_attr_config
 	lpinteraction.attr(file_name, cf, fun.std_fun_eig(), fun.std_fun_vec(), fun.std_fun_kdist()) 
 	end = time.time()
 	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
-def enel_attr(file_name):
+def example_hag(file_name):
 	start = time.time()
-	cf = example_config
-	lpinteraction.attr(file_name, cf, fun.std_fun_eig(), fun.std_fun_vec(), fun.std_fun_kdist())
+	cf = example_hag_config
+	lpinteraction.add_hag(file_name, cf)
 	end = time.time()
 	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")

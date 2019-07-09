@@ -8,7 +8,7 @@ import time
 # Governs the interaction with laspy
 
 # the following function simply generates a name for output file
-def name_modifier(config):
+def name_modifier_attr(config):
 	N = config["timeIntervals"]
 	k = config["k"]
 	radius = config["radius"]
@@ -36,7 +36,7 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 
 	val1, val2, val3, vec1, vec2, vec3, k, kdist = geo.eig(coord_dictionary, config)
 	
-	mod = name_modifier(config)
+	mod = name_modifier_attr(config)
 	out_file = File(mod+file_name, mode = "w", header = header)
 	
 	# extract names of pre-existing attributes
@@ -79,6 +79,41 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 	out_file.writer.set_dimension("kopt", k["opt"])
 
 	out_file.close()
+
+def name_modifier_hag(config):
+	alpha = config["alpha"] # alpha is small, between 0 and 1
+	vox = config["vox"]
+	A = "0_"+(str(int(1000*(vox-int(vox))))).zfill(3)
+	R_int = int(vox)
+	R_rat = int(100*(vox-int(vox)))
+	R = str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
+	return "hag"+"alpha"+A+"vox"+R
+
+
+def add_hag(file_name, config):
+	start = time.time()
+	in_file = File(file_name, mode = "r")
+	x_array = in_file.x
+	y_array = in_file.y
+	z_array = in_file.z
+	coord_dictionary = {
+						"x": x_array,
+						"y": y_array,
+						"z": z_array,
+						}
+	hag = geo.hag(coord_dictionary, config)
+	mod = name_modifier_hag(config)
+	out_file = File(mod+file_name, mode = "w", header = in_file.header)
+	# add pre-existing point records
+	dimensions = [spec.name for spec in in_file.point_format]
+	if not("hag" in dimensions):
+		out_file.define_new_dimension(name = "hag", data_type = 9, description = "hag")
+	for dimension in dimensions:
+		dat = in_file.reader.get_dimension(dimension)
+		out_file.writer.set_dimension(dimension, dat)
+	out_file.writer.set_dimension("hag", hag)
+	out_file.close()
+
 
 # C L I P   N E A R   F L I G H T   L I N E
 def nfl(file_name, clip = 100, fl = 10, change_name = True):

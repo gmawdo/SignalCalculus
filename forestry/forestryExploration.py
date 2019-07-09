@@ -60,7 +60,7 @@ c2d = np.vstack((x,y))
 
 nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d[:, peak]))		
 distances2d, indices2d = nhbrs2d.kneighbors(np.transpose(c2d))
-classification = ((classification[classified])[indices2d[:,0]])
+classification = ((classification[peak])[indices2d[:,0]])
 
 C2D = np.vstack((X,Y))
 Nhbrs2d = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(c2d))
@@ -79,7 +79,7 @@ for item in ID:
 	height[ID == item] = max(Z[Classification == item])-min(Z[Classification == item])
 	radius[ID == item] = max(distances2d[Indices2d[Classification == item, 0],0])
 
-condition = (height > 2.5)
+condition = (height >2)
 print(sum(condition))
 print(len(ID))
 print(height[condition])
@@ -91,7 +91,7 @@ classification = ((classification[peak])[indices2d[:,0]])
 Classification = classification[Indices2d[:,0]]
 Classification[Distances2d[:,0]>0.5] = 0
 
-np.savetxt("trees.csv", trees[:, condition], delimiter=",", header = "ID, Height, Radius, CrownX, CrownY, CrownZ")
+np.savetxt("trees.csv", trees[condition, :], delimiter=",", header = "ID, Height, Radius, CrownX, CrownY, CrownZ")
 outFile = File("forestryExperiment.las", mode = "w", header = inFile.header)
 outFile.points = inFile.points
 

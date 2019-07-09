@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from lasmaster.infotheory import entropy
 from lasmaster import fun
+import pandas as pd
 
 # O P T I M I S E   K   N U M B E R S
 def optimise_k(relative_positions, k_range): # shape of argument is (d,num_pts,k)
@@ -116,3 +117,15 @@ def eig(coord_dictionary, config):
 	kdist_dictionary["max"] = distmax
 	kdist_dictionary["opt"] = kdist
 	return val1, val2, val3, vec1, vec2, vec3, k_dictionary, kdist_dictionary
+
+def hag(coord_dictionary, config):
+	Coords = np.vstack((coord_dictionary["x"],coord_dictionary["y"],coord_dictionary["z"]))
+	alpha = config["alpha"] # alpha should be small
+	voxel_size = config["vox"]
+	unq, ind, inv, cnt = np.unique(np.round(Coords[:2,:]/voxel_size,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
+	df = pd.DataFrame({'A': inv, 'Z': Coords[2,:]})
+	ground = (pd.DataFrame({'A':df['A'], 'Z':df['Z']}).groupby('A').quantile(0.01)).values
+	df['Z'] = ground[df['A'],0]
+	
+	return coord_dictionary["z"]-df['Z']
+
