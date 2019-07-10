@@ -95,6 +95,7 @@ np.savetxt("trees.csv", trees[condition, :], delimiter=",", header = "ID, Height
 outFile = File("forestryExperiment.las", mode = "w", header = inFile.header)
 outFile.points = inFile.points
 
+Classification[(Classification!= 0) & (Classification%32 == 0)]+=1
 outFile.classification = Classification%32
 outFile.close()
 
