@@ -49,10 +49,11 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 
 	for modifier in ["max", "1", "opt"]:
 		for dimension in fun_kdist:
-			if not(dimension in dimensions):
+			if not(modifier+dimension in dimensions):
 				out_file.define_new_dimension(name = modifier+dimension, data_type = 9, description = modifier+dimension)
 
-	out_file.define_new_dimension(name = "kopt", data_type = 6, description = "koptimal")
+	if not("kopt" in dimensions):
+		out_file.define_new_dimension(name = "kopt", data_type = 6, description = "koptimal")
 
 	# add pre-existing point records
 	for dimension in dimensions:

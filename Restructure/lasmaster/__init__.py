@@ -19,7 +19,7 @@ import numpy as np
 example_attr_config = 	{
 			"timeIntervals"	:	10,
 			"k"				:	range(4,50), # must be a generator
-			"radius"		:	0.5,
+			"radius"		:	np.inf,
 			"virtualSpeed"	:	2,
 			"k-optimise"	:	"diment",
 		}
