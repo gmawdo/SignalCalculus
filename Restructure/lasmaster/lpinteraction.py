@@ -47,7 +47,7 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 			if not(dimension in dimensions):
 				out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
 
-	for modifier in ["max", "1", "opt"]:
+	for modifier in ["max", "one", "opt"]:
 		for dimension in fun_kdist:
 			if not(modifier+dimension in dimensions):
 				out_file.define_new_dimension(name = modifier+dimension, data_type = 9, description = modifier+dimension)
@@ -70,7 +70,7 @@ def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
 
-	for modifier in ["max", "1", "opt"]: # for "max" we use the maximum k searched, for "1" we use the nearest neighbour 
+	for modifier in ["max", "one", "opt"]: # for "max" we use the maximum k searched, for "1" we use the nearest neighbour 
 	# for "opt" we use the optimal k
 		for dimension in fun_kdist:
 			value = fun_kdist[dimension](k[modifier], kdist[modifier])

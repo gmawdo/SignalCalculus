@@ -45,7 +45,7 @@ A = np.array([[1/3, 1/3, 1/3], [1,0,0], [0,1,0], [0,0,1], [0.5, 0, 0.5], [0,0.5,
 
 
 for file_name in os.listdir():	
-	if "Infty" in file_name and file_name[:4]=="attr" and not("jsd" in file_name):
+	if "k004_049radius00_50v_speed02_00" in file_name and file_name[:4]=="attr" and not("jsd" in file_name):
 		inFile = File(file_name)
 		M = len(inFile)
 		B = np.stack((inFile.linearity, inFile.planarity, inFile.scattering), axis = -1) #(M,3)
@@ -57,13 +57,13 @@ for file_name in os.listdir():
 		dims = np.argmin(JSD, axis = 0)
 		dims[inFile.reader.get_dimension("1dist")>0.5]=7
 		frame = {'A': inv,
-			str(0): (classn==0).astype(int),
-			str(1): (classn==1).astype(int),
-			str(2): (classn==2).astype(int),
-			str(3): (classn==3).astype(int),
-			str(4): (classn==4).astype(int),
-			str(5): (classn==5).astype(int),
-			str(6): (classn==6).astype(int),
+			str(0): (dims==0).astype(int),
+			str(1): (dims==1).astype(int),
+			str(2): (dims==2).astype(int),
+			str(3): (dims==3).astype(int),
+			str(4): (dims==4).astype(int),
+			str(5): (dims==5).astype(int),
+			str(6): (dims==6).astype(int),
 			}
 		df = pd.DataFrame(frame)
 		X = (df.groupby('A').sum()).values #(M1,3)
@@ -78,6 +78,7 @@ for file_name in os.listdir():
 						c[5] <= 1*cnt[inv],
 						c[6] <= 10*cnt[inv],
 						]
+		classn = inFile.classification
 		classn[:] = 1
 		for item in conditions:
 			classn[np.logical_not(item)] = 0
@@ -86,20 +87,48 @@ for file_name in os.listdir():
 		clustering = DBSCAN(eps=0.5, min_samples=4).fit((Coords[:, dim1]).transpose(1,0))
 		labels = clustering.labels_
 		
-		frame1 =	{
+		frame =	{
 					'A': labels,
 					'X': inFile.x[dim1],
 					'Y': inFile.y[dim1],
 					}
-		df = pd.DataFrame(frame1)
+		df = pd.DataFrame(frame)
 		maxs = (df.groupby('A').max()).values
 		mins = (df.groupby('A').min()).values
 		#print(mins.shape)
-		unq2, ind2, inv2, cnt2 = np.unique(labels, return_index=True, return_inverse=True, return_counts=True)
-		lengths = (np.sqrt((maxs[:,0]-mins[:,0])**2+(maxs[:,1]-mins[:,1])**2))[inv2]
+		unq, ind, inv, cnt = np.unique(labels, return_index=True, return_inverse=True, return_counts=True)
+		lengths = (np.sqrt((maxs[:,0]-mins[:,0])**2+(maxs[:,1]-mins[:,1])**2))[inv]
 		lengths[labels==-1]=0
 		classn1[lengths<=1]=0
 		classn[classn==1]=classn1
+
+		clustering = DBSCAN(eps=1.25, min_samples=8).fit((Coords[:, classn==1]).transpose(1,0))
+		labels = clustering.labels_
+		unq, ind, inv, cnt = np.unique(labels, return_index=True, return_inverse=True, return_counts=True)
+
+		dim1 = classn == 1
+
+		frame =	{
+					'A': labels,
+					'X': inFile.x[dim1],
+					'Y': inFile.y[dim1],
+					}
+		df = pd.DataFrame(frame)
+		maxs = (df.groupby('A').max()).values
+		mins = (df.groupby('A').min()).values
+		#print(mins.shape)
+		unq, ind, inv, cnt = np.unique(labels, return_index=True, return_inverse=True, return_counts=True)
+		lengths = (np.sqrt((maxs[:,0]-mins[:,0])**2+(maxs[:,1]-mins[:,1])**2))[inv]
+		lengths[labels==-1]=0
+		classn1 = classn[dim1]
+		classn1[lengths<=3]=0
+		classn[classn==1]=classn1
+
+		boolean_conductor = corridor(Coords, classn == 1, R=1, S=2)
+		classn[:] = 0
+		classn[boolean_conductor] = 1
+
+
 		out = File("Conductor"+file_name, mode = "w", header = inFile.header)
 		out.points = inFile.points
 		out.classification = classn

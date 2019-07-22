@@ -21,8 +21,7 @@ example_attr_config = 	{
 			"k"				:	range(4,50), # must be a generator
 			"radius"		:	np.inf,
 			"virtualSpeed"	:	2,
-			"k-optimise"	:	"diment",
-		}
+						}
 
 example_hag_config = 	{
 			"vox"			:	2,
