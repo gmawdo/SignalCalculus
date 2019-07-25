@@ -44,18 +44,18 @@ A = np.array([[1/3, 1/3, 1/3], [1,0,0], [0,1,0], [0,0,1], [0.5, 0, 0.5], [0,0.5,
 
 
 for file_name in os.listdir():	
-	if "Infty" in file_name and file_name[:4]=="attr" and not("jsd" in file_name) and ("TILE19" in file_name):
+	if file_name[:4]=="attr" and not("jsd" in file_name) and ("TILE19" in file_name):
 		inFile = File(file_name)
 		M = len(inFile)
 		B = np.stack((inFile.linearity, inFile.planarity, inFile.scattering), axis = -1) #(M,3)
 		Coords = np.vstack((inFile.x, inFile.y, inFile.z)) #(3,M)
-		unq, ind, inv, cnt = np.unique(np.round(Coords[:3,:]/2,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
+		unq, ind, inv, cnt = np.unique(np.round(Coords[:3,:]/6,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
 		os.chdir("OUTPUTS")
 		C = np.stack(tuple(np.broadcast_arrays(A[:,None,:], B[None,:, :])), axis = -1) #(7, M1, 3, 2)
 		JSD = jsd(C.transpose(0, 1, 3, 2)) #(7, M1)
 		dims = np.argmin(JSD, axis = 0)
-		
 		dims[inFile.reader.get_dimension("1dist")>0.5]=7
+
 		frame = {'A': inv,
 			str(0): (dims==0).astype(int),
 			str(1): (dims==1).astype(int),
@@ -82,7 +82,7 @@ for file_name in os.listdir():
 						c[5] <= 1*cnt[inv],
 						c[6] <= 10*cnt[inv],
 						]
-		classn = dims
+		classn = 1*dims
 		classn[:] = 1
 		for item in conditions:
 			classn[np.logical_not(item)] = 0
