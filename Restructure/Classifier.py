@@ -40,21 +40,37 @@ def entropy(distribution):
 	entropies = np.sum(-distribution*logs, axis = -1)/np.log(N)
 	return entropies
 
-A = np.array([[1/3, 1/3, 1/3], [1,0,0], [0,1,0], [0,0,1], [0.5, 0, 0.5], [0,0.5,0.5], [0.5, 0.5, 0]]) # (7,3)
 
+def dimension_count(dimensionality_array):
+	A = np.array([[1/3, 1/3, 1/3], [1 , 0, 0], [0,1,0], [0,0,1], [0.5, 0, 0.5], [0,0.5,0.5], [0.5, 0.5, 0]]) # (7,3)
+	C = np.stack(tuple(np.broadcast_arrays(A[:,None,:], dimensionality_array[None,:, :])), axis = -1) #(7, M1, 3, 2)
+	JSD = jsd(C.transpose(0, 1, 3, 2)) #(7, M1)
+	dims = np.argmin(JSD, axis = 0)
+	return dims
 
 for file_name in os.listdir():	
-	if file_name[:4]=="attr" and not("jsd" in file_name) and ("TILE19" in file_name):
+	if file_name[:4]=="attr" and not("jsd" in file_name) and ("Infty" in file_name):
 		inFile = File(file_name)
+		Coords = np.vstack((inFile.x, inFile.y, inFile.z)) #(3,M)
 		M = len(inFile)
 		B = np.stack((inFile.linearity, inFile.planarity, inFile.scattering), axis = -1) #(M,3)
-		Coords = np.vstack((inFile.x, inFile.y, inFile.z)) #(3,M)
-		unq, ind, inv, cnt = np.unique(np.round(Coords[:3,:]/6,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
-		os.chdir("OUTPUTS")
-		C = np.stack(tuple(np.broadcast_arrays(A[:,None,:], B[None,:, :])), axis = -1) #(7, M1, 3, 2)
-		JSD = jsd(C.transpose(0, 1, 3, 2)) #(7, M1)
-		dims = np.argmin(JSD, axis = 0)
+		dims = dimension_count(B)
 		dims[inFile.reader.get_dimension("1dist")>0.5]=7
+		dims_save = 1*dims
+
+		#cf = lm.example_attr_config
+		#cf["virtualSpeed"] = 0
+		#coord_dictionary = {"x":Coords[0, dims == 1],"y":Coords[1, dims == 1],"z":Coords[2, dims == 1],"gps_time":inFile.gps_time[dims == 1]}
+		#val0, val1, val2, vec0, vec1, vec2, k_dictionary, kdist_dictionary = lm.geo.eig(coord_dictionary, cf)
+		#linearity_1 = (val2 - val1)/val2
+		#planarity_1 = (val1-val0)/val2
+		#scattering_1 = val0/val2
+		#dim1 = dimension_count(np.stack((linearity_1, planarity_1, scattering_1), axis = -1))
+		#dims[:] = 0
+		#dims[dims == 1] = dim1
+
+		
+		unq, ind, inv, cnt = np.unique(np.round(Coords[:3,:]/2,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
 
 		frame = {'A': inv,
 			str(0): (dims==0).astype(int),
@@ -71,7 +87,7 @@ for file_name in os.listdir():
 		
 		entropies = entropy(X/(np.sum(X, axis = 1)[:,None]))[inv]
 
-		#the below are dangerous -- we need a better QC
+	
 		c = {arg: 1000*X[inv, arg] for arg in range(7)}
 		conditions = 	[
 						c[0] <= 10*cnt[inv],
@@ -82,6 +98,7 @@ for file_name in os.listdir():
 						c[5] <= 1*cnt[inv],
 						c[6] <= 10*cnt[inv],
 						]
+		
 		classn = 1*dims
 		classn[:] = 1
 		for item in conditions:
@@ -158,14 +175,15 @@ for file_name in os.listdir():
 		classn[classn == 0] = classn0
 		classn[(classn == 4) & (entropies < 0.7)] = 0
 
+		os.chdir("OUTPUTS")
 		out = File("Conductor"+file_name, mode = "w", header = inFile.header)
 		out.points = inFile.points
-
-	
 		out.classification = classn
+		out.intensity = dims_save
 		out.close()
 		os.chdir("..")
-		print("Conductor",file_name, "done")
+
+		print("classification",file_name, "done")
 
 		
 '''
