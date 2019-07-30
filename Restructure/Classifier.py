@@ -7,7 +7,7 @@ from sklearn.cluster import DBSCAN
 import lasmaster as lm
 import matplotlib.pyplot as plt
 
-os.chdir("testingLAS")
+
 
 def jsd(distribution):
 	M = distribution.shape[-2]
@@ -48,8 +48,15 @@ def dimension_count(dimensionality_array):
 	dims = np.argmin(JSD, axis = 0)
 	return dims
 
+os.chdir("TILES_2017_04_20-07_52_14_3")
+os.mkdir("OUTPUTS")
+
+for file_name in os.listdir():
+	cf = lm.config_example_attr
+	lm.example_attr(lm.nfl(file_name))
+
 for file_name in os.listdir():	
-	if file_name[:4]=="attr" and not("jsd" in file_name) and ("Infty" in file_name):
+	if file_name == "attrN010k004_049radius00_50v_speed02_00T200_010_01_2017_04_20-05_03_22_2_090_TILE19_outputNFLClip100_00.las":#file_name[:4]=="attr" and not("jsd" in file_name) and ("Infty" in file_name):
 		inFile = File(file_name)
 		Coords = np.vstack((inFile.x, inFile.y, inFile.z)) #(3,M)
 		M = len(inFile)
@@ -57,18 +64,6 @@ for file_name in os.listdir():
 		dims = dimension_count(B)
 		dims[inFile.reader.get_dimension("1dist")>0.5]=7
 		dims_save = 1*dims
-
-		#cf = lm.example_attr_config
-		#cf["virtualSpeed"] = 0
-		#coord_dictionary = {"x":Coords[0, dims == 1],"y":Coords[1, dims == 1],"z":Coords[2, dims == 1],"gps_time":inFile.gps_time[dims == 1]}
-		#val0, val1, val2, vec0, vec1, vec2, k_dictionary, kdist_dictionary = lm.geo.eig(coord_dictionary, cf)
-		#linearity_1 = (val2 - val1)/val2
-		#planarity_1 = (val1-val0)/val2
-		#scattering_1 = val0/val2
-		#dim1 = dimension_count(np.stack((linearity_1, planarity_1, scattering_1), axis = -1))
-		#dims[:] = 0
-		#dims[dims == 1] = dim1
-
 		
 		unq, ind, inv, cnt = np.unique(np.round(Coords[:3,:]/2,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
 
@@ -85,9 +80,10 @@ for file_name in os.listdir():
 		X = (df.groupby('A').sum()).values #(M1,3)
 		inv_save = inv
 		
+		# set up entropies for later use and for alternative classification of conductors
 		entropies = entropy(X/(np.sum(X, axis = 1)[:,None]))[inv]
-
 	
+		# conditio£ns for voxel to contain conductor
 		c = {arg: 1000*X[inv, arg] for arg in range(7)}
 		conditions = 	[
 						c[0] <= 10*cnt[inv],
@@ -104,7 +100,6 @@ for file_name in os.listdir():
 		for item in conditions:
 			classn[np.logical_not(item)] = 0
 		dim1 = classn == 1
-
 
 		clustering = DBSCAN(eps=0.5, min_samples=4).fit((Coords[:, dim1]).transpose(1,0))
 		labels = clustering.labels_
@@ -176,7 +171,7 @@ for file_name in os.listdir():
 		classn[(classn == 4) & (entropies < 0.7)] = 0
 
 		os.chdir("OUTPUTS")
-		out = File("Conductor"+file_name, mode = "w", header = inFile.header)
+		out = File("Classified"+file_name, mode = "w", header = inFile.header)
 		out.points = inFile.points
 		out.classification = classn
 		out.intensity = dims_save

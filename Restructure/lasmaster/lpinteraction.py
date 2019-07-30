@@ -28,7 +28,7 @@ def name_modifier_attr(config):
 	return "attr"+num+K+R+C
 
 # the attr function applies the attribute defintions to the output of geo.eig
-def attr(file_name, config, fun_eig, fun_vec, fun_kdist):
+def attr(file_name, config, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_vec(), fun_kdist = fun.std_fun_kdist()):
 	in_file = File(file_name, mode = "r")
 	header=in_file.header
 	
