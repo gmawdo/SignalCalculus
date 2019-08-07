@@ -24,6 +24,6 @@ for tile_name in os.listdir():
 		start = time.time()
 		f(tile_name)
 		end = time.time()
-		timingstxt.write(tile_name[:-4]+" "+str((end-start)+"\n")
+		timingstxt.write(tile_name[:-4]+" "+str(end-start)+"\n")
 
 timingstxt.close()

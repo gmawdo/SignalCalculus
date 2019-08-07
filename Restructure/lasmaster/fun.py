@@ -13,7 +13,7 @@ def std_fun_eig():
 			"scattering"	:	(lambda x, y, z: x/z),
 			"linearity"		:	(lambda x, y, z: (z-y)/z),
 			"planarity"		:	(lambda x, y, z: (y-x)/z),
-			"entent"		:	lambda x, y, z: np.clip(entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1)), 0, 1),
+			"diment"		:	lambda x, y, z: np.clip(entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1)), 0, 1),
 			}	
 	return output
 

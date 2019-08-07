@@ -128,3 +128,29 @@ def hag(coord_dictionary, config):
 	
 	return coord_dictionary["z"]-df['Z']
 
+def eig_radius(points, R):
+	# points should be (num_samples, num_features)
+	A = R*2/np.sqrt(3)
+	from sklearn.neighbors import BallTree
+	unq, inv, cnt = np.unique(np.floor(points/A).astype(int), axis = 0, return_inverse = True, return_counts = True)
+	S = (A/2)+A*unq
+	tree = BallTree(points)
+	ind = tree.query_radius(S, r = R)
+	evals = np.empty((ind.size, 3))
+	evects = np.empty((ind.size,3, 3))
+	i = 0
+	for item in ind:
+		nbhd = points[item]
+		deviation = nbhd - np.mean(nbhd, axis = 0)
+		cov = np.matmul(deviation.transpose(), deviation)
+		cov = np.maximum(cov, cov.transpose())
+		evals[i,:], evects[i,:,:] = np.linalg.eigh(cov)
+		i += 1
+	isolated = (evals<=0).all(axis = 1)
+	val1 = evals[inv,0]
+	val2 = evals[inv,1]
+	val3 = evals[inv,2]
+	vec1 = evects[inv,0,:]
+	vec2 = evects[inv,1,:]
+	vec3 = evects[inv,2,:]
+	return val1, val2, val3, vec1, vec2, vec3, isolated[inv]

@@ -5,6 +5,7 @@ import os
 from sklearn.neighbors import NearestNeighbors
 from sklearn.cluster import DBSCAN
 import time
+from scipy.spatial import ConvexHull
 
 timingstxt = open("CLASSN_TIMINGS.txt", "w+")
 
@@ -137,6 +138,10 @@ for tile_name in os.listdir():
 		lengths = (np.sqrt((maxs[:,0]-mins[:,0])**2+(maxs[:,1]-mins[:,1])**2))[inv]
 		lengths[labels==-1]=0
 		classn1 = classn[dim1]
+		for item in unq:
+			volume = ConvexHull(np.stack(frame['X'], frame['Y'], axis = 1)).volume
+			if volume > 2*lengths[ind][item]:
+				classn1[ind][item] = 0
 		classn1[lengths<=1]=0
 		classn[classn==1]=classn1
 
