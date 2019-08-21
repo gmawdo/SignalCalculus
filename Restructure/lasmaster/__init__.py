@@ -12,15 +12,15 @@ import numpy as np
 # k should be a generator which tells us which values of k we will entertain. In the example we look at 4-49.
 # radius tells us the maximum size of a neighbourhood, which could be np.inf
 # virtualSpeed is a weighting for how much time between points should affect their closeness
-# use virtualSpeed = 0.0 to eliminate spacetime usage
+# use virtualSpeed = 0 to eliminate spacetime usage
 # k-optimise dictates which attribute should be minimised in neighbourhood selection
 # if just one value of k is given, optimisation will not occur
 
 example_attr_config = 	{
 			"timeIntervals"	:	10,
 			"k"				:	range(4,50), # must be a generator
-			"radius"		:	np.inf,
-			"virtualSpeed"	:	2,
+			"radius"		:	0.5,
+			"virtualSpeed"	:	0,
 						}
 
 example_hag_config = 	{
