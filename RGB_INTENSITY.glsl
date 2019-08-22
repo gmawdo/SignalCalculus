@@ -13,8 +13,8 @@ uniform float pointRadius = 0.1;   //# uiname=Point Radius; min=0.001; max=200
 uniform float trimRadius = 1000000;//# uiname=Trim Radius; min=1; max=1000000
 uniform float exposure = 1.0;      //# uiname=Exposure; min=0.01; max=10000
 uniform float contrast = 1.0;      //# uiname=Contrast; min=0.01; max=10000
-uniform int colorMode = 0;         //# uiname=Colour Mode; enum=Intensity1000|Colour|Return Index|Point Source|Las Classification|File Number|ClassificationMod32|Intensity100
-uniform int selectionMode = 0;     //# uiname=Selection; enum=All|Classified|First Return|Last Return|First Of Several|Class0|Class1|Class2|Class3|Class4|Class5|Class6|Class7|Class8|Class9|Class10|Class11|Class12|Intensity[000,100)|Intensity[100,200)|Intensity[200,300)|Intensity[300,400)|Intensity[400,500)|Intensity[500,600)|Intensity[600,700)|Intensity[700,800)|Intensity[800,900)|Intensity[900,1000]|Intensity[980,1000]|Intensity[0,20]
+uniform int colorMode = 0;         //# uiname=Colour Mode; enum=Intensity1000|Intensity100|Intensity10|Return Index|Point Source|Las Classification|File Number|ClassificationMod32|Intenstity|IntenstityClass
+uniform int selectionMode = 0;     //# uiname=Selection; enum=All|Classified|First Return|Last Return|First Of Several|Class0|Class1|Class2|Class3|Class4|Class5|Class6|Class7|Class8|Class9|Class10|Class11|Class12|Intensity[000,100)|Intensity[100,200)|Intensity[200,300)|Intensity[300,400)|Intensity[400,500)|Intensity[500,600)|Intensity[600,700)|Intensity[700,800)|Intensity[800,900)|Intensity[900,1000]|Intensity[980,1000]|Intensity[0,20]|Intensity0|Intensity1|Intensity2|Intensity3|Intensity4
 uniform float minPointSize = 0;
 uniform float maxPointSize = 400.0;
 // Point size multiplier to get from a width in projected coordinates to the
@@ -69,36 +69,40 @@ void main()
     // Compute vertex color
     if (colorMode == 0)
         pointColor = vec3((intensity/1000)*(2*(intensity/1000)-1),4*(intensity/1000)*(1-(intensity/1000)),(1-(intensity/1000))*(1-2*(intensity/1000)));
+
     else if (colorMode == 1)
-        pointColor = contrast*(exposure*color - vec3(0.5)) + vec3(0.5);
+      pointColor = vec3((intensity/100)*(2*(intensity/100)-1),4*(intensity/100)*(1-(intensity/100)),(1-(intensity/100))*(1-2*(intensity/100)));
+
     else if (colorMode == 2)
-        //pointColor = vec3(0.2*returnNumber*exposure, 0.2*numberOfReturns*exposure, 0);
-        pointColor = vec3(1/returnNumber, returnNumber/numberOfReturns, 1/numberOfReturns);
+      pointColor = vec3((intensity/10)*(2*(intensity/10)-1),4*(intensity/10)*(1-(intensity/10)),(1-(intensity/10))*(1-2*(intensity/10)));
+
     else if (colorMode == 3)
+        pointColor = vec3(0.2*returnNumber*exposure, 0.2*numberOfReturns*exposure, 0);
+    else if (colorMode == 4)
     {
         markerShape = (pointSourceId+1) % 5;
         vec3 cols[] = vec3[](vec3(1,1,1), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1),
                              vec3(1,1,0), vec3(1,0,1), vec3(0,1,1));
         pointColor = cols[(pointSourceId+3) % 7];
     }
-    else if (colorMode == 4)
+    else if (colorMode == 5)
     {
         // Colour according to some common classifications defined in the LAS spec
         if (classification == 0)      pointColor = vec3(0.0, 0.0, 0.0); // ground
         else if (classification == 1) pointColor = vec3(0.0, 0.0, 1.0); // low vegetation
-        else if (classification == 2) pointColor = vec3(0.0, 1.0, 0.0); // medium vegetation
-        else if (classification == 3) pointColor = vec3(1.0, 0.0,  0.0); // high vegetation
+        else if (classification == 2) pointColor = vec3(0.7, 0.1, 0.7); // medium vegetation
+        else if (classification == 3) pointColor = vec3(0.2, 0.8, 0.2); // high vegetation
         else if (classification == 4) pointColor = vec3(0.0,  1.0,  1.0); // building
         else if (classification == 5) pointColor = vec3(1.0,  1.0,  0.0); // water
         else if (classification == 6) pointColor = vec3(1.0,  1.0,  0.0); // water
-        else if (classification == 7) pointColor = vec3(1.0, 1.0, 1.0); // water
+        else if (classification == 7) pointColor = vec3(1, 0.4, 0.0); // water
         else if (classification == 8) pointColor = vec3(0.7374555082923145, 0.12010005931410296, 0.14244443239358245); // water
         else if (classification == 9) pointColor = vec3(0.23293983904871393, 0.27847746792884787, 0.48858269302243823); // water
         else if (classification == 10) pointColor = vec3(1.0,  0.3,  1.0); // water
         else if (classification == 11) pointColor = vec3(1.0,  0.2,  0.1); // water
 
     }
-    else if (colorMode == 5)
+    else if (colorMode == 6)
     {
         // Set point colour and marker shape cyclically based on file number
         markerShape = fileNumber % 5;
@@ -106,10 +110,10 @@ void main()
                           (1.0/3.0) * (0.5 + (fileNumber % 3)),
                           (1.0/5.0) * (0.5 + (fileNumber % 5)));
     }
-    else if (colorMode == 6)
+    else if (colorMode == 7)
     {
         
-       if (classification == 0)      pointColor = vec3(0.40336824, 0.16617165, 0.82288401);
+       if (classification == 0)      pointColor = vec3(0.0, 0.0, 0.0);
        else if (classification == 1) pointColor = vec3(0.19898032, 0.19456412, 0.60645556);
        else if (classification == 2) pointColor = vec3(0.6159766 , 0.37221269, 0.01181071);
        else if (classification == 3) pointColor = vec3(0.13277352, 0.57771233, 0.28951415);
@@ -138,14 +142,30 @@ void main()
        else if (classification == 26) pointColor = vec3(0.00106697, 0.53925189, 0.45968113);
        else if (classification == 27) pointColor = vec3(0.42854676, 0.05904709, 0.51240615);
        else if (classification == 28) pointColor = vec3(0.39338508, 0.14798268, 0.45863224);
-       else if (classification == 29) pointColor = vec3(0.16392452, 0.22919177, 0.60688372);
+       else if (classification == 29) pointColor = vec3(0.16392452, 0.72919177, 0.60688372);
        else if (classification == 30) pointColor = vec3(0.16407127, 0.62640183, 0.2095269 );
        else if (classification == 31) pointColor = vec3(1,1 ,1);
     }
  
-    else if (colorMode == 7)
-      pointColor = vec3((intensity/100)*(2*(intensity/100)-1),4*(intensity/100)*(1-(intensity/100)),(1-(intensity/100))*(1-2*(intensity/100)));
-  
+    else if (colorMode == 8)
+        pointColor = contrast*(exposure*color - vec3(0.5)) + vec3(0.5);
+      else if (colorMode == 9)
+    {
+        // Colour according to some common intensitys defined in the LAS spec
+        if (intensity == 0)      pointColor = vec3(0.2, 0.8, 0.2); // ground
+        else if (intensity == 1) pointColor = vec3(0.0, 0.0, 1.0); // low vegetation
+        else if (intensity == 2) pointColor = vec3(0.7, 0.1, 0.7); // medium vegetation
+        else if (intensity == 3) pointColor = vec3(1.0, 0.0,  0.0); // high vegetation
+        else if (intensity == 4) pointColor = vec3(0.0,  1.0,  1.0); // building
+        else if (intensity == 5) pointColor = vec3(1.0,  1.0,  0.0); // water
+        else if (intensity == 6) pointColor = vec3(1.0,  1.0,  0.0); // water
+        else if (intensity == 7) pointColor = vec3(1, 0.4, 0.0); // water
+        else if (intensity == 8) pointColor = vec3(0.7374555082923145, 0.12010005931410296, 0.14244443239358245); // water
+        else if (intensity == 9) pointColor = vec3(0.23293983904871393, 0.27847746792884787, 0.48858269302243823); // water
+        else if (intensity == 10) pointColor = vec3(1.0,  0.3,  1.0); // water
+        else if (intensity == 11) pointColor = vec3(1.0,  0.2,  0.1); // water
+
+    }
     if (selectionMode != 0)
     {
         if (selectionMode == 1)
@@ -318,6 +338,37 @@ void main()
             if (intensity < 0||intensity > 20)
                 markerShape = -1;
         }
+       else if (selectionMode == 30)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 0|| intensity >0)
+                markerShape = -1;
+        }
+       else if (selectionMode == 31)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 1|| intensity >1)
+                markerShape = -1;
+        }
+       else if (selectionMode == 32)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 2|| intensity >2)
+                markerShape = -1;
+        }
+       else if (selectionMode == 33)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 3|| intensity >3)
+                markerShape = -1;
+        }
+       else if (selectionMode == 34)
+        // Intensity USER Edit Keep
+        {
+            if (intensity < 4|| intensity >4)
+                markerShape = -1;
+        }
+
     }
     // Ensure zero size points are discarded.  The actual minimum point size is
     // hardware and driver dependent, so set the markerShape to discarded for
