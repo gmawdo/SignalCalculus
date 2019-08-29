@@ -5,16 +5,20 @@ from lasmaster.infotheory import entropy
 # the point of doing this is that anyone can now define their own attributes, so long as they are functions of eigenvalues
 def std_fun_eig():
 	output =	{
-			"eig0"	:	(lambda x, y, z: x/(x+y+z)),
-			"eig1"	:	(lambda x, y, z: y/(x+y+z)),
-			"eig2"	:	(lambda x, y, z: z/(x+y+z)),
-			"iso"	:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
+			"eig0"			:	(lambda x, y, z: x/(x+y+z)),
+			"eig1"			:	(lambda x, y, z: y/(x+y+z)),
+			"eig2"			:	(lambda x, y, z: z/(x+y+z)),
+			"iso"			:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
 			"eigent"		:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/((x+y+z)[:,None]))),
 			"scattering"	:	(lambda x, y, z: x/z),
 			"linearity"		:	(lambda x, y, z: (z-y)/z),
 			"planarity"		:	(lambda x, y, z: (y-x)/z),
-			"diment"		:	lambda x, y, z: np.clip(entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1)), 0, 1),
-			}	
+			"diment"		:	(lambda x, y, z: np.clip(entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1)), 0, 1)),
+			"codim0"		:	(lambda x, y, z: 3*x/(x+y+z)),
+			"codim1"		:	(lambda x, y, z: 2*(y-x)/(x+y+z)),
+			"codim2"		:	(lambda x, y, z: (z-y)/(x+y+z)),
+			"codiment"		:   (lambda x, y, z: np.clip(entropy(np.stack((3*x/(x+y+z), 2*(y-x)/(x+y+z), (z-y)/(x+y+z)), axis =1)), 0, 1)),
+			}
 	return output
 
 # F U N C T I O N S   O F   E I G E N V E C T O R S

@@ -26,10 +26,10 @@ def optimise_k(relative_positions, k_range): # shape of argument is (d,num_pts,k
 		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1)) #(num_pts,d,d)
 		# get eigeninformation
 		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
-		linearity = (evals[:,-1]-evals[:,-2])/evals[:,-1] #num_pts
-		planarity = (evals[:,-2]-evals[:,-3])/evals[:,-1] #num_pts
-		scattering = evals[:,-3]/evals[:,-1] #num_pts
-		dim_ent = entropy(np.stack((linearity, planarity, scattering), axis = 1)) #(num_pts)
+		z = (evals[:,-1]-evals[:,-2])/(evals[:,-1]+evals[:,-2]+evals[:,-3]) #num_pts
+		y = 2*(evals[:,-2]-evals[:,-3])/(evals[:,-1]+evals[:,-2]+evals[:,-3]) #num_pts
+		x = 3*evals[:,-3]/(evals[:,-1]+evals[:,-2]+evals[:,-3]) #num_pts
+		dim_ent = np.clip(entropy(np.stack((3*x/(x+y+z), 2*(y-x)/(x+y+z), (z-y)/(x+y+z)), axis = 1)), 0, 1) #(num_pts)
 		condition = dim_ent<=entropy_store
 		k_opt[condition] = item #num_pts
 		entropy_store[condition] = dim_ent[condition]
