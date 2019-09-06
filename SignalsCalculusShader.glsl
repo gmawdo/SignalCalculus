@@ -88,11 +88,11 @@ void main()
     else if (colorMode == 5)
     {
         // Colour according to some common classifications defined in the LAS spec
-        if (classification == 0)      pointColor = vec3(0.0, 0.0, 0.0); // ground
-        else if (classification == 1) pointColor = vec3(0.0, 0.0, 1.0); // low vegetation
-        else if (classification == 2) pointColor = vec3(0.7, 0.1, 0.7); // medium vegetation
-        else if (classification == 3) pointColor = vec3(0.2, 0.8, 0.2); // high vegetation
-        else if (classification == 4) pointColor = vec3(0.0,  1.0,  1.0); // building
+        if (classification == 0)      pointColor = vec3(0.2*returnNumber*exposure, 0.2*numberOfReturns*exposure, 0); // no class
+        else if (classification == 1) pointColor = vec3(0.0, 0.0, 1.0); // conductor
+        else if (classification == 2) pointColor = vec3(0.592, 0.403, 0.129); // pylon
+        else if (classification == 3) pointColor = vec3(0.949, 0.211, 0.211); // intersecting vegetation
+        else if (classification == 4) pointColor = vec3(1.0,  0.0,  0.0); // building
         else if (classification == 5) pointColor = vec3(1.0,  1.0,  0.0); // water
         else if (classification == 6) pointColor = vec3(1.0,  1.0,  0.0); // water
         else if (classification == 7) pointColor = vec3(1, 0.4, 0.0); // water
@@ -148,7 +148,7 @@ void main()
     }
  
     else if (colorMode == 8)
-        pointColor = contrast*(exposure*color - vec3(0.5)) + vec3(0.5);
+        pointColor = tonemap(intensity/400.0, exposure, contrast) * vec3(1);
       else if (colorMode == 9)
     {
         // Colour according to some common intensitys defined in the LAS spec
