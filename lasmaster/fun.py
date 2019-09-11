@@ -1,8 +1,6 @@
 import numpy as np
 from lasmaster.infotheory import entropy
 
-# F U N C T I O N S   OF   E I G E N V A L U E S
-# the point of doing this is that anyone can now define their own attributes, so long as they are functions of eigenvalues
 def std_fun_eig():
 	output =	{
 			"eig0"			:	(lambda x, y, z: x/(x+y+z)),
@@ -15,8 +13,6 @@ def std_fun_eig():
 			}
 	return output
 
-# F U N C T I O N S   O F   E I G E N V E C T O R S
-# the point of doing this is that anyone can now define their own attributes, so long as they are functions of eigenvectors
 def std_fun_vec():
 	normalised = (lambda v: np.sqrt(v[:,0]**2+v[:,1]**2+v[:,2]**2))
 	output =	{					
@@ -35,9 +31,6 @@ def std_fun_vec():
 				}
 	return output
 
-# F U N C T I O N S   O F   D I S T A N C E S
-# the point of doing this is that anyone can now define their own attributes, so long as they are functions of k-distances
-# when we decimate, these are functions of point counts and decimation parameter u
 def std_fun_kdist():
 	sphere_constant = 4*np.pi/3
 	output = 	{

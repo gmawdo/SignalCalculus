@@ -5,9 +5,6 @@ from lasmaster import fun
 from sklearn.neighbors import NearestNeighbors
 import time
 
-# Governs the interaction with laspy
-
-# the following function simply generates a name for output file
 def name_modifier_attr(config):
 	N = config["timeIntervals"]
 	k = config["k"]
@@ -27,7 +24,6 @@ def name_modifier_attr(config):
 	C = spacetime*("v_speed"+str(C_int).zfill(2)+"_"+str(C_rat).zfill(2))
 	return "attr"+num+K+R+C
 
-# the attr function applies the attribute defintions to the output of geo.eig
 def attr(file_name, config, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_vec(), fun_kdist = fun.std_fun_kdist()):
 	in_file = File(file_name, mode = "r")
 	header=in_file.header
@@ -70,8 +66,7 @@ def attr(file_name, config, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_v
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
 
-	for modifier in ["max", "one", "opt"]: # for "max" we use the maximum k searched, for "1" we use the nearest neighbour 
-	# for "opt" we use the optimal k
+	for modifier in ["max", "one", "opt"]: 
 		for dimension in fun_kdist:
 			value = fun_kdist[dimension](k[modifier], kdist[modifier])
 			value[np.logical_or(np.isnan(value),np.isinf(value))]=0
