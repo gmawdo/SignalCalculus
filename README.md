@@ -1,4 +1,4 @@
-# SignalCalculus
+# S I G N A L   C A L C U L U S
 Investigatory repo looking for generic interpretation mechanism across ad hoc and derived signals.
 
 # Signals for Point Clouds
@@ -18,7 +18,7 @@ Imports modules. Initialises package. Contains examples of running attribute gen
 Pretty important module. This is contains the mathematical heart of neighbourhood definition and the step thereafter: Structure tensor (covariance matrices) and the eigeninformation.
 
 ## optimise_k
-Selects a $k$ value, $k>3$
+Selects a \(k\) value, $k>3$
 
 ## Info theory module lasmaster.infotheory
 
