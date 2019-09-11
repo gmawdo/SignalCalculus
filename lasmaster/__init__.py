@@ -1,20 +1,9 @@
-# DO NOT RE-ORDER THESE IMPORTS
-
 from lasmaster import geo
 from lasmaster import infotheory
 from lasmaster import fun
 from lasmaster import lpinteraction
 import time
 import numpy as np
-
-# Below is an example config file. 
-# timeIntervals dictates how many subtiles we have - this helps keep down memory usage
-# k should be a generator which tells us which values of k we will entertain. In the example we look at 4-49.
-# radius tells us the maximum size of a neighbourhood, which could be np.inf
-# virtualSpeed is a weighting for how much time between points should affect their closeness
-# use virtualSpeed = 0 to eliminate spacetime usage
-# k-optimise dictates which attribute should be minimised in neighbourhood selection
-# if just one value of k is given, optimisation will not occur
 
 example_attr_config = 	{
 			"timeIntervals"	:	10,
