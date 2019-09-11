@@ -27,13 +27,6 @@ def name_modifier_attr(config):
 	C = spacetime*("v_speed"+str(C_int).zfill(2)+"_"+str(C_rat).zfill(2))
 	return "attr"+num+K+R+C
 
-def name_modifier_attr_radius(R):
-	radius = R
-	R_int = int(radius)
-	R_rat = int(100*(radius-int(radius)))
-	R = "radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
-	return "attr_radius_"+R
-
 # the attr function applies the attribute defintions to the output of geo.eig
 def attr(file_name, config, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_vec(), fun_kdist = fun.std_fun_kdist()):
 	in_file = File(file_name, mode = "r")
@@ -97,7 +90,6 @@ def name_modifier_hag(config):
 	R = str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
 	return "hag"+"alpha"+A+"vox"+R
 
-
 def add_hag(file_name, config):
 	start = time.time()
 	in_file = File(file_name, mode = "r")
@@ -122,7 +114,6 @@ def add_hag(file_name, config):
 	out_file.writer.set_dimension("hag", hag)
 	out_file.close()
 
-
 # C L I P   N E A R   F L I G H T   L I N E
 def nfl(file_name, clip = 100, fl = 10, change_name = True):
 	start = time.time()
@@ -144,42 +135,3 @@ def nfl(file_name, clip = 100, fl = 10, change_name = True):
 	end = time.time()
 	return file_name[:-4]+change_name*("NFLClip"+str(int(clip)).zfill(3)+"_"+str(int(100*(clip-int(clip)))).zfill(2))+".las"
 	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
-
-def attr_radius(file_name, R, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_vec()):
-	in_file = File(file_name, mode = "r")
-	header=in_file.header
-	
-	points = np.stack((in_file.x, in_file.y, in_file.z), axis = 1)
-
-	val1, val2, val3, vec1, vec2, vec3, isolated = geo.eig_radius(points, R)
-	
-	mod = name_modifier_attr_radius(R)
-	out_file = File(mod+file_name, mode = "w", header = header)
-	
-	# extract names of pre-existing attributes
-	dimensions = [spec.name for spec in in_file.point_format]
-
-	for fun_set in fun_eig, fun_vec:
-		for dimension in fun_set:
-			if not(dimension in dimensions):
-				out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
-				
-	out_file.define_new_dimension(name = "isolated", data_type = 6, description = "Boolean for isolated pts")
-	# add pre-existing point records
-	for dimension in dimensions:
-		dat = in_file.reader.get_dimension(dimension)
-		out_file.writer.set_dimension(dimension, dat)
-
-	for dimension in fun_eig:
-		value = fun_eig[dimension](val1, val2, val3)
-		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
-		out_file.writer.set_dimension(dimension, value)
-
-	for dimension in fun_vec:
-		value = fun_vec[dimension](vec1, vec2, vec3)
-		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
-		out_file.writer.set_dimension(dimension, value)
-	
-	out_file.writer.set_dimension("isolated", isolated.astype(int))
-
-	out_file.close()

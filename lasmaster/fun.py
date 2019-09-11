@@ -8,16 +8,10 @@ def std_fun_eig():
 			"eig0"			:	(lambda x, y, z: x/(x+y+z)),
 			"eig1"			:	(lambda x, y, z: y/(x+y+z)),
 			"eig2"			:	(lambda x, y, z: z/(x+y+z)),
-			"iso"			:	(lambda x, y, z: (x+y+z)/np.sqrt(3*(x**2+y**2+z**2))),
-			"eigent"		:	(lambda x, y, z: entropy(np.stack((x, y, z), axis = 1)/((x+y+z)[:,None]))),
-			"scattering"	:	(lambda x, y, z: x/z),
-			"linearity"		:	(lambda x, y, z: (z-y)/z),
-			"planarity"		:	(lambda x, y, z: (y-x)/z),
-			"diment"		:	(lambda x, y, z: np.clip(entropy(np.stack((x/z, (y-x)/z, (z-y)/z), axis = 1)), 0, 1)),
-			"codim0"		:	(lambda x, y, z: 3*x/(x+y+z)),
-			"codim1"		:	(lambda x, y, z: 2*(y-x)/(x+y+z)),
-			"codim2"		:	(lambda x, y, z: (z-y)/(x+y+z)),
-			"codiment"		:   (lambda x, y, z: np.clip(entropy(np.stack((3*x/(x+y+z), 2*(y-x)/(x+y+z), (z-y)/(x+y+z)), axis =1)), 0, 1)),
+			"dim3"			:	(lambda x, y, z: 3*x/(x+y+z)),
+			"dim2"			:	(lambda x, y, z: 2*(y-x)/(x+y+z)),
+			"dim1"			:	(lambda x, y, z: (z-y)/(x+y+z)),
+			"diment"		:   (lambda x, y, z: np.clip(entropy(np.stack((3*x/(x+y+z), 2*(y-x)/(x+y+z), (z-y)/(x+y+z)), axis =1)), 0, 1)),
 			}
 	return output
 

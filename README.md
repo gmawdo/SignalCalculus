@@ -11,3 +11,14 @@ Contains a python package called **lasmaster** (this name used to be given to a 
 
 ## Signals for Point Clouds
 This contains English descriptions of the structure of Red Hawk, and explanations and plots of signals. We can't store the pictures on github.
+
+# Info theory module lasmaster.infotheory
+
+## Entropy
+* **input**(..., N) probability vectors
+* that is, we must have np.sum(distribution, axis = -1)=1
+* **output** entropies of vectors
+
+## Jensen-Shannon divergence (potentially in scikit so may be able to discard -- need to check)
+# input: (..., M, N) matrices whose rows are probability vectors
+# output: J-S div. of the collection of vectors
