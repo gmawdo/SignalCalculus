@@ -8,12 +8,6 @@ import time
 
 timingstxt = open("CLASSN_TIMINGS.txt", "w+")
 
-def jsd(distribution):
-	M = distribution.shape[-2]
-	N = distribution.shape[-1]
-	return (entropy(np.mean(distribution, axis = -2))-np.mean(entropy(distribution), axis = -1))*np.log(N)/np.log(M)
-
-
 def corridor(c, conductor_condition, R=1, S=2):
 
 	v1 = inFile.eig20
@@ -32,23 +26,7 @@ def corridor(c, conductor_condition, R=1, S=2):
 	
 	return condition
 
-def entropy(distribution):
-	N = distribution.shape[-1]
-	logs = np.log(distribution)
-	logs[np.logical_or(np.isnan(logs),np.isinf(logs))]=0
-	entropies = np.sum(-distribution*logs, axis = -1)/np.log(N)
-	return entropies
-
-
-def dimension_count(dimensionality_array):
-	A = np.array([[1 , 0, 0], [0,1,0], [0,0,1]])
-	C = np.stack(tuple(np.broadcast_arrays(A[:,None,:], dimensionality_array[None,:, :])), axis = -1) #(7, M1, 3, 2)
-	JSD = jsd(C.transpose(0, 1, 3, 2)) #(7, M1)
-	dims = np.argmin(JSD, axis = 0)
-	return dims
-
-def tile_condition(tile_name):
-	return "attr" in tile_name and "classified" not in tile_name
+tile_condition = lambda x: "attr" in x and "classified" not in x
 
 for tile_name in os.listdir():
 	if tile_condition(tile_name):
