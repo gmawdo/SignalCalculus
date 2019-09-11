@@ -20,5 +20,5 @@ This contains English descriptions of the structure of Red Hawk, and explanation
 * **output** entropies of vectors
 
 ## Jensen-Shannon divergence (potentially in scikit so may be able to discard -- need to check)
-# input: (..., M, N) matrices whose rows are probability vectors
-# output: J-S div. of the collection of vectors
+* **input** (..., M, N) matrices whose rows are probability vectors
+* **output** J-S div. of the collection of vectors
