@@ -109,7 +109,6 @@ def add_hag(file_name, config):
 	out_file.writer.set_dimension("hag", hag)
 	out_file.close()
 
-# C L I P   N E A R   F L I G H T   L I N E
 def nfl(file_name, clip = 100, fl = 10, change_name = True):
 	start = time.time()
 	in_file = File(file_name, mode = "r")

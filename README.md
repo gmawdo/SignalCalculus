@@ -1,6 +1,4 @@
-<pre>
-S I G N A L   C A L C U L U S
-</pre>
+# SIGNAL CALCULUS
 Investigatory repo looking for generic interpretation mechanism across ad hoc and derived signals.
 
 # Signals for Point Clouds
