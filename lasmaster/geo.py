@@ -4,6 +4,17 @@ from lasmaster.infotheory import entropy
 from lasmaster import fun
 import pandas as pd
 
+# C O M P U T E   E I G E N I N F O
+def eig_info(coords, target):
+	# target of sh (d,), coords sh (n,d)
+	relative_positions = coords - target
+	cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1)) #(num_pts,d,d)
+	# get eigeninformation
+	evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
+	
+	return evals, evects # evects of shape (samples, dimensions, dimensions) with evects[:,:,i] being vector i
+
+
 # O P T I M I S E   K   N U M B E R S
 def optimise_k(relative_positions, k_range): # shape of argument is (d,num_pts,k)
 	d = relative_positions.shape[0] 

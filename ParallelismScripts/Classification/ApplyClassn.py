@@ -122,24 +122,24 @@ for tile_name in os.listdir():
 			lengths[labels==-1]=0
 			classn3 = classn[preveg]
 			classn3[:] = 3
-			classn3[lengths<2]=0
+			classn3[lengths < 2]=0
 			classn[preveg] = classn3
 			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 3]))
 			distances, indices = nhbrs.kneighbors(np.transpose(Coords))
-			classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) & (classn != 2)]=3
+			classn[(distances[:,0] < 0.5) & (classn != 7) & (classn != 1) & (classn != 2)]=3
 
 		nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, (classn != 0) & (classn != 7)]))
 		distances, indices = nhbrs.kneighbors(np.transpose(Coords[:, classn == 0]))
 		classn0 = classn[classn == 0]
-		classn0[(distances[:,0]<0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0]<0.5),0]]
+		classn0[(distances[:,0] < 0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0] < 0.5),0]]
 		classn[(classn==0)] = classn0
 
 		if (classn == 1).any() and (classn == 3).any():
 			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 1]))
 			distances, indices = nhbrs.kneighbors(np.transpose(Coords[:, classn == 3]))
-			classn3 = classn[classn==3]
-			classn3[distances[:,0]<0.5]=4
-			classn[classn==3]=classn3
+			classn3 = classn[classn == 3]
+			classn3[distances[:,0] < 0.5] = 4
+			classn[classn == 3] = classn3
 
 		outFile = File("classified"+tile_name, mode = "w", header = inFile.header)
 		outFile.points = inFile.points
