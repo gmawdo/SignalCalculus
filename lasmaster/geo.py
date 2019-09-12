@@ -8,8 +8,10 @@ import pandas as pd
 def eig_info(coords, target):
 	# target of sh (d,), coords sh (n,d)
 	relative_positions = coords - target
+	cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
 	cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1)) #(num_pts,d,d)
 	# get eigeninformation
+
 	evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
 	
 	return evals, evects # evects of shape (samples, dimensions, dimensions) with evects[:,:,i] being vector i
