@@ -5,32 +5,23 @@ from lasmaster import fun
 import pandas as pd
 
 # C O M P U T E   E I G E N I N F O
-def eig_info(coords, target):
-	# target of sh (d,), coords sh (n,d)
-	relative_positions = coords - target
-	cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
-	cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1)) #(num_pts,d,d)
-	# get eigeninformation
+def eig_info(coords, target, condition = True): # coords = coordinates, target = target point(s)
+	# target.shape == (...,d) for single target, coords.shape == (...,k,d)
+	deviations = condition*(coords - target[..., None, :]) # raw_deviations.shape == (...,k,d)
+	cov_matrices = np.matmul(deviations.swapaxes(-1,-2), deviations) # (...,d,d)
+	cov_matrices = np.maximum(cov_matrices.swapaxes(-1,-2), cov_matrices) # induce symmetry
+	evals, evects = np.linalg.eigh(cov_matrices) #(..., d), (...,d,d)
 
-	evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
-	
-	return evals, evects # evects of shape (samples, dimensions, dimensions) with evects[:,:,i] being vector i
-
+	return evals, evects # evects of shape (...,d,d) with evects[:,:,i] being vector i
 
 # O P T I M I S E   K   N U M B E R S
-def optimise_k(relative_positions, k_range): # shape of argument is (d,num_pts,k)
-	d = relative_positions.shape[0] 
-	num_pts = relative_positions.shape[1] #coords has shape (d,num_points)
-	k = relative_positions.shape[2]
-	optimise = True
-	
-	k_ran = np.intersect1d(np.arange(100), k_range)	
-
-	k_opt = np.ones(num_pts, dtype = int)
-	entropy_store = np.ones(num_pts, dtype = float)
-	eval_store = np.empty((num_pts, d))
-	evect_store = np.empty((num_pts, d, d))
-	unchanged = np.ones(num_pts, dtype = bool)
+def optimise_k(coords, target, k_range): # coords.shape == (...,n,d)
+	# condition must be able to broadcast over coords to same shape as coords
+	k_opt = np.ones(coords.shape[:-1], dtype = int)
+	entropy_store = np.ones(coords.shape[:-1], dtype = float)
+	eval_store = np.empty((coords.shape[:-1], d))
+	evect_store = np.empty((coords.shape[:-1], d, d))
+	unchanged = np.ones(coords.shape[:-1], dtype = bool)
 
 	for item in k_ran:
 		# matrix multiplications
