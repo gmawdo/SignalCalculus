@@ -10,32 +10,30 @@ def eig_info(coords, target, condition = True): # coords = coordinates, target =
 	deviations = condition*(coords - target[..., None, :]) # raw_deviations.shape == (...,k,d)
 	cov_matrices = np.matmul(deviations.swapaxes(-1,-2), deviations) # (...,d,d)
 	cov_matrices = np.maximum(cov_matrices.swapaxes(-1,-2), cov_matrices) # induce symmetry
-	evals, evects = np.linalg.eigh(cov_matrices) #(..., d), (...,d,d)
+	evals, evects = np.linalg.eigh(cov_matrices) #(...,d), (...,d,d)
 
 	return evals, evects # evects of shape (...,d,d) with evects[:,:,i] being vector i
 
 # O P T I M I S E   K   N U M B E R S
-def optimise_k(coords, target, k_range): # coords.shape == (...,n,d)
+def optimise_k(coords, distances, indices, condition, min_k = 4, condition = True): # coords.shape == (...,n,d)
 	# condition must be able to broadcast over coords to same shape as coords
+	d = coords[-1]
 	k_opt = np.ones(coords.shape[:-1], dtype = int)
 	entropy_store = np.ones(coords.shape[:-1], dtype = float)
-	eval_store = np.empty((coords.shape[:-1], d))
-	evect_store = np.empty((coords.shape[:-1], d, d))
+	eval_store = np.empty(coords.shape[:-1] + (d,))
+	evect_store = np.empty(coords.shape[:-1] + (d,d))
 	unchanged = np.ones(coords.shape[:-1], dtype = bool)
 
-	for item in k_ran:
-		# matrix multiplications
-		raw_deviations = relative_positions[:, :, :item + 1] #(d,num_pts,item + 1)
-		cov_matrices = np.matmul(raw_deviations.transpose(1,0,2), raw_deviations.transpose(1,2,0)) #(num_pts,d,d)
-		cov_matrices = np.maximum(cov_matrices, cov_matrices.transpose(0,2,1)) #(num_pts,d,d)
-		# get eigeninformation
-		evals, evects = np.linalg.eigh(cov_matrices) #(num_pts, d), (num_pts,d,d)
-		z = (evals[:,-1]-evals[:,-2])/(evals[:,-1]+evals[:,-2]+evals[:,-3]) #num_pts
-		y = 2*(evals[:,-2]-evals[:,-3])/(evals[:,-1]+evals[:,-2]+evals[:,-3]) #num_pts
-		x = 3*evals[:,-3]/(evals[:,-1]+evals[:,-2]+evals[:,-3]) #num_pts
-		dim_ent = np.clip(entropy(np.stack((3*x/(x+y+z), 2*(y-x)/(x+y+z), (z-y)/(x+y+z)), axis = 1)), 0, 1) #(num_pts)
+	for item in (k for k in k_range if k >= min_k):
+		evals, evects = eig_info(coords[indices, :], coords, condition)
+		actions = np.zeros((d,d), dtype = float)
+		for index in range(d):
+			actions[index, d-index-1] = d-index
+			actions[index, d-index-2] = index-d+1
+		LPS = np.matmum(evects, actions) #(..., d)
+		dim_ent = np.clip(entropy(LPS), 0, 1)
 		condition = dim_ent<=entropy_store
-		k_opt[condition] = item #num_pts
+		k_opt[condition] = item
 		entropy_store[condition] = dim_ent[condition]
 		eval_store[condition,:] = evals[condition,:]
 		evect_store[condition,:,:] = evects[condition,:,:]
