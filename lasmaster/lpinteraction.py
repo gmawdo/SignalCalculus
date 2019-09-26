@@ -24,13 +24,14 @@ def name_modifier_attr(config):
 	C = spacetime*("v_speed"+str(C_int).zfill(2)+"_"+str(C_rat).zfill(2))
 	return "attr"+num+K+R+C
 
-def attr(file_name, config, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_vec(), fun_kdist = fun.std_fun_kdist()):
+def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec, fun_kdist = fun.std_fun_kdist):
 	in_file = File(file_name, mode = "r")
 	header=in_file.header
-	
-	coord_dictionary = {"x": in_file.x, "y": in_file.y, "z": in_file.z, "gps_time": in_file.gps_time}
-
-	val1, val2, val3, vec1, vec2, vec3, k, kdist = geo.eig(coord_dictionary, config)
+	x = in_file.x
+	y = in_file.y
+	z = in_file.z, 
+	time = in_file.gps_time
+	val, vec, k, kdist = geo.attibutes_prelim(x,y,z, time, config)
 	
 	mod = name_modifier_attr(config)
 	out_file = File(mod+file_name, mode = "w", header = header)
@@ -56,13 +57,13 @@ def attr(file_name, config, fun_eig = fun.std_fun_eig(), fun_vec = fun.std_fun_v
 		dat = in_file.reader.get_dimension(dimension)
 		out_file.writer.set_dimension(dimension, dat)
 
-	for dimension in fun_eig:
-		value = fun_eig[dimension](val1, val2, val3)
+	for dimension in fun_val(val):
+		value = fun_val(val)[dimension]
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
 
-	for dimension in fun_vec:
-		value = fun_vec[dimension](vec1, vec2, vec3)
+	for dimension in fun_vec(vec):
+		value = fun_vec(vec)[dimension]
 		value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 		out_file.writer.set_dimension(dimension, value)
 
