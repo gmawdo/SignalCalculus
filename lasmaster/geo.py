@@ -15,7 +15,7 @@ def eig_info(coords, target, condition = True): # coords = coordinates, target =
 	return evals, evects # evects of shape (...,d,d) with evects[:,:,i] being vector i
 
 # O P T I M I S E   K   N U M B E R S
-def optimise_k(coords, distances, indices, condition = True, min_k = 4): # coords.shape == (...,n,d)
+def optimise_k(coords, distances, nbhds, k_range, condition = True, min_k = 4): # coords.shape == (...,n,d)
 	# condition must be able to broadcast over coords to same shape as coords
 	d = coords.shape[-1]
 	k_opt = np.ones(coords.shape[:-1], dtype = int)
@@ -24,13 +24,12 @@ def optimise_k(coords, distances, indices, condition = True, min_k = 4): # coord
 	evect_store = np.empty(coords.shape[:-1] + (d,d), dtype = float)
 	unchanged = np.ones(coords.shape[:-1], dtype = bool)
 	for item in (k for k in k_range if k >= min_k):
-		evals, evects = eig_info(coords[indices, :], coords, condition) #(num_pts,d), (num_pts,d,d)
+		evals, evects = eig_info(nbhds, coords, condition) #(num_pts,d), (num_pts,d,d)
 		actions = np.zeros((d,d), dtype = float)
 		for index in range(d):
 			actions[index, d-index-1] = d-index
 			actions[index, d-index-2] = index-d+1
 		LPS = np.matmul(evals, actions) #(..., d)
-		print(LPS.shape)
 		dim_ent = np.clip(entropy(LPS), 0, 1)
 		change_condition = dim_ent<=entropy_store
 		k_opt[change_condition] = item
@@ -49,7 +48,7 @@ def attibutes_prelim(x,y,z, time, config):
 	radius = config["radius"]
 	v_speed = config["virtualSpeed"]
 	spacetime = bool(v_speed)
-	coords = np.stack((x,y,z)+spacetime*(v_speed * time,), axis = 1)
+	coords = np.stack((x,y,z)+spacetime*(v_speed * time,), axis = 1) # THE COMMA AFTER time MUST STAY!! OTHERWISE PROMOTION RULES WILL CHANGE (x,y,z) to an array!!!
 	d = coords.shape[-1]
 	times = [np.quantile(time, q = r) for r in np.linspace(0,1,N+1)]
 	time_digits = np.digitize(time, bins = times, right = False) # bins 0,1,2,...,N+1. 0 represents less than min, N+1 more than max.
@@ -57,18 +56,20 @@ def attibutes_prelim(x,y,z, time, config):
 	time_digits[time_digits>N]=N
 	val= np.empty(coords.shape, dtype = float)
 	vec = np.empty(coords.shape+(d,), dtype = float)
-	ents= np.empty(coords.shape[:-2], dtype = float)
-	kdist = np.empty(coords.shape[:-2], dtype = float)
-	kopt = np.empty(coords.shape[:-2], dtype = int)
-	dist1 = np.empty(coords.shape[:-2], dtype = float)
-	distmax = np.empty(coords.shape[:-2], dtype = float)
+	ents= np.empty(coords.shape[:-1], dtype = float)
+	print(ents.shape, coords.shape)
+	kdist = np.empty(coords.shape[:-1], dtype = float)
+	kopt = np.empty(coords.shape[:-1], dtype = int)
+	dist1 = np.empty(coords.shape[:-1], dtype = float)
+	distmax = np.empty(coords.shape[:-1], dtype = float)
 	nhbrs = NearestNeighbors(n_neighbors = max(k_range), algorithm = "kd_tree").fit(coords)
 	for i in np.unique(time_digits):
 		time_range = time_digits == i
 		distances, indices = nhbrs.kneighbors(coords[time_range,:]) # (num_pts,k)
-		k_opt, evals, evects, entropies = optimise_k(coords, distances, indices, condition = distances < radius) #(num_pts, d), (num_pts,d,d)
+		k_opt, evals, evects, entropies = optimise_k(coords[time_range,:], distances, coords[indices, :], k_range, condition = distances[:,:,None] < radius) #(num_pts, d), (num_pts,d,d)
 		val[time_range,:] = evals
 		vec[time_range,:,:] = evects
+		print(ents.shape, time_range.shape, max(time_range))
 		ents[time_range] = entropies
 		kdist[time_range] = distances[np.arange(distances.shape[-2]), k_opt-1]
 		kopt[time_range] = k_opt

@@ -19,7 +19,7 @@ def std_fun_vec(vec):
 	d = vec.shape[-1]
 	output = {}
 	for i in range(d):
-		output["ang"+str(i)] = np.clip(2*np.arccos(vec[:,i,2]))
+		output["ang"+str(i)] = np.clip(2*np.arccos(vec[:,i,2]), 0 , 1)
 		for j in range(d):
 			output["eig"+str(j)+str(i)] = vec[:, i, j]
 	return output

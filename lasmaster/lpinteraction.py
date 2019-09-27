@@ -29,23 +29,25 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 	header=in_file.header
 	x = in_file.x
 	y = in_file.y
-	z = in_file.z, 
+	z = in_file.z
 	time = in_file.gps_time
 	val, vec, k, kdist = geo.attibutes_prelim(x,y,z, time, config)
-	
 	mod = name_modifier_attr(config)
 	out_file = File(mod+file_name, mode = "w", header = header)
 	
 	# extract names of pre-existing attributes
 	dimensions = [spec.name for spec in in_file.point_format]
 
-	for fun_set in fun_eig, fun_vec:
-		for dimension in fun_set:
-			if not(dimension in dimensions):
-				out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
+	for dimension in fun_val(val):
+		if not(dimension in dimensions):
+			out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
+
+	for dimension in fun_vec(vec):
+		if not(dimension in dimensions):
+			out_file.define_new_dimension(name = dimension, data_type = 9, description = dimension)
 
 	for modifier in ["max", "one", "opt"]:
-		for dimension in fun_kdist:
+		for dimension in fun_kdist():
 			if not(modifier+dimension in dimensions):
 				out_file.define_new_dimension(name = modifier+dimension, data_type = 9, description = modifier+dimension)
 
@@ -68,8 +70,8 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 		out_file.writer.set_dimension(dimension, value)
 
 	for modifier in ["max", "one", "opt"]: 
-		for dimension in fun_kdist:
-			value = fun_kdist[dimension](k[modifier], kdist[modifier])
+		for dimension in fun_kdist():
+			value = fun_kdist()[dimension](k[modifier], kdist[modifier])
 			value[np.logical_or(np.isnan(value),np.isinf(value))]=0
 			out_file.writer.set_dimension(modifier+dimension, value)
 
