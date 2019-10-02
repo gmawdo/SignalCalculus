@@ -1,0 +1,47 @@
+56cm RADIUS CIRCLE RESULTS
+
+num. of points 795194
+pulse rate 450000
+speed 56.59 (mps)
+flight range 100
+scan rate 40.0
+field of view 39.0
+
+max pt spacing across track 0.19008129827534476
+max pt spacing along track 0.7073750000000001
+
+swath width 354.12
+time elapsed 1.77
+
+lowest coverage 1 percent
+highest coverage 41 percent
+avg coverage 20.47 percent
+
+radial mode lowest ppm 8
+radial mode highest ppm 195
+radial mode avg ppm 33.385629167222085
+ran in 5.87 minutes
+
+ONE METER VOXEL RESULTS
+num. of points 795194
+pulse rate 450000
+speed 56.59 (mps)
+flight range 100
+scan rate 40.0
+field of view 39.0
+
+max pt spacing across track 0.19008129827534476
+max pt spacing along track 0.7073750000000001
+
+swath width 354.12
+time elapsed 1.77
+
+voxel mode lowest ppm 10
+voxel mode highest ppm 288
+voxel mode avg ppm 40.424004708285025
+
+lowest coverage 1 percent
+highest coverage 41 percent
+avg coverage 20.47 percent
+ran in 0.03 minutes
+
