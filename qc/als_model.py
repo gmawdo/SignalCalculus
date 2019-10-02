@@ -45,7 +45,7 @@ z = np.empty(num_pts, dtype = float)
 intensity = np.empty(num_pts, dtype = int)
 
 angular_amplitude = (FOV/2)*(np.pi/180) # formulas subject to change when more understanding gained
-frequency = SR*2 # formulas subject to change when more understanding gained
+frequency = SR # formulas subject to change when more understanding gained
 
 if mode == "shm":
 	function = lambda x: np.cos(2*np.pi*x)
