@@ -6,7 +6,7 @@ def std_fun_val(val):
 	output = {}
 	actions = np.zeros((d,d), dtype = float)
 	for i in range(d):
-		actions[i, d-i-1] = d-i-1
+		actions[i, d-i-1] = d-i
 		actions[i, d-i-2] = i-d+1
 	LPS = np.matmul(val, actions)
 	for i in range(d):
