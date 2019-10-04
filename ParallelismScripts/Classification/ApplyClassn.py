@@ -8,11 +8,17 @@ import time
 
 timingstxt = open("CLASSN_TIMINGS.txt", "w+")
 
+def jsd(distribution):
+	M = distribution.shape[-2]
+	N = distribution.shape[-1]
+	return (entropy(np.mean(distribution, axis = -2))-np.mean(entropy(distribution), axis = -1))*np.log(N)/np.log(M)
+
+
 def corridor(c, conductor_condition, R=1, S=2):
 
-	v1 = inFile.eig20
-	v2 = inFile.eig21
-	v3 = inFile.eig22 # these are the three components of eigenvector 2
+	v1 = inFile.eig30
+	v2 = inFile.eig31
+	v3 = inFile.eig32 # these are the three components of eigenvector 2
 	cRestrict =  c[:, conductor_condition]
 	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(cRestrict))
 	distances, indices = nhbrs.kneighbors(np.transpose(c))
@@ -26,7 +32,23 @@ def corridor(c, conductor_condition, R=1, S=2):
 	
 	return condition
 
-tile_condition = lambda x: "attr" in x and "classified" not in x
+def entropy(distribution):
+	N = distribution.shape[-1]
+	logs = np.log(distribution)
+	logs[np.logical_or(np.isnan(logs),np.isinf(logs))]=0
+	entropies = np.sum(-distribution*logs, axis = -1)/np.log(N)
+	return entropies
+
+
+def dimension_count(dimensionality_array):
+	A = np.array([[1 , 0, 0], [0,1,0], [0,0,1]])
+	C = np.stack(tuple(np.broadcast_arrays(A[:,None,:], dimensionality_array[None,:, :])), axis = -1) #(7, M1, 3, 2)
+	JSD = jsd(C.transpose(0, 1, 3, 2)) #(7, M1)
+	dims = np.argmin(JSD, axis = 0)
+	return dims
+
+def tile_condition(tile_name):
+	return "attr" in tile_name and "classified" not in tile_name
 
 for tile_name in os.listdir():
 	if tile_condition(tile_name):
@@ -34,15 +56,16 @@ for tile_name in os.listdir():
 		inFile = File(tile_name,mode = "r")
 		Coords = np.stack((inFile.x,inFile.y,inFile.z))
 		inFile = File(tile_name, mode = "r")
-		LPS = np.stack((inFile.codim2, inFile.codim1, inFile.codim0), axis = 1)
+		LPS = np.stack((inFile.dim1, inFile.dim2, inFile.dim3), axis = 1)
 
 		dims = np.argmax(LPS, axis = 1)+1
 		dims[inFile.eig2<=0]=7
+		classn = 0*inFile.classification
 
 		if (dims == 1).any():
-			v0 = 1*inFile.eig20
-			v1 = 1*inFile.eig21
-			v2 = 1*inFile.eig22
+			v0 = 1*inFile.eig31
+			v1 = 1*inFile.eig32
+			v2 = 1*inFile.eig33
 			condition = ((v0>=0)&(v1<0)&(v2<0))|((v1>=0)&(v2<0)&(v0<0))|((v2>=0)&(v0<0)&(v1<0))|((v0<0)&(v1<0)&(v2<0))
 			v0[condition]=-v0[condition]
 			v1[condition]=-v1[condition]
@@ -62,20 +85,20 @@ for tile_name in os.listdir():
 			unq, ind, inv, cnt = np.unique(labels, return_index=True, return_inverse=True, return_counts=True)
 			lengths = (np.sqrt((maxs[:,0]-mins[:,0])**2+(maxs[:,1]-mins[:,1])**2))[inv]
 			lengths[labels==-1]=0
-			classn = 0*inFile.classification
 			classn1 = classn[dims == 1]
 			classn1[:] = 1
 			classn1[lengths<=2]=0
 			classn[dims == 1]=classn1
-			conductor = corridor(Coords, classn == 1, R=0.5, S=2)
-			classn[conductor]=1
+			if (classn == 1).any():
+				conductor = corridor(Coords, classn == 1, R=0.5, S=2)
+				classn[conductor]=1
 			classn[dims == 7] = 7
 		
 		prepylon = (dims == 2)&(classn != 1)
 		if prepylon.any():
-			v0 = 1*inFile.eig00
-			v1 = 1*inFile.eig01
-			v2 = 1*inFile.eig02
+			v0 = 1*inFile.eig21
+			v1 = 1*inFile.eig22
+			v2 = 1*inFile.eig23
 			condition = ((v0>=0)&(v1<0)&(v2<0))|((v1>=0)&(v2<0)&(v0<0))|((v2>=0)&(v0<0)&(v1<0))|((v0<0)&(v1<0)&(v2<0))
 			v0[condition]=-v0[condition]
 			v1[condition]=-v1[condition]
@@ -122,24 +145,24 @@ for tile_name in os.listdir():
 			lengths[labels==-1]=0
 			classn3 = classn[preveg]
 			classn3[:] = 3
-			classn3[lengths < 2]=0
+			classn3[lengths<2]=0
 			classn[preveg] = classn3
 			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 3]))
 			distances, indices = nhbrs.kneighbors(np.transpose(Coords))
-			classn[(distances[:,0] < 0.5) & (classn != 7) & (classn != 1) & (classn != 2)]=3
+			classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) & (classn != 2)]=3
 
 		nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, (classn != 0) & (classn != 7)]))
 		distances, indices = nhbrs.kneighbors(np.transpose(Coords[:, classn == 0]))
 		classn0 = classn[classn == 0]
-		classn0[(distances[:,0] < 0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0] < 0.5),0]]
+		classn0[(distances[:,0]<0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0]<0.5),0]]
 		classn[(classn==0)] = classn0
 
 		if (classn == 1).any() and (classn == 3).any():
 			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 1]))
 			distances, indices = nhbrs.kneighbors(np.transpose(Coords[:, classn == 3]))
-			classn3 = classn[classn == 3]
-			classn3[distances[:,0] < 0.5] = 4
-			classn[classn == 3] = classn3
+			classn3 = classn[classn==3]
+			classn3[distances[:,0]<0.5]=4
+			classn[classn==3]=classn3
 
 		outFile = File("classified"+tile_name, mode = "w", header = inFile.header)
 		outFile.points = inFile.points
