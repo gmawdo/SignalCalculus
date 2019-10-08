@@ -29,7 +29,7 @@ def optimise_k(coords, distances, nbhds, k_range, condition = True, min_k = 4): 
 		for index in range(d):
 			actions[index, d-index-1] = d-index
 			actions[index, d-index-2] = index-d+1
-		LPS = np.matmul(evals, actions) #(..., d)
+		LPS = np.matmul(evals/(np.sum(evals, axis = -1)[...,None]), actions) #(..., d)
 		dim_ent = np.clip(entropy(LPS), 0, 1)
 		change_condition = dim_ent<=entropy_store
 		k_opt[change_condition] = item
@@ -40,7 +40,7 @@ def optimise_k(coords, distances, nbhds, k_range, condition = True, min_k = 4): 
 	entropy_store[unchanged] = 0
 	eval_store[unchanged,:] = 0
 	evect_store[unchanged,:,:] = 0
-	return k_opt, eval_store, evect_store, entropy_store
+	return k_opt, eval_store/(np.sum(eval_store, axis = -1)[...,None]), evect_store, entropy_store
 
 def attibutes_prelim(x,y,z, time, config):
 	N = config["timeIntervals"]
