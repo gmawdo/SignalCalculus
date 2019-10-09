@@ -1,4 +1,5 @@
 import numpy as np
+np.seterr(divide='ignore', invalid='ignore')
 from laspy.file import File
 from lasmaster import geo
 from lasmaster import fun

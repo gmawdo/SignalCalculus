@@ -1,4 +1,5 @@
 import numpy as np
+np.seterr(divide='ignore', invalid='ignore')
 from sklearn.neighbors import NearestNeighbors
 from lasmaster.infotheory import entropy
 from lasmaster import fun
@@ -57,7 +58,6 @@ def attibutes_prelim(x,y,z, time, config):
 	val= np.empty(coords.shape, dtype = float)
 	vec = np.empty(coords.shape+(d,), dtype = float)
 	ents= np.empty(coords.shape[:-1], dtype = float)
-	print(ents.shape, coords.shape)
 	kdist = np.empty(coords.shape[:-1], dtype = float)
 	kopt = np.empty(coords.shape[:-1], dtype = int)
 	dist1 = np.empty(coords.shape[:-1], dtype = float)
@@ -66,10 +66,10 @@ def attibutes_prelim(x,y,z, time, config):
 	for i in np.unique(time_digits):
 		time_range = time_digits == i
 		distances, indices = nhbrs.kneighbors(coords[time_range,:]) # (num_pts,k)
-		k_opt, evals, evects, entropies = optimise_k(coords[time_range,:], distances, coords[indices, :], k_range, condition = distances[:,:,None] < radius) #(num_pts, d), (num_pts,d,d)
+		condition = (distances[:,:,None] < radius)
+		k_opt, evals, evects, entropies = optimise_k(coords[time_range,:], distances, coords[indices, :], k_range, condition) #(num_pts, d), (num_pts,d,d)
 		val[time_range,:] = evals
 		vec[time_range,:,:] = evects
-		print(ents.shape, time_range.shape, max(time_range))
 		ents[time_range] = entropies
 		kdist[time_range] = distances[np.arange(distances.shape[-2]), k_opt-1]
 		kopt[time_range] = k_opt

@@ -1,4 +1,5 @@
 import numpy as np
+np.seterr(divide='ignore', invalid='ignore')
 
 def entropy(distribution):
 	N = distribution.shape[-1]

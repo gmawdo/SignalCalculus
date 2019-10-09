@@ -1,4 +1,5 @@
 import numpy as np
+np.seterr(divide='ignore', invalid='ignore')
 from lasmaster.infotheory import entropy
 
 def std_fun_val(val):
