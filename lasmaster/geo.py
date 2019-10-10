@@ -43,13 +43,26 @@ def optimise_k(coords, distances, nbhds, k_range, condition = True, min_k = 4): 
 	evect_store[unchanged,:,:] = 0
 	return k_opt, eval_store/(np.sum(eval_store, axis = -1)[...,None]), evect_store, entropy_store
 
-def attibutes_prelim(x,y,z, time, config):
+def decimate(coords, u):
+	if u == False:
+		return coords, ..., ...
+	else:
+		markers = (np.floor(coords/u)).astype(int)
+		unq, ind, inv, cnt = np.unique(markers, return_index=True, return_inverse=True, return_counts=True, axis=0)
+		return u*unq, inv, ind
+
+def attibutes_prelim(x,y,z,t, config):
 	N = config["timeIntervals"]
 	k_range = config["k"]
 	radius = config["radius"]
 	v_speed = config["virtualSpeed"]
+	u = config["decimate"]
 	spacetime = bool(v_speed)
-	coords = np.stack((x,y,z)+spacetime*(v_speed * time,), axis = 1) # THE COMMA AFTER time MUST STAY!! OTHERWISE PROMOTION RULES WILL CHANGE (x,y,z) to an array!!!
+	if spacetime:
+		coords, inv, ind = decimate(np.stack((x,y,z,v_speed * t), axis = 1)) 
+	else:
+		coords, inv, ind = decimate(np.stack((x,y,z), axis = 1)) 
+	time = t[ind]
 	d = coords.shape[-1]
 	times = [np.quantile(time, q = r) for r in np.linspace(0,1,N+1)]
 	time_digits = np.digitize(time, bins = times, right = False) # bins 0,1,2,...,N+1. 0 represents less than min, N+1 more than max.
@@ -77,13 +90,13 @@ def attibutes_prelim(x,y,z, time, config):
 		distmax[time_range] = distances[:,-1]
 	k_dictionary = {}
 	kdist_dictionary = {}
-	k_dictionary["one"] = np.ones(coords.shape[:-2], dtype = int)
-	k_dictionary["max"] = max(k_range)*np.ones(coords.shape[:-2], dtype = int)
-	k_dictionary["opt"] = kopt
-	kdist_dictionary["one"] = dist1
-	kdist_dictionary["max"] = distmax
-	kdist_dictionary["opt"] = kdist
-	return val, vec, k_dictionary, kdist_dictionary
+	k_dictionary["one"] = np.ones(coords.shape[:-2], dtype = int)[inv]
+	k_dictionary["max"] = max(k_range)*np.ones(coords.shape[:-2], dtype = int)[inv]
+	k_dictionary["opt"] = kopt[inv]
+	kdist_dictionary["one"] = dist1[inv]
+	kdist_dictionary["max"] = distmax[inv]
+	kdist_dictionary["opt"] = kdist[inv]
+	return val[inv,:], vec[inv,:,:], k_dictionary, kdist_dictionary
 
 def hag(coord_dictionary, config):
 	Coords = np.vstack((coord_dictionary["x"],coord_dictionary["y"],coord_dictionary["z"]))

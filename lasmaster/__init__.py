@@ -10,6 +10,7 @@ example_attr_config = 	{
 			"k"				:	range(4,50), # must be a generator
 			"radius"		:	0.5,
 			"virtualSpeed"	:	2.0,
+			"decimate"		:	0.1,
 						}
 
 example_hag_config = 	{
@@ -19,11 +20,12 @@ example_hag_config = 	{
 
 
 def example_attr(file_name):
+	print("Starting attributes: ", file_name)
 	start = time.time()
 	cf = example_attr_config
 	lpinteraction.attr(file_name, cf, fun.std_fun_eig(), fun.std_fun_vec(), fun.std_fun_kdist()) 
 	end = time.time()
-	print(file_name, "Time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
+	print("Finished attributes: ",file_name, ", time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
 def example_hag(file_name):
 	start = time.time()

@@ -25,7 +25,8 @@ def name_modifier_attr(config):
 	C = spacetime*("v_speed"+str(C_int).zfill(2)+"_"+str(C_rat).zfill(2))
 	return "attr"+num+K+R+C
 
-def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec, fun_kdist = fun.std_fun_kdist):
+def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec, fun_kdist = fun.std_fun_kdist)
+	print("attr. start", file_name)
 	in_file = File(file_name, mode = "r")
 	header=in_file.header
 	x = in_file.x
@@ -79,6 +80,7 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 	out_file.writer.set_dimension("kopt", k["opt"])
 
 	out_file.close()
+	print("attr. end", file_name)
 
 def name_modifier_hag(config):
 	alpha = config["alpha"] # alpha is small, between 0 and 1

@@ -11,7 +11,7 @@ def std_fun_val(val):
 		actions[i, d-i-2] = i-d+1
 	LPS = np.matmul(val, actions)
 	for i in range(d):
-		output["eig"+str(i)] = val[:, i]/np.sum(val, axis = - 1)
+		output["eig"+str(i)] = val[:, i]/np.sum(val, axis = - 1) # for purpose of robust classification, our eigenvalues should come out in descending order
 		output["dim"+str(i+1)] = LPS[:, i]
 	output["diment"] = entropy(LPS)
 	return output
@@ -22,7 +22,7 @@ def std_fun_vec(vec):
 	for i in range(d):
 		output["ang"+str(i)] = np.clip(2*np.arccos(vec[:,i,2]), 0 , 1)
 		for j in range(d):
-			output["eig"+str(j)+str(i)] = vec[:, i, j]
+			output["eig"+str(j)+str(i)] = vec[:, i, j] # in eigenvalue-descending order
 	return output
 
 def std_fun_kdist():
