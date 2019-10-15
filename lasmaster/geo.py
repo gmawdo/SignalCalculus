@@ -59,9 +59,9 @@ def attibutes_prelim(x,y,z,t, config):
 	u = config["decimate"]
 	spacetime = bool(v_speed)
 	if spacetime:
-		coords, inv, ind = decimate(np.stack((x,y,z,v_speed * t), axis = 1)) 
+		coords, inv, ind = decimate(np.stack((x,y,z,v_speed * t), axis = 1), u) 
 	else:
-		coords, inv, ind = decimate(np.stack((x,y,z), axis = 1)) 
+		coords, inv, ind = decimate(np.stack((x,y,z), axis = 1), u) 
 	time = t[ind]
 	d = coords.shape[-1]
 	times = [np.quantile(time, q = r) for r in np.linspace(0,1,N+1)]
@@ -90,13 +90,13 @@ def attibutes_prelim(x,y,z,t, config):
 		distmax[time_range] = distances[:,-1]
 	k_dictionary = {}
 	kdist_dictionary = {}
-	k_dictionary["one"] = np.ones(coords.shape[:-2], dtype = int)[inv]
-	k_dictionary["max"] = max(k_range)*np.ones(coords.shape[:-2], dtype = int)[inv]
+	k_dictionary["one"] = np.ones(coords.shape[:-1], dtype = int)[inv]
+	k_dictionary["max"] = max(k_range)*np.ones(coords.shape[:-1], dtype = int)[inv]
 	k_dictionary["opt"] = kopt[inv]
 	kdist_dictionary["one"] = dist1[inv]
 	kdist_dictionary["max"] = distmax[inv]
 	kdist_dictionary["opt"] = kdist[inv]
-	return val[inv,:], vec[inv,:,:], k_dictionary, kdist_dictionary
+	return val[inv,:], vec[inv,:,:], k_dictionary, kdist_dictionary, inv
 
 def hag(coord_dictionary, config):
 	Coords = np.vstack((coord_dictionary["x"],coord_dictionary["y"],coord_dictionary["z"]))

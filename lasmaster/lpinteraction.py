@@ -3,6 +3,7 @@ np.seterr(divide='ignore', invalid='ignore')
 from laspy.file import File
 from lasmaster import geo
 from lasmaster import fun
+from laspy.header import VLR
 from sklearn.neighbors import NearestNeighbors
 import time
 
@@ -11,6 +12,7 @@ def name_modifier_attr(config):
 	k = config["k"]
 	radius = config["radius"]
 	v_speed = config["virtualSpeed"]
+	u = config["decimate"]
 	spacetime = bool(v_speed)
 	if np.isinf(radius):
 		R = "Infty"
@@ -18,12 +20,15 @@ def name_modifier_attr(config):
 		R_int = int(radius)
 		R_rat = int(100*(radius-int(radius)))
 		R = "radius"+str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
+	u_int = int(u)
+	u_rat = int(100*(u-int(u)))
+	u = "dec"+str(u_int).zfill(2)+"_"+str(u_rat).zfill(2)
 	C_int = int(v_speed)
 	C_rat = int(100*(v_speed-int(v_speed)))
 	num = "N"+str(N).zfill(3)
 	K = "k"+str(min(k)).zfill(3)+"_"+str(max(k)).zfill(3)
 	C = spacetime*("v_speed"+str(C_int).zfill(2)+"_"+str(C_rat).zfill(2))
-	return "attr"+num+K+R+C
+	return "attr"+num+K+R+C+u
 
 def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec, fun_kdist = fun.std_fun_kdist):
 	print("attr. start", file_name)
@@ -33,7 +38,7 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 	y = in_file.y
 	z = in_file.z
 	time = in_file.gps_time
-	val, vec, k, kdist = geo.attibutes_prelim(x,y,z, time, config)
+	val, vec, k, kdist, inv = geo.attibutes_prelim(x,y,z, time, config)
 	mod = name_modifier_attr(config)
 	out_file = File(mod+file_name, mode = "w", header = header)
 	
@@ -55,6 +60,10 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 
 	if not("kopt" in dimensions):
 		out_file.define_new_dimension(name = "kopt", data_type = 6, description = "koptimal")
+	if not("vox" in dimensions):
+		out_file.define_new_dimension(name = "vox", data_type = 6, description = "voxel_number")
+	if not("dec" in dimensions):
+		out_file.define_new_dimension(name = "dec", data_type = 9, description = "decimation_scale")
 
 	# add pre-existing point records
 	for dimension in dimensions:
@@ -78,8 +87,13 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 			out_file.writer.set_dimension(modifier+dimension, value)
 
 	out_file.writer.set_dimension("kopt", k["opt"])
+	out_file.writer.set_dimension("vox", inv)
+	u = config["decimate"]
+	out_file.writer.set_dimension("dec", u*np.ones(len(in_file)))
 
+	in_file.close()
 	out_file.close()
+
 	print("attr. end", file_name)
 
 def name_modifier_hag(config):
