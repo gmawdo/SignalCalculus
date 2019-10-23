@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
 
 theta = np.linspace(0, 2*np.pi, num = 1000)
 S = np.sin(theta)
@@ -41,11 +42,11 @@ for tile in os.listdir():
 		classn[:] = inFile.classification[:]
 		classn_2_save = classn == 2
 		if (classn==2).any():
-			clustering = DBSCAN(eps=0.5, min_samples=1).fit(coords[classn_2_save, :])
+			clustering = DBSCAN(eps=0.5, min_samples=1).fit(np.stack((x,y,z), axis = 1)[classn_2_save, :])
 			labels = clustering.labels_
 			L = np.unique(labels)
 			bldgs = np.empty((L.size, 6))
-			i = 0
+			i=0
 			for item in L:
 				predicate = np.zeros(len(inFile), dtype = bool)
 				predicate[classn_2_save] = labels == item
@@ -53,33 +54,9 @@ for tile in os.listdir():
 				classn[predicate_bb] = 2
 				bldgs[i] = [i, area, x_min, x_max, y_min, y_max]
 				i+=1
-			out.classification = classn
-			np.savetxt("buildings_"+tile[-4:]+".csv", bldgs, delimiter=",", header = "ID, Area, X_min, X_max, Y_min, Y_max")
-			out.close()
-		else:
-			pass
-		
-## qc
-#ang = np.arccos(np.random.random(1))
-#A = np.empty((2,2))
-#A[0, 0] = np.cos(ang)
-#A[0, 1] = -np.sin(ang)
-#A[1, 0] = np.sin(ang)
-#A[1, 1] = np.cos(ang)
-#xy = np.matmul(A,np.random.random((2,100000)))
-#from laspy.file import File
-#from laspy.header import Header
-#nh = Header()
-#nf = File("test.las", mode = "w", header = nh)
-#nf.header.scale = [0.001, 0.001, 0.001]
-#nf.x = xy[0]
-#nf.y = xy[1]
-#nf.close()
-#XY = bb(xy[0], xy[1])
-#nf = File("test_vertices.las", mode = "w", header = nh)
-#nf.header.scale = [0.001, 0.001, 0.001]
-#nf.x = XY[0]
-#nf.y = XY[1]
-#nf.close()
+
+		out.classification = classn
+		np.savetxt("buildings_"+tile[-4:]+".csv", bldgs, delimiter=",", header = "ID, Area, X_min, X_max, Y_min, Y_max")
+		out.close()
 
 
