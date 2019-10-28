@@ -102,9 +102,9 @@ def hag(coord_dictionary, config):
 	Coords = np.vstack((coord_dictionary["x"],coord_dictionary["y"],coord_dictionary["z"]))
 	alpha = config["alpha"] # alpha should be small
 	voxel_size = config["vox"]
-	unq, ind, inv, cnt = np.unique(np.round(Coords[:2,:]/voxel_size,0), return_index=True, return_inverse=True, return_counts=True, axis=1)
+	unq, ind, inv, cnt = np.unique((np.floor(Coords[:2,:]/voxel_size)).astype(int), return_index=True, return_inverse=True, return_counts=True, axis=1)
 	df = pd.DataFrame({'A': inv, 'Z': Coords[2,:]})
-	ground = (pd.DataFrame({'A':df['A'], 'Z':df['Z']}).groupby('A').quantile(0.01)).values
+	ground = (pd.DataFrame({'A':df['A'], 'Z':df['Z']}).groupby('A').quantile(alpha)).values
 	df['Z'] = ground[df['A'],0]
 	
 	return coord_dictionary["z"]-df['Z']

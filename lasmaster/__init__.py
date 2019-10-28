@@ -14,9 +14,9 @@ example_attr_config = 	{
 						}
 
 example_hag_config = 	{
-			"vox"			:	2,
+			"vox"			:	1,
 			"alpha"			:	0.01,
-		}
+			}
 
 
 def example_attr(file_name):

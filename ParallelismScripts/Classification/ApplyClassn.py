@@ -14,16 +14,21 @@ def jsd(distribution):
 	return (entropy(np.mean(distribution, axis = -2))-np.mean(entropy(distribution), axis = -1))*np.log(N)/np.log(M)
 
 
-def corridor(c, conductor_condition, R=1, S=2):
+def corridor(c, d, conductor_condition, R=1, S=2):
 
-	v1 = inFile.eig30
-	v2 = inFile.eig31
-	v3 = inFile.eig32 # these are the three components of eigenvector 2
+	if d == 4:
+		v0 = 1*inFile.eig31[IND]
+		v1 = 1*inFile.eig32[IND]
+		v2 = 1*inFile.eig33[IND]
+	if d == 3:
+		v0 = 1*inFile.eig20[IND]
+		v1 = 1*inFile.eig21[IND]
+		v2 = 1*inFile.eig22[IND]
 	cRestrict =  c[:, conductor_condition]
 	nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(cRestrict))
 	distances, indices = nhbrs.kneighbors(np.transpose(c))
 	nns = indices[:,0]
-	v = np.vstack((v1,v2,v3))[:, conductor_condition][:,nns] #(3,N)
+	v = np.vstack((v0,v1,v2))[:, conductor_condition][:,nns] #(3,N)
 	u = c[:,:]-c[:, conductor_condition][:,nns]
 	scale =(u[0,:]*v[0,:]+u[1,:]*v[1,:]+u[2,:]*v[2,:])
 	w = u-scale*v
@@ -54,30 +59,61 @@ for tile_name in os.listdir():
 	if tile_condition(tile_name):
 		start = time.time()
 		inFile = File(tile_name,mode = "r")
-		Coords = np.stack((inFile.x,inFile.y,inFile.z))
-		inFile = File(tile_name, mode = "r")
-		LPS = np.stack((inFile.dim1, inFile.dim2, inFile.dim3), axis = 1)
+		voxel = inFile.vox
+		UNQ, IND, INV, CNT = np.unique(voxel, return_index=True, return_inverse=True, return_counts=True)
+		if (inFile.vox == 0).all():
+			IND = np.arange(len(inFile))
+			INV = IND
+		u = 0.0*IND+0.05
+		x = inFile.x[IND]
+		y = inFile.y[IND]
+		z = inFile.z[IND]
+		dim1 = inFile.dim1[IND]
+		dim2 = inFile.dim2[IND]
+		dim3 = inFile.dim3[IND]
+		eig1 = inFile.eig1[IND]
+		eig2 = inFile.eig2[IND]
+		eig0 = inFile.eig0[IND]
+		classification = inFile.classification[IND]
+		Coords = u[None,:]*np.floor(np.stack((x/u,y/u,z/u), axis = 0))
+		LPS = np.stack((dim1, dim2, dim3), axis = 1)
+		dims = 1+np.argmax(LPS, axis = 1)
+		classn = 0*classification
+		try:
+			dim4 = inFile.dim4[IND]
+			d = 4
+		except:
+			d = 3
+		
+		if d==4:
+			eig3 = inFile.eig3
 
-		dims = np.argmax(LPS, axis = 1)+1
-		dims[inFile.eig2<=0]=7
-		classn = 0*inFile.classification
+		if d == 3:
+			dims[eig2<=0]=7
+		if d == 4:
+			dims[eig3<=0]=7
 
 		if (dims == 1).any():
-			v0 = 1*inFile.eig31
-			v1 = 1*inFile.eig32
-			v2 = 1*inFile.eig33
+			if d == 4:
+				v0 = 1*inFile.eig31[IND]
+				v1 = 1*inFile.eig32[IND]
+				v2 = 1*inFile.eig33[IND]
+			if d == 3:
+				v0 = 1*inFile.eig20[IND]
+				v1 = 1*inFile.eig21[IND]
+				v2 = 1*inFile.eig22[IND]
 			condition = ((v0>=0)&(v1<0)&(v2<0))|((v1>=0)&(v2<0)&(v0<0))|((v2>=0)&(v0<0)&(v1<0))|((v0<0)&(v1<0)&(v2<0))
 			v0[condition]=-v0[condition]
 			v1[condition]=-v1[condition]
 			v2[condition]=-v2[condition]
-			v = np.vstack((5*v0,5*v1,5*v2, inFile.x, inFile.y, inFile.z))
+			v = np.vstack((5*v0,5*v1,5*v2, x, y, z))
 			clustering = DBSCAN(eps=0.5, min_samples=1).fit((v[:, dims == 1]).transpose(1,0))
 			labels = clustering.labels_
 			frame =	{
 				'A': labels,
-				'X': inFile.x[dims == 1],
-				'Y': inFile.y[dims == 1],
-				'Z': inFile.z[dims == 1]
+				'X': x[dims == 1],
+				'Y': y[dims == 1],
+				'Z': z[dims == 1]
 				}
 			df = pd.DataFrame(frame)
 			maxs = (df.groupby('A').max()).values
@@ -90,27 +126,32 @@ for tile_name in os.listdir():
 			classn1[lengths<=2]=0
 			classn[dims == 1]=classn1
 			if (classn == 1).any():
-				conductor = corridor(Coords, classn == 1, R=0.5, S=2)
+				conductor = corridor(Coords, d, classn == 1, R=0.5, S=2)
 				classn[conductor]=1
 			classn[dims == 7] = 7
 		
 		prepylon = (dims == 2)&(classn != 1)
 		if prepylon.any():
-			v0 = 1*inFile.eig21
-			v1 = 1*inFile.eig22
-			v2 = 1*inFile.eig23
+			if d == 4:
+				v0 = 1*inFile.eig21[IND]
+				v1 = 1*inFile.eig22[IND]
+				v2 = 1*inFile.eig23[IND]
+			if d == 3:
+				v0 = 1*inFile.eig10[IND]
+				v1 = 1*inFile.eig11[IND]
+				v2 = 1*inFile.eig12[IND]
 			condition = ((v0>=0)&(v1<0)&(v2<0))|((v1>=0)&(v2<0)&(v0<0))|((v2>=0)&(v0<0)&(v1<0))|((v0<0)&(v1<0)&(v2<0))
 			v0[condition]=-v0[condition]
 			v1[condition]=-v1[condition]
 			v2[condition]=-v2[condition]
-			v = np.vstack((5*v0,5*v1,5*v2, inFile.x, inFile.y, inFile.z))
+			v = np.vstack((5*v0,5*v1,5*v2, x, y, z))
 			clustering = DBSCAN(eps=0.5, min_samples=1).fit((v[:, prepylon]).transpose(1,0))
 			labels = clustering.labels_
 			frame =	{
 				'A': labels,
-				'X': inFile.x[prepylon],
-				'Y': inFile.y[prepylon],
-				'Z': inFile.z[prepylon]
+				'X': x[prepylon],
+				'Y': y[prepylon],
+				'Z': z[prepylon],
 				}
 			df = pd.DataFrame(frame)
 			maxs = (df.groupby('A').max()).values
@@ -122,20 +163,21 @@ for tile_name in os.listdir():
 			classn2[:] = 2
 			classn2[lengths<=2]=0
 			classn[prepylon]=classn2
-			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 2]))
-			distances, indices = nhbrs.kneighbors(np.transpose(Coords))
-			classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) ]=2
+			if (classn == 2).any():
+				nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 2]))
+				distances, indices = nhbrs.kneighbors(np.transpose(Coords))
+				classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) ]=2
 
 		preveg = (dims == 3) & (classn != 2) & (classn != 1)
 		if preveg.any():
-			v = np.vstack((inFile.x, inFile.y, inFile.z))
+			v = np.vstack((x, y, z))
 			clustering = DBSCAN(eps=0.5, min_samples=1).fit((v[:, preveg]).transpose(1,0))
 			labels = clustering.labels_
 			frame =	{
 				'A': labels,
-				'X': inFile.x[preveg],
-				'Y': inFile.y[preveg],
-				'Z': inFile.z[preveg]
+				'X': x[preveg],
+				'Y': y[preveg],
+				'Z': z[preveg]
 				}
 			df = pd.DataFrame(frame)
 			maxs = (df.groupby('A').max()).values
@@ -147,15 +189,17 @@ for tile_name in os.listdir():
 			classn3[:] = 3
 			classn3[lengths<2]=0
 			classn[preveg] = classn3
-			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 3]))
-			distances, indices = nhbrs.kneighbors(np.transpose(Coords))
-			classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) & (classn != 2)]=3
-
-		nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, (classn != 0) & (classn != 7)]))
-		distances, indices = nhbrs.kneighbors(np.transpose(Coords[:, classn == 0]))
-		classn0 = classn[classn == 0]
-		classn0[(distances[:,0]<0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0]<0.5),0]]
-		classn[(classn==0)] = classn0
+			if (classn == 3).any():
+				nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 3]))
+				distances, indices = nhbrs.kneighbors(np.transpose(Coords))
+				classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) & (classn != 2)]=3
+			
+		if ((classn != 0) & (classn != 7)).any():
+			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, (classn != 0) & (classn != 7)]))
+			distances, indices = nhbrs.kneighbors(np.transpose(Coords[:, classn == 0]))
+			classn0 = classn[classn == 0]
+			classn0[(distances[:,0]<0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0]<0.5),0]]
+			classn[(classn==0)] = classn0
 
 		if (classn == 1).any() and (classn == 3).any():
 			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(np.transpose(Coords[:, classn == 1]))
@@ -166,7 +210,7 @@ for tile_name in os.listdir():
 
 		outFile = File("classified"+tile_name, mode = "w", header = inFile.header)
 		outFile.points = inFile.points
-		outFile.classification = classn
+		outFile.classification = classn[INV]
 		outFile.close()
 		print(tile_name)
 

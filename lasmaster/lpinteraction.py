@@ -87,7 +87,8 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 			out_file.writer.set_dimension(modifier+dimension, value)
 
 	out_file.writer.set_dimension("kopt", k["opt"])
-	out_file.writer.set_dimension("vox", inv)
+	if inv != ...:
+		out_file.writer.set_dimension("vox", inv)
 	u = config["decimate"]
 	out_file.writer.set_dimension("dec", u*np.ones(len(in_file)))
 
@@ -99,10 +100,10 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 def name_modifier_hag(config):
 	alpha = config["alpha"] # alpha is small, between 0 and 1
 	vox = config["vox"]
-	A = "0_"+(str(int(1000*(vox-int(vox))))).zfill(3)
+	A = "0_"+(str(int(1000*(alpha-int(alpha))))).zfill(3)
 	R_int = int(vox)
 	R_rat = int(100*(vox-int(vox)))
-	R = str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)
+	R = str(R_int).zfill(2)+"_"+str(R_rat).zfill(2)+"_"
 	return "hag"+"alpha"+A+"vox"+R
 
 def add_hag(file_name, config):
