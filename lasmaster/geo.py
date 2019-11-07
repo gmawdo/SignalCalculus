@@ -75,19 +75,22 @@ def attibutes_prelim(x,y,z,t, config):
 	kopt = np.empty(coords.shape[:-1], dtype = int)
 	dist1 = np.empty(coords.shape[:-1], dtype = float)
 	distmax = np.empty(coords.shape[:-1], dtype = float)
-	nhbrs = NearestNeighbors(n_neighbors = max(k_range), algorithm = "kd_tree").fit(coords)
-	for i in np.unique(time_digits):
-		time_range = time_digits == i
-		distances, indices = nhbrs.kneighbors(coords[time_range,:]) # (num_pts,k)
-		condition = (distances[:,:,None] < radius)
-		k_opt, evals, evects, entropies = optimise_k(coords[time_range,:], distances, coords[indices, :], k_range, condition) #(num_pts, d), (num_pts,d,d)
-		val[time_range,:] = evals
-		vec[time_range,:,:] = evects
-		ents[time_range] = entropies
-		kdist[time_range] = distances[np.arange(distances.shape[-2]), k_opt-1]
-		kopt[time_range] = k_opt
-		dist1[time_range] = distances[:,1]
-		distmax[time_range] = distances[:,-1]
+	try:
+		nhbrs = NearestNeighbors(n_neighbors = max(k_range), algorithm = "kd_tree").fit(coords)
+		for i in np.unique(time_digits):
+			time_range = time_digits == i
+			distances, indices = nhbrs.kneighbors(coords[time_range,:]) # (num_pts,k)
+			condition = (distances[:,:,None] < radius)
+			k_opt, evals, evects, entropies = optimise_k(coords[time_range,:], distances, coords[indices, :], k_range, condition) #(num_pts, d), (num_pts,d,d)
+			val[time_range,:] = evals
+			vec[time_range,:,:] = evects
+			ents[time_range] = entropies
+			kdist[time_range] = distances[np.arange(distances.shape[-2]), k_opt-1]
+			kopt[time_range] = k_opt
+			dist1[time_range] = distances[:,1]
+			distmax[time_range] = distances[:,-1]
+	except:
+		print("Local geometry couldn't be done: points possibly not dense enough!")
 	k_dictionary = {}
 	kdist_dictionary = {}
 	k_dictionary["one"] = np.ones(coords.shape[:-1], dtype = int)[inv]
