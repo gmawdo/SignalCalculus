@@ -1,0 +1,25 @@
+{
+    "pipeline": [
+        {
+            "count": "18446744073709551615", 
+            "type": "readers.las", 
+            "filename": "/home/andrew/Downloads/TEMP/DH5091309_000006_NoClass.las"
+        },
+        {
+            "slope": 0.1, 
+            "cut": 0.0,
+            "window": 18, 
+            "cell": 1.0, 
+            "scalar": 0.5, 
+            "threshold": 0.5, 
+            "type": "filters.smrf"
+        }, 
+
+
+        {
+            "extra_dims": "all", 
+            "type": "writers.las", 
+            "filename": "/home/andrew/Downloads/TEMP/DH5091309_000006_NoClass_ground.las"
+        }
+    ]
+}
