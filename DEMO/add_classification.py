@@ -97,5 +97,10 @@ def eigen_clustering(coords, eigenvector, tolerance, eigenvector_scale, max_leng
 	labels[lengths < max_length] = -1
 	return labels
 
-	### now I will show how these can be combined to give the add_classification step
-	def add_classification(inFile):
+### now I will show how these can be combined to give the add_classification step
+def add_classification(inFile):
+	voxel = inFile.vox
+	UNQ, IND, INV, CNT = np.unique(voxel, return_index=True, return_inverse=True, return_counts=True)
+	if (inFile.vox == 0).all():
+		IND = np.arange(len(inFile))
+		INV = IND

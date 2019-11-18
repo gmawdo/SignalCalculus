@@ -23,7 +23,7 @@ def example_attr(file_name):
 	print("Starting attributes: ", file_name)
 	start = time.time()
 	cf = example_attr_config
-	lpinteraction.attr(file_name, cf, fun.std_fun_eig(), fun.std_fun_vec(), fun.std_fun_kdist()) 
+	lpinteraction.attr(file_name, cf) 
 	end = time.time()
 	print("Finished attributes: ",file_name, ", time taken: "+str(int((end - start)/60))+" minutes and "+str(int(end-start-60*int((end - start)/60)))+" seconds")
 
