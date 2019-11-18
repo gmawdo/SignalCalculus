@@ -87,7 +87,7 @@ def attr(file_name, config, fun_val = fun.std_fun_val, fun_vec = fun.std_fun_vec
 			out_file.writer.set_dimension(modifier+dimension, value)
 
 	out_file.writer.set_dimension("kopt", k["opt"])
-	if inv != ...:
+	if inv is ...:
 		out_file.writer.set_dimension("vox", inv)
 	u = config["decimate"]
 	out_file.writer.set_dimension("dec", u*np.ones(len(in_file)))

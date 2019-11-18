@@ -22,7 +22,7 @@ def std_fun_vec(vec):
 	for i in range(d):
 		output["ang"+str(i)] = np.clip(2*np.arccos(vec[:,i,2]), 0 , 1)
 		for j in range(d):
-			output["eig"+str(j)+str(i)] = vec[:, i, j] # in eigenvalue-descending order
+			output["eig"+str(j)+str(i)] = vec[:, i, j] # in eigenvalue-ascending order
 	return output
 
 def std_fun_kdist():

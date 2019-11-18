@@ -99,8 +99,88 @@ def eigen_clustering(coords, eigenvector, tolerance, eigenvector_scale, max_leng
 
 ### now I will show how these can be combined to give the add_classification step
 def add_classification(inFile):
+	# load the voxel numbers - they will be only one (0) if no voxelisation happened
 	voxel = inFile.vox
+	# find how to map each point onto each voxel
 	UNQ, IND, INV, CNT = np.unique(voxel, return_index=True, return_inverse=True, return_counts=True)
-	if (inFile.vox == 0).all():
+	# determine by number of voxel numbers whether decimation occured
+	decimated = IND.size > 0
+	# if no decimation occured this mapping must be trivial:
+	if not decimated:
 		IND = np.arange(len(inFile))
 		INV = IND
+	
+	# grab the attributes we need - but only on decimated points
+	x = inFile.x[IND]
+	y = inFile.y[IND]
+	z = inFile.z[IND]
+	dim1 = inFile.dim1[IND]
+	dim2 = inFile.dim2[IND]
+	dim3 = inFile.dim3[IND]
+	eig0 = inFile.eig0[IND]
+	eig1 = inFile.eig1[IND]
+	eig2 = inFile.eig2[IND]
+	classification = inFile.classification[IND]
+
+	# scale down coordinates
+	if decimated:
+		u = inFile.scale
+		Coords = u[None,:]*np.floor(np.stack((x/u,y/u,z/u), axis = 1))
+	else:
+		Coords = np.stack((x,y,z), axis = 1)
+
+	# build the probabilistic dimension
+	LPS = np.stack((dim1, dim2, dim3), axis = 1)
+	# extract a discrete dimension - 1, 2 or 3
+	dims = 1+np.argmax(LPS, axis = 1)
+	classn = np.zeros(classification.shape, dtype = classification.dtype)
+
+	# here we decide whether 4 dimensions were run by trying to extract eigenvalue 3 - 3D space has eigenvalues 0, 1, 2  
+	# so this throws an error if we are in 3D and runs if we are in 4D
+	try:
+		eig3 = inFile.eig3
+		d = 4
+	except:
+		d = 3
+
+
+	if d == 3:
+		dims[eig2<=0]=0
+	if d == 4:
+		dims[eig3<=0]=0
+
+	noise = dims == 0
+	dim1 = dims == 1
+	dim2 = dims == 2
+	dim3 = dims == 3
+
+	if (dims == 1).any():
+		if d == 4:
+			v0 = 1*inFile.eig30[IND]
+			v1 = 1*inFile.eig31[IND]
+			v2 = 1*inFile.eig32[IND]
+		if d == 3:
+			v0 = 1*inFile.eig20[IND]
+			v1 = 1*inFile.eig21[IND]
+			v2 = 1*inFile.eig22[IND]
+	line_of_best_fit_direction = np.stack((v0, v1, v2), axis = 1)/np.sqrt(v0**2+v1**2+v2**2)
+	labels = eigen_clustering(Coords, line_of_best_fit_direction, 0.5, 5.0, 2, 1)
+
+	classn[dim1] = 1
+	classn[labels = -1] = 0
+
+	conductor = corridor(Coords, line_of_best_fit_direction[classn == 1], classn == 1, R=0.5, S=2)
+	classn[conductor] = 1
+	classn[noise] = 0
+
+	mask = dim2 & (~ noise) & (classn != 1)
+	if mask.any():
+		if d == 4:
+			v0 = 1*inFile.eig20[IND]
+			v1 = 1*inFile.eig21[IND]
+			v2 = 1*inFile.eig22[IND]
+		if d == 3:
+			v0 = 1*inFile.eig10[IND]
+			v1 = 1*inFile.eig11[IND]
+			v2 = 1*inFile.eig12[IND]
+	plane_of_best_fit_direction = np.stack((v0, v1, v2), axis = 1)/np.sqrt(v0**2+v1**2+v2**2)
