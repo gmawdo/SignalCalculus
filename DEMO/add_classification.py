@@ -1,3 +1,15 @@
+from laspy.file import File
+from laspy.header import Header
+from DEMO_pack.parallelism import splitter
+from DEMO_pack import lasmaster
+lm = lasmaster
+import numpy as np
+import pandas as pd
+import os
+from sklearn.neighbors import NearestNeighbors
+from sklearn.cluster import DBSCAN
+from time import time
+
 def corridor(coords, eigenvectors, mask, R=1, S=2):
 	"""
 
@@ -26,10 +38,10 @@ def corridor(coords, eigenvectors, mask, R=1, S=2):
 
 	# find direction from each point to point of interest, project onto eigenvector
 	v = eigenvectors[nearest_nbrs]
-	u = coords - coords[conductor_condition][nearest_nbrs]
+	u = coords - coords_mask[nearest_nbrs]
 	scale = np.sum(u*v, axis = 1)
 	# find coprojection
-	w = u - scale*v
+	w = u - scale[:, None]*v
 
 	# find distance to line formed by eigenvector
 	w_norms = np.sqrt(np.sum(w**2, axis = 1))
@@ -80,7 +92,7 @@ def eigen_clustering(coords, eigenvector, tolerance, eigenvector_scale, max_leng
 	v0[condition]=-v0[condition]
 	v1[condition]=-v1[condition]
 	v2[condition]=-v2[condition]
-	clusterable = np.stack((x, y, z, u, v, w))
+	clusterable = np.stack((x, y, z, v0, v1, v2), axis = 1)
 	clustering = DBSCAN(eps=tolerance, min_samples=min_pts).fit(clusterable)
 	labels = clustering.labels_
 	frame =	{
@@ -97,14 +109,45 @@ def eigen_clustering(coords, eigenvector, tolerance, eigenvector_scale, max_leng
 	labels[lengths < max_length] = -1
 	return labels
 
+def clustering(coords, tolerance, max_length, min_pts):
+	"""
+	Parameters:
+	points_to_cluster - a numpy index or mask.
+	tolerance - how close do two points have to be in order to be in same cluster?
+	max_length - how long can a cluster be?
+	min_pts - how many points must a cluster have?
+
+	Outputs:
+	labels
+	"""
+	x = coords[:, 0]
+	y = coords[:, 1]
+	z = coords[:, 2]
+	clustering = DBSCAN(eps=tolerance, min_samples=min_pts).fit(coords)
+	labels = clustering.labels_
+	frame =	{
+		'A': labels,
+		'X': x,
+		'Y': y,
+		'Z': z,
+		}
+	df = pd.DataFrame(frame)
+	maxs = (df.groupby('A').max()).values
+	mins = (df.groupby('A').min()).values
+	unq, ind, inv, cnt = np.unique(labels, return_index=True, return_inverse=True, return_counts=True)
+	lengths = np.sqrt((maxs[inv,0]-mins[inv,0])**2+(maxs[inv,1]-mins[inv,1])**2)
+	labels[lengths < max_length] = -1
+	return labels
+
 ### now I will show how these can be combined to give the add_classification step
-def add_classification(inFile):
+def add_classification(filename):
 	# load the voxel numbers - they will be only one (0) if no voxelisation happened
+	inFile = File(filename)
 	voxel = inFile.vox
 	# find how to map each point onto each voxel
 	UNQ, IND, INV, CNT = np.unique(voxel, return_index=True, return_inverse=True, return_counts=True)
 	# determine by number of voxel numbers whether decimation occured
-	decimated = IND.size > 0
+	decimated = (inFile.vox != 0).any()
 	# if no decimation occured this mapping must be trivial:
 	if not decimated:
 		IND = np.arange(len(inFile))
@@ -121,11 +164,10 @@ def add_classification(inFile):
 	eig1 = inFile.eig1[IND]
 	eig2 = inFile.eig2[IND]
 	classification = inFile.classification[IND]
-
 	# scale down coordinates
 	if decimated:
-		u = inFile.scale
-		Coords = u[None,:]*np.floor(np.stack((x/u,y/u,z/u), axis = 1))
+		u = inFile.dec[IND]
+		Coords = u[:, None]*np.floor(np.stack((x/u,y/u,z/u), axis = 1))
 	else:
 		Coords = np.stack((x,y,z), axis = 1)
 
@@ -135,14 +177,17 @@ def add_classification(inFile):
 	dims = 1+np.argmax(LPS, axis = 1)
 	classn = np.zeros(classification.shape, dtype = classification.dtype)
 
-	# here we decide whether 4 dimensions were run by trying to extract eigenvalue 3 - 3D space has eigenvalues 0, 1, 2  
-	# so this throws an error if we are in 3D and runs if we are in 4D
-	try:
-		eig3 = inFile.eig3
-		d = 4
-	except:
-		d = 3
-
+	# here we decide whether 4 dimensions were run
+	found_dimension = False
+	d = 1
+	L = [spec.name for spec in inFile.point_format]
+	while not found_dimension:
+		if f"dim{d}" in L:
+			d += 1
+		else:
+			found_dimension = True
+			d -= 1
+	print(d)
 
 	if d == 3:
 		dims[eig2<=0]=0
@@ -163,15 +208,18 @@ def add_classification(inFile):
 			v0 = 1*inFile.eig20[IND]
 			v1 = 1*inFile.eig21[IND]
 			v2 = 1*inFile.eig22[IND]
-	line_of_best_fit_direction = np.stack((v0, v1, v2), axis = 1)/np.sqrt(v0**2+v1**2+v2**2)
-	labels = eigen_clustering(Coords, line_of_best_fit_direction, 0.5, 5.0, 2, 1)
+		line_of_best_fit_direction = np.stack((v0, v1, v2), axis = 1)#/np.sqrt(v0**2+v1**2+v2**2)[:, None]
+		labels = eigen_clustering(Coords[dim1], line_of_best_fit_direction[dim1], 0.5, 5.0, 2, 1)
 
-	classn[dim1] = 1
-	classn[labels = -1] = 0
+		classn1 = classn[dim1]
+		classn1[:] = 1
+		classn1[labels == -1] = 0
+		classn[dim1] = classn1
 
-	conductor = corridor(Coords, line_of_best_fit_direction[classn == 1], classn == 1, R=0.5, S=2)
-	classn[conductor] = 1
-	classn[noise] = 0
+		if (classn==1).any():
+			conductor = corridor(Coords, line_of_best_fit_direction[classn == 1], classn == 1, R=0.5, S=2)
+			classn[conductor] = 1
+			classn[noise] = 7
 
 	mask = dim2 & (~ noise) & (classn != 1)
 	if mask.any():
@@ -183,4 +231,41 @@ def add_classification(inFile):
 			v0 = 1*inFile.eig10[IND]
 			v1 = 1*inFile.eig11[IND]
 			v2 = 1*inFile.eig12[IND]
-	plane_of_best_fit_direction = np.stack((v0, v1, v2), axis = 1)/np.sqrt(v0**2+v1**2+v2**2)
+		plane_of_best_fit_direction = np.stack((v0, v1, v2), axis = 1)#/np.sqrt(v0**2+v1**2+v2**2)[:, None]
+		labels = eigen_clustering(Coords[mask], plane_of_best_fit_direction[mask], 0.5, 5.0, 2, 1)
+
+		classn2 = classn[mask]
+		classn2[:] = 2
+		classn2[labels == -1] = 0
+		classn[mask] = classn2
+		classn[noise] = 7
+		if (classn == 2).any():
+			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(Coords[classn == 2, :])
+			distances, indices = nhbrs.kneighbors(Coords)
+			classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) ]=2
+
+	mask = dim3 & (~ noise) & (classn != 1) & (classn != 2)
+	if mask.any():
+		labels = clustering(Coords[mask, :], 0.5, 2, 1)
+		classn_mask = classn[mask]
+		classn_mask[:] = 3
+		classn_mask[labels == -1] = 0
+		classn[mask] = classn_mask
+		classn[noise] = 7
+
+	if (classn == 3).any():
+			nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(Coords[classn == 3, :])
+			distances, indices = nhbrs.kneighbors(Coords)
+			classn[(distances[:,0]<0.5)& (classn != 7) & (classn != 1) & (classn != 2)]=3
+
+	if ((classn != 0) & (classn != 7)).any():
+		nhbrs = NearestNeighbors(n_neighbors = 1, algorithm = "kd_tree").fit(Coords[(classn != 0) & (classn != 7), :])
+		distances, indices = nhbrs.kneighbors(Coords[classn == 0, :])
+		classn0 = classn[classn == 0]
+		classn0[(distances[:,0]<0.5)] = (classn[(classn != 0) & (classn != 7)])[indices[(distances[:,0]<0.5),0]]
+		classn[(classn==0)] = classn0
+
+	outFile = File("classified2"+filename, mode = "w", header = inFile.header)
+	outFile.points = inFile.points
+	outFile.classification = classn[INV]
+	outFile.close()
