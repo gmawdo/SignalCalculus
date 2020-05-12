@@ -2,7 +2,7 @@
 Investigatory repo looking for generic interpretation mechanism across ad hoc and derived signals.
 
 # Signals for Point Clouds
-This contains English descriptions of the structure of RedHawk, and explanations and plots of signals. We can't store the pictures on github.
+This contains English descriptions of the structure of signal representations, and explanations and plots of signals. We can't store the pictures on github.
 
 # Lasmaster
 This name used to be given to a module, the code is restructured into a package. It contains several modules:
